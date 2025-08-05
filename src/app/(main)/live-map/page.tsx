@@ -82,7 +82,7 @@ export default function LiveMapPage() {
 
             const isLive = now >= eventDateTime;
 
-            const coords = eventCoordinates[event.address] || { lat: 38.8315, lng: -77.3061 }; // Fallback coords
+            const coords = eventCoordinates[event.address] || { lat: 38.8315 + (Math.random() - 0.5) * 0.05, lng: -77.3061 + (Math.random() - 0.5) * 0.05 }; // Fallback with random jitter
 
             if (coords) {
                 return {
