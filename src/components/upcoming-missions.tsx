@@ -15,10 +15,10 @@ function getEventStatus(event: AppEvent) {
     eventDateTime.setHours(hours);
     eventDateTime.setMinutes(minutes);
 
-    if (eventDateTime > now) {
-        const diffHours = (eventDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
-        if (diffHours <= 24) return 'upcoming';
-        return 'future';
+    if (now < eventDateTime) {
+      const diffHours = (eventDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+      if (diffHours <= 24) return 'upcoming';
+      return 'future';
     }
 
     const diffHours = (now.getTime() - eventDateTime.getTime()) / (1000 * 60 * 60);
@@ -68,6 +68,11 @@ export function UpcomingMissions() {
     }));
   }, [events]);
 
+  const activeMissions = missions.filter(m => m.status === 'active');
+  const upcomingMissions = missions.filter(m => m.status === 'upcoming');
+  const recentMissions = missions.filter(m => m.status === 'recent');
+
+
   return (
     <div className="h-full flex flex-col">
       <div className="p-4">
@@ -78,7 +83,7 @@ export function UpcomingMissions() {
         <div className="p-4 space-y-4">
           <div>
             <h3 className="font-semibold mb-2 px-2">Active</h3>
-            {missions.filter(m => m.status === 'active').map((mission, index) => (
+            {activeMissions.length > 0 ? activeMissions.map((mission, index) => (
               <Card key={index} className="mb-2">
                 <CardContent className="p-3">
                   <div className="flex justify-between items-center">
@@ -91,32 +96,29 @@ export function UpcomingMissions() {
                   <Button variant="secondary" size="sm" className="mt-2 w-full">Join Mission</Button>
                 </CardContent>
               </Card>
-            ))}
-             {missions.filter(m => m.status === 'active').length === 0 && <p className="text-xs text-muted-foreground px-2">No active missions.</p>}
+            )) : <p className="text-xs text-muted-foreground px-2">No active missions.</p>}
           </div>
           <div>
             <h3 className="font-semibold mb-2 px-2">Upcoming</h3>
-            {missions.filter(m => m.status === 'upcoming').map((mission, index) => (
+            {upcomingMissions.length > 0 ? upcomingMissions.map((mission, index) => (
               <Card key={index} className="mb-2 bg-card/50">
                 <CardContent className="p-3">
                     <CardTitle className="text-base">{mission.title}</CardTitle>
                     <CardDescription>{mission.displayTime}</CardDescription>
                 </CardContent>
               </Card>
-            ))}
-            {missions.filter(m => m.status === 'upcoming').length === 0 && <p className="text-xs text-muted-foreground px-2">No upcoming missions.</p>}
+            )) : <p className="text-xs text-muted-foreground px-2">No upcoming missions.</p>}
           </div>
           <div>
             <h3 className="font-semibold mb-2 px-2">Recent</h3>
-             {missions.filter(m => m.status === 'recent').map((mission, index) => (
+             {recentMissions.length > 0 ? recentMissions.map((mission, index) => (
               <Card key={index} className="mb-2 bg-card/30 border-dashed">
                 <CardContent className="p-3">
                     <CardTitle className="text-base">{mission.title}</CardTitle>
                     <CardDescription>{mission.displayTime}</CardDescription>
                 </CardContent>
               </Card>
-            ))}
-            {missions.filter(m => m.status === 'recent').length === 0 && <p className="text-xs text-muted-foreground px-2">No recent missions.</p>}
+            )) : <p className="text-xs text-muted-foreground px-2">No recent missions.</p>}
           </div>
         </div>
       </ScrollArea>

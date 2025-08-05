@@ -72,45 +72,36 @@ export default function LiveMapPage() {
     }, [auth]);
 
     useEffect(() => {
-        const now = new Date();
-        const locations = events.map(event => {
-            const eventDateTime = new Date(event.date);
-            const [hours, minutes] = event.time.split(':').map(Number);
-            eventDateTime.setHours(hours);
-            eventDateTime.setMinutes(minutes);
-            eventDateTime.setSeconds(0);
-
-            const isLive = now >= eventDateTime;
-
-            const coords = eventCoordinates[event.address] || { lat: 38.8315 + (Math.random() - 0.5) * 0.05, lng: -77.3061 + (Math.random() - 0.5) * 0.05 }; // Fallback with random jitter
-
-            if (coords) {
-                return {
-                    id: event.id,
-                    title: event.title,
-                    isLive: isLive,
-                    ...coords
-                };
-            }
-            return null;
-        }).filter((l): l is EventLocation => l !== null);
-
-        setEventLocations(locations);
-        
-        const interval = setInterval(() => {
-             const now = new Date();
-             setEventLocations(prevLocations => prevLocations.map(loc => {
-                const event = events.find(e => e.id === loc.id);
-                if (!event) return loc;
-                
+        const updateLocations = () => {
+            const now = new Date();
+            const locations = events.map(event => {
                 const eventDateTime = new Date(event.date);
                 const [hours, minutes] = event.time.split(':').map(Number);
                 eventDateTime.setHours(hours);
                 eventDateTime.setMinutes(minutes);
                 eventDateTime.setSeconds(0);
 
-                return {...loc, isLive: now >= eventDateTime };
-             }));
+                const isLive = now >= eventDateTime;
+
+                const coords = eventCoordinates[event.address] || { lat: 38.8315 + (Math.random() - 0.5) * 0.05, lng: -77.3061 + (Math.random() - 0.5) * 0.05 }; // Fallback with random jitter
+
+                if (coords) {
+                    return {
+                        id: event.id,
+                        title: event.title,
+                        isLive: isLive,
+                        ...coords
+                    };
+                }
+                return null;
+            }).filter((l): l is EventLocation => l !== null);
+            setEventLocations(locations);
+        };
+        
+        updateLocations();
+        
+        const interval = setInterval(() => {
+             updateLocations();
         }, 60000);
 
         return () => clearInterval(interval);
@@ -129,7 +120,12 @@ export default function LiveMapPage() {
     });
 
     function onEventSubmit(data: EventFormValues) {
-        addEvent({ ...data, id: (events.length + 1).toString() });
+        const newEventId = (events.length + 1).toString();
+        // Add a mock location for the new event if its address isn't in our list
+        if (!eventCoordinates[data.address]) {
+            eventCoordinates[data.address] = { lat: 38.8315 + (Math.random() - 0.5) * 0.05, lng: -77.3061 + (Math.random() - 0.5) * 0.05 };
+        }
+        addEvent({ ...data, id: newEventId });
         toast({
           title: 'Event Created!',
           description: `The event "${data.title}" has been successfully added.`,
