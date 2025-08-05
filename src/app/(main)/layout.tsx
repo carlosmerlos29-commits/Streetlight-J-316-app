@@ -63,6 +63,14 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
+              <Link href="/team-chat" passHref>
+                <SidebarMenuButton tooltip="Team Chat">
+                  <MessageSquare />
+                  <span>Team Chat</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
               <Link href="/resources" passHref>
                 <SidebarMenuButton tooltip="Resource Library">
                   <Library />
