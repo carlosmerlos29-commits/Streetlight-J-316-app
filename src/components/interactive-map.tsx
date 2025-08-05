@@ -55,8 +55,8 @@ export function InteractiveMap({
   return (
     <GoogleMap
       mapContainerClassName="w-full h-full"
-      center={defaultCenter}
-      zoom={10}
+      defaultCenter={defaultCenter}
+      defaultZoom={12}
       onLoad={(map) => { mapRef.current = map; }}
       options={{
         streetViewControl: false,
@@ -71,32 +71,19 @@ export function InteractiveMap({
           position={userLocation}
           mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
           getPixelPositionOffset={({ width, height }) => ({
-            x: -width / 2,    // bottom-center alignment
+            x: -width / 2,
             y: -height,
           })}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className="flex items-center gap-2">
             <img
               src={userAvatar}
               alt={userName}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                border: '2px solid hsl(var(--primary))',
-              }}
+              className="w-10 h-10 rounded-full border-2 border-primary"
               data-ai-hint="person portrait"
             />
             <span
-              style={{
-                fontSize: 14,
-                fontWeight: 500,
-                color: 'hsl(var(--foreground))',
-                background: 'hsl(var(--background))',
-                padding: '2px 6px',
-                borderRadius: 4,
-                boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
-              }}
+              className="text-sm font-medium text-foreground bg-background px-1.5 py-0.5 rounded shadow-lg"
             >
               {userName}
             </span>
@@ -115,12 +102,7 @@ export function InteractiveMap({
           })}
         >
           <div
-            style={{
-              background: 'white',
-              borderRadius: '50%',
-              padding: 4,
-              boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
-            }}
+            className="bg-white rounded-full p-1 shadow-md"
             title={evt.title}
           >
             {evt.isLive ? (
