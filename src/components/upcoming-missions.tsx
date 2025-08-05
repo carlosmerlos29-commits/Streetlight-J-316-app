@@ -5,16 +5,69 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from './ui/scroll-area';
 import { Button } from './ui/button';
+import { useEvents, AppEvent } from '@/app/(main)/layout';
+import { useMemo } from 'react';
 
-const missions = [
-  { status: 'active', title: 'Downtown Outreach', time: 'Live Now', location: 'City Center' },
-  { status: 'upcoming', title: 'Campus Ministry', time: 'Tomorrow at 2 PM', location: 'State University' },
-  { status: 'upcoming', title: 'Park Evangelism', time: 'July 28th at 11 AM', location: 'Central Park' },
-  { status: 'recent', title: 'Prayer Walk', time: 'Yesterday at 6 PM', location: 'Neighborhood' },
-  { status: 'recent', title: 'Homeless Shelter Service', time: 'July 24th at 5 PM', location: 'Good Samaritan Shelter' },
-];
+function getEventStatus(event: AppEvent) {
+    const now = new Date();
+    const eventDateTime = new Date(event.date);
+    const [hours, minutes] = event.time.split(':').map(Number);
+    eventDateTime.setHours(hours);
+    eventDateTime.setMinutes(minutes);
+
+    if (eventDateTime > now) {
+        const diffHours = (eventDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+        if (diffHours <= 24) return 'upcoming';
+        return 'future';
+    }
+
+    const diffHours = (now.getTime() - eventDateTime.getTime()) / (1000 * 60 * 60);
+    if (diffHours <= 2) return 'active';
+    
+    return 'recent';
+}
+
+function formatTime(event: AppEvent) {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const eventDate = new Date(event.date.getFullYear(), event.date.getMonth(), event.date.getDate());
+
+    const [hours, minutes] = event.time.split(':').map(Number);
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const displayHours = hours % 12 || 12;
+    const displayMinutes = minutes.toString().padStart(2, '0');
+    const timeString = `${displayHours}:${displayMinutes} ${ampm}`;
+
+    if (eventDate.getTime() === today.getTime()) {
+        return `Today at ${timeString}`;
+    }
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    if (eventDate.getTime() === tomorrow.getTime()) {
+        return `Tomorrow at ${timeString}`;
+    }
+    
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    if (eventDate.getTime() === yesterday.getTime()) {
+        return `Yesterday at ${timeString}`;
+    }
+    
+    return `${event.date.toLocaleDateString()} at ${timeString}`;
+}
 
 export function UpcomingMissions() {
+  const { events } = useEvents();
+
+  const missions = useMemo(() => {
+    return events.map(event => ({
+      ...event,
+      status: getEventStatus(event),
+      displayTime: formatTime(event),
+    }));
+  }, [events]);
+
   return (
     <div className="h-full flex flex-col">
       <div className="p-4">
@@ -31,7 +84,7 @@ export function UpcomingMissions() {
                   <div className="flex justify-between items-center">
                     <div>
                       <CardTitle className="text-base">{mission.title}</CardTitle>
-                      <CardDescription>{mission.location}</CardDescription>
+                      <CardDescription>{mission.address}</CardDescription>
                     </div>
                     <Badge variant="destructive">Live</Badge>
                   </div>
@@ -39,6 +92,7 @@ export function UpcomingMissions() {
                 </CardContent>
               </Card>
             ))}
+             {missions.filter(m => m.status === 'active').length === 0 && <p className="text-xs text-muted-foreground px-2">No active missions.</p>}
           </div>
           <div>
             <h3 className="font-semibold mb-2 px-2">Upcoming</h3>
@@ -46,10 +100,11 @@ export function UpcomingMissions() {
               <Card key={index} className="mb-2 bg-card/50">
                 <CardContent className="p-3">
                     <CardTitle className="text-base">{mission.title}</CardTitle>
-                    <CardDescription>{mission.time}</CardDescription>
+                    <CardDescription>{mission.displayTime}</CardDescription>
                 </CardContent>
               </Card>
             ))}
+            {missions.filter(m => m.status === 'upcoming').length === 0 && <p className="text-xs text-muted-foreground px-2">No upcoming missions.</p>}
           </div>
           <div>
             <h3 className="font-semibold mb-2 px-2">Recent</h3>
@@ -57,10 +112,11 @@ export function UpcomingMissions() {
               <Card key={index} className="mb-2 bg-card/30 border-dashed">
                 <CardContent className="p-3">
                     <CardTitle className="text-base">{mission.title}</CardTitle>
-                    <CardDescription>{mission.time}</CardDescription>
+                    <CardDescription>{mission.displayTime}</CardDescription>
                 </CardContent>
               </Card>
             ))}
+            {missions.filter(m => m.status === 'recent').length === 0 && <p className="text-xs text-muted-foreground px-2">No recent missions.</p>}
           </div>
         </div>
       </ScrollArea>

@@ -24,6 +24,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
+import { useEvents } from './layout';
 
 interface Location {
   lat: number;
@@ -43,13 +44,6 @@ const eventCoordinates: { [key: string]: Location } = {
     'Online via Zoom': { lat: 38.829, lng: -77.304 },
 };
 
-
-const initialEvents = [
-    { id: '1', date: new Date(new Date().getTime() - 2 * 60 * 60 * 1000), title: 'City-Wide Outreach', description: 'Join us for a large-scale evangelism event at the city center.', type: 'Outreach', time: '12:00 PM', address: 'City Center Plaza' },
-    { id: '2', date: new Date(new Date().getTime() + 24 * 60 * 60 * 1000), title: 'Prayer & Worship Night', description: 'A night dedicated to prayer for our city and worship.', type: 'Worship', time: '7:00 PM', address: '123 Main St, Community Church' },
-    { id: '3', date: new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000), title: 'Evangelism Training Workshop', description: 'Learn practical skills for sharing your faith.', type: 'Training', time: '10:00 AM', address: 'Online via Zoom' },
-];
-
 const eventSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
   description: z.string().min(10, 'Description must be at least 10 characters.'),
@@ -64,12 +58,12 @@ type EventFormValues = z.infer<typeof eventSchema>;
 export default function LiveMapPage() {
     const { toast } = useToast();
     const auth = getAuth(app);
+    const { events, addEvent } = useEvents();
     const [user, setUser] = useState<User | null>(null);
     const [isSharingLocation, setIsSharingLocation] = useState(false);
     const [isGettingLocation, setIsGettingLocation] = useState(false);
     const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [events, setEvents] = useState(initialEvents);
     const [eventLocations, setEventLocations] = useState<EventLocation[]>([]);
 
     useEffect(() => {
@@ -81,24 +75,14 @@ export default function LiveMapPage() {
         const now = new Date();
         const locations = events.map(event => {
             const eventDateTime = new Date(event.date);
-            const [time, ampm] = event.time.split(' ');
-            let [hours, minutes] = time.split(':').map(Number);
-            
-            if (ampm === 'PM' && hours !== 12) {
-                hours += 12;
-            }
-            if (ampm === 'AM' && hours === 12) {
-                hours = 0;
-            }
-
+            const [hours, minutes] = event.time.split(':').map(Number);
             eventDateTime.setHours(hours);
             eventDateTime.setMinutes(minutes);
             eventDateTime.setSeconds(0);
 
-
             const isLive = now >= eventDateTime;
 
-            const coords = eventCoordinates[event.address];
+            const coords = eventCoordinates[event.address] || { lat: 38.8315, lng: -77.3061 }; // Fallback coords
 
             if (coords) {
                 return {
@@ -120,14 +104,7 @@ export default function LiveMapPage() {
                 if (!event) return loc;
                 
                 const eventDateTime = new Date(event.date);
-                const [time, ampm] = event.time.split(' ');
-                let [hours, minutes] = time.split(':').map(Number);
-                 if (ampm === 'PM' && hours !== 12) {
-                    hours += 12;
-                }
-                if (ampm === 'AM' && hours === 12) {
-                    hours = 0;
-                }
+                const [hours, minutes] = event.time.split(':').map(Number);
                 eventDateTime.setHours(hours);
                 eventDateTime.setMinutes(minutes);
                 eventDateTime.setSeconds(0);
@@ -152,8 +129,7 @@ export default function LiveMapPage() {
     });
 
     function onEventSubmit(data: EventFormValues) {
-        const newEvent = { ...data, id: (events.length + 1).toString() };
-        setEvents(prev => [...prev, newEvent]);
+        addEvent({ ...data, id: (events.length + 1).toString() });
         toast({
           title: 'Event Created!',
           description: `The event "${data.title}" has been successfully added.`,
@@ -329,7 +305,7 @@ export default function LiveMapPage() {
                                             <FormItem>
                                               <FormLabel>Event Time</FormLabel>
                                               <FormControl>
-                                                <Input placeholder="e.g., 6:00 PM" {...field} />
+                                                <Input type="time" placeholder="e.g., 6:00 PM" {...field} />
                                               </FormControl>
                                               <FormMessage />
                                             </FormItem>

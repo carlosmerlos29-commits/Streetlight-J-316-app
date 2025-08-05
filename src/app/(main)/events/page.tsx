@@ -20,12 +20,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { useEvents } from './layout';
 
-const initialEvents = [
-    { date: new Date(2024, 6, 20), title: 'City-Wide Outreach', description: 'Join us for a large-scale evangelism event at the city center.', type: 'Outreach', time: '12:00 PM', address: 'City Center Plaza' },
-    { date: new Date(2024, 6, 25), title: 'Prayer & Worship Night', description: 'A night dedicated to prayer for our city and worship.', type: 'Worship', time: '7:00 PM', address: '123 Main St, Community Church' },
-    { date: new Date(2024, 7, 5), title: 'Evangelism Training Workshop', description: 'Learn practical skills for sharing your faith.', type: 'Training', time: '10:00 AM', address: 'Online via Zoom' },
-];
 
 const eventSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
@@ -40,7 +36,7 @@ type EventFormValues = z.infer<typeof eventSchema>;
 
 export default function EventsPage() {
   const { toast } = useToast();
-  const [events, setEvents] = useState(initialEvents);
+  const { events, addEvent } = useEvents();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -49,7 +45,7 @@ export default function EventsPage() {
   });
 
   function onSubmit(data: EventFormValues) {
-    setEvents(prevEvents => [...prevEvents, data].sort((a, b) => a.date.getTime() - b.date.getTime()));
+    addEvent({ ...data, id: (events.length + 1).toString() });
     toast({
       title: 'Event Created!',
       description: `The event "${data.title}" has been successfully added.`,
@@ -156,7 +152,7 @@ export default function EventsPage() {
                         <FormItem>
                           <FormLabel>Event Time</FormLabel>
                           <FormControl>
-                            <Input placeholder="e.g., 6:00 PM" {...field} />
+                            <Input type="time" placeholder="e.g., 6:00 PM" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
