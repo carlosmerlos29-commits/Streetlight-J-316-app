@@ -13,7 +13,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -21,6 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Label } from '@/components/ui/label';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useEvents } from '@/app/(main)/layout';
@@ -43,7 +43,7 @@ export default function EventsPage() {
   const { toast } = useToast();
   const { events, addEvent } = useEvents();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
@@ -71,7 +71,7 @@ export default function EventsPage() {
       description: `The event "${data.title}" has been successfully added.`,
     });
     form.reset();
-    setIsDialogOpen(false);
+    setIsFormOpen(false);
   }
   
   const handlePlaceChanged = () => {
@@ -90,170 +90,6 @@ export default function EventsPage() {
             <h1 className="font-headline text-3xl font-bold">Community Events</h1>
             <p className="text-muted-foreground">Find and join upcoming ministry events.</p>
         </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Create Event
-            </Button>
-          </DialogTrigger>
-          <DialogContent 
-             onInteractOutside={(e) => {
-              if (e.target instanceof HTMLElement && e.target.closest('.pac-container')) {
-                e.preventDefault();
-              }
-            }}
-            className="sm:max-w-md"
-          >
-            <DialogHeader>
-              <DialogTitle>Create New Event</DialogTitle>
-              <DialogDescription>
-                Fill in the details below to add a new event to the calendar.
-              </DialogDescription>
-            </DialogHeader>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Event Title</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g., Summer Outreach" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="Tell us about the event..." {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                 <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="date"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Event Date</FormLabel>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <FormControl>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "w-full pl-3 text-left font-normal",
-                                    !field.value && "text-muted-foreground"
-                                  )}
-                                >
-                                  {field.value ? (
-                                    format(field.value, "PPP")
-                                  ) : (
-                                    <span>Pick a date</span>
-                                  )}
-                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                </Button>
-                              </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                              <Calendar
-                                mode="single"
-                                selected={field.value}
-                                onSelect={field.onChange}
-                                disabled={(date) =>
-                                  date < new Date(new Date().setHours(0,0,0,0))
-                                }
-                                initialFocus
-                              />
-                            </PopoverContent>
-                          </Popover>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                     <FormField
-                      control={form.control}
-                      name="time"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Event Time</FormLabel>
-                          <FormControl>
-                            <Input type="time" placeholder="e.g., 6:00 PM" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                </div>
-                 {!isLoaded ? (
-                    <div className="space-y-2">
-                        <Label>Address / Location</Label>
-                        <Skeleton className="h-10 w-full" />
-                    </div>
-                  ) : (
-                    <FormField
-                        control={form.control}
-                        name="address"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Address / Location</FormLabel>
-                            <FormControl>
-                               <Autocomplete
-                                  onLoad={(ref) => autocompleteRef.current = ref}
-                                  onPlaceChanged={handlePlaceChanged}
-                                  options={{
-                                    types: ["geocode"],
-                                    componentRestrictions: { country: "us" },
-                                  }}
-                              >
-                                  <Input placeholder="e.g., 123 Main St, Anytown" {...field} />
-                              </Autocomplete>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                  )}
-                <FormField
-                  control={form.control}
-                  name="type"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Event Type</FormLabel>
-                       <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select an event type" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="Outreach">Outreach</SelectItem>
-                          <SelectItem value="Worship">Worship</SelectItem>
-                          <SelectItem value="Training">Training</SelectItem>
-                          <SelectItem value="Community">Community</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <DialogFooter>
-                  <Button type="submit">Create Event</Button>
-                </DialogFooter>
-              </form>
-            </Form>
-          </DialogContent>
-        </Dialog>
       </div>
       <div className="grid gap-8 md:grid-cols-3">
         <div className="md:col-span-1">
@@ -269,7 +105,169 @@ export default function EventsPage() {
           </Card>
         </div>
         <div className="md:col-span-2 space-y-4">
-            <h2 className="font-headline text-2xl font-semibold">Upcoming Events</h2>
+            <Collapsible open={isFormOpen} onOpenChange={setIsFormOpen}>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <div>
+                    <CardTitle>Create New Event</CardTitle>
+                    <CardDescription>Fill in the details below to add a new event.</CardDescription>
+                  </div>
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" size="sm">
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      {isFormOpen ? 'Close' : 'Create Event'}
+                    </Button>
+                  </CollapsibleTrigger>
+                </CardHeader>
+                <CollapsibleContent>
+                    <Form {...form}>
+                      <form onSubmit={form.handleSubmit(onSubmit)}>
+                        <CardContent className="space-y-4">
+                           <FormField
+                              control={form.control}
+                              name="title"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Event Title</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="e.g., Summer Outreach" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name="description"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Description</FormLabel>
+                                  <FormControl>
+                                    <Textarea placeholder="Tell us about the event..." {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                             <div className="grid grid-cols-2 gap-4">
+                                <FormField
+                                  control={form.control}
+                                  name="date"
+                                  render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                      <FormLabel>Event Date</FormLabel>
+                                      <Popover>
+                                        <PopoverTrigger asChild>
+                                          <FormControl>
+                                            <Button
+                                              variant={"outline"}
+                                              className={cn(
+                                                "w-full pl-3 text-left font-normal",
+                                                !field.value && "text-muted-foreground"
+                                              )}
+                                            >
+                                              {field.value ? (
+                                                format(field.value, "PPP")
+                                              ) : (
+                                                <span>Pick a date</span>
+                                              )}
+                                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                            </Button>
+                                          </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0" align="start">
+                                          <Calendar
+                                            mode="single"
+                                            selected={field.value}
+                                            onSelect={field.onChange}
+                                            disabled={(date) =>
+                                              date < new Date(new Date().setHours(0,0,0,0))
+                                            }
+                                            initialFocus
+                                          />
+                                        </PopoverContent>
+                                      </Popover>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                 <FormField
+                                  control={form.control}
+                                  name="time"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Event Time</FormLabel>
+                                      <FormControl>
+                                        <Input type="time" placeholder="e.g., 6:00 PM" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                            </div>
+                             {!isLoaded ? (
+                                <div className="space-y-2">
+                                    <Label>Address / Location</Label>
+                                    <Skeleton className="h-10 w-full" />
+                                </div>
+                              ) : (
+                                <FormField
+                                    control={form.control}
+                                    name="address"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>Address / Location</FormLabel>
+                                        <FormControl>
+                                           <Autocomplete
+                                              onLoad={(ref) => autocompleteRef.current = ref}
+                                              onPlaceChanged={handlePlaceChanged}
+                                              options={{
+                                                types: ["geocode"],
+                                                componentRestrictions: { country: "us" },
+                                              }}
+                                          >
+                                              <Input placeholder="e.g., 123 Main St, Anytown" {...field} />
+                                          </Autocomplete>
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                              )}
+                            <FormField
+                              control={form.control}
+                              name="type"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Event Type</FormLabel>
+                                   <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Select an event type" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value="Outreach">Outreach</SelectItem>
+                                      <SelectItem value="Worship">Worship</SelectItem>
+                                      <SelectItem value="Training">Training</SelectItem>
+                                      <SelectItem value="Community">Community</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                        </CardContent>
+                        <CardFooter>
+                          <Button type="submit">Create Event</Button>
+                        </CardFooter>
+                      </form>
+                    </Form>
+                </CollapsibleContent>
+              </Card>
+            </Collapsible>
+
+            <h2 className="font-headline text-2xl font-semibold pt-4">Upcoming Events</h2>
             {events.length > 0 ? (
                 events.map((event, index) => (
                     <Card key={index}>
@@ -303,3 +301,5 @@ export default function EventsPage() {
     </div>
   );
 }
+
+    
