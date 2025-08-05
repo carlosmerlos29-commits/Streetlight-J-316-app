@@ -9,7 +9,7 @@ import {
   MarkerF,
 } from '@react-google-maps/api';
 import { Skeleton } from './ui/skeleton';
-import { Flame, CalendarDays } from 'lucide-react';
+import { Flame, Clock } from 'lucide-react';
 
 const libraries = ['places'] as const;
 
@@ -29,7 +29,7 @@ interface InteractiveMapProps {
 }
 
 const createMarkerIcon = (isLive: boolean) => {
-  const Icon = isLive ? Flame : CalendarDays;
+  const Icon = isLive ? Flame : Clock;
   const color = isLive ? 'hsl(var(--destructive))' : 'hsl(var(--primary))';
   const iconMarkup = `<${Icon.displayName} xmlns="http://www.w3.org/1999/xhtml" class="w-full h-full text-white" />`;
 
