@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
@@ -60,21 +59,43 @@ export function InteractiveMap({
       {userLocation && (
         <OverlayView
           position={userLocation}
-          mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}  // ← correct pane
+          mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
           getPixelPositionOffset={({ width, height }) => ({
-            x: -width / 2,   // center horizontally
-            y: -height,  // anchor to bottom center
+            x: -width / 2,
+            y: -height,
           })}
         >
-          <div className="flex flex-col items-center">
-            <div className="flex items-center gap-2 p-1 bg-background rounded-full shadow-lg border border-primary">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={userAvatar} alt={userName || 'User'} data-ai-hint="person portrait"/>
-                <AvatarFallback>{userName?.charAt(0) || 'U'}</AvatarFallback>
-              </Avatar>
-              <span className="text-sm font-semibold pr-3">{userName}</span>
-            </div>
-            <div className="w-0 h-0 border-x-8 border-x-transparent border-t-8 border-t-primary -mt-1" />
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              background: 'transparent',
+            }}
+          >
+            <img
+              src={userAvatar}
+              alt={userName}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                border: '2px solid #A34BFF',
+              }}
+            />
+            <span
+              style={{
+                fontSize: 14,
+                fontWeight: 500,
+                color: '#333',
+                background: 'white',
+                padding: '2px 6px',
+                borderRadius: 4,
+                boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
+              }}
+            >
+              {userName}
+            </span>
           </div>
         </OverlayView>
       )}
