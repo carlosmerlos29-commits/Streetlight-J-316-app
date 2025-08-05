@@ -1,59 +1,64 @@
 
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PlayCircle, Mic, CalendarDays } from 'lucide-react';
-
-const sermons = [
-  { 
-    title: "The Sermon on the Mount: The Beatitudes", 
-    speaker: "Pastor John Doe", 
-    date: "2024-07-21", 
-    videoUrl: "#", 
-    audioUrl: "#" 
-  },
-  { 
-    title: "The Parable of the Good Samaritan", 
-    speaker: "Pastor Jane Smith", 
-    date: "2024-07-14", 
-    videoUrl: "#", 
-    audioUrl: "#" 
-  },
-  { 
-    title: "The Parable of the Prodigal Son", 
-    speaker: "Pastor John Doe", 
-    date: "2024-07-07", 
-    videoUrl: "#", 
-    audioUrl: "#" 
-  },
-  { 
-    title: "Understanding Grace", 
-    speaker: "Guest Speaker Michael Chen", 
-    date: "2024-06-30", 
-    videoUrl: null, 
-    audioUrl: "#" 
-  },
-  { 
-    title: "Faith That Moves Mountains", 
-    speaker: "Pastor Jane Smith", 
-    date: "2024-06-23", 
-    videoUrl: "#", 
-    audioUrl: null
-  },
-   { 
-    title: "Living a Life of Purpose", 
-    speaker: "Pastor John Doe", 
-    date: "2024-06-16", 
-    videoUrl: "#", 
-    audioUrl: "#" 
-  },
-];
+import { useTranslations } from 'next-intl';
 
 export default function SermonsPage() {
+  const t = useTranslations('Sermons');
+
+  const sermons = [
+    { 
+      title: t('items.sermonOnTheMount.title'), 
+      speaker: "Pastor John Doe", 
+      date: "2024-07-21", 
+      videoUrl: "#", 
+      audioUrl: "#" 
+    },
+    { 
+      title: t('items.goodSamaritan.title'), 
+      speaker: "Pastor Jane Smith", 
+      date: "2024-07-14", 
+      videoUrl: "#", 
+      audioUrl: "#" 
+    },
+    { 
+      title: t('items.prodigalSon.title'), 
+      speaker: "Pastor John Doe", 
+      date: "2024-07-07", 
+      videoUrl: "#", 
+      audioUrl: "#" 
+    },
+    { 
+      title: t('items.understandingGrace.title'), 
+      speaker: t('items.understandingGrace.speaker'), 
+      date: "2024-06-30", 
+      videoUrl: null, 
+      audioUrl: "#" 
+    },
+    { 
+      title: t('items.faithThatMovesMountains.title'), 
+      speaker: "Pastor Jane Smith", 
+      date: "2024-06-23", 
+      videoUrl: "#", 
+      audioUrl: null
+    },
+     { 
+      title: t('items.lifeOfPurpose.title'), 
+      speaker: "Pastor John Doe", 
+      date: "2024-06-16", 
+      videoUrl: "#", 
+      audioUrl: "#" 
+    },
+  ];
+
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-headline text-3xl font-bold">Sermons</h1>
-        <p className="text-muted-foreground">Watch and listen to recent messages from our team.</p>
+        <h1 className="font-headline text-3xl font-bold">{t('title')}</h1>
+        <p className="text-muted-foreground">{t('description')}</p>
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {sermons.map((sermon, index) => (
@@ -72,18 +77,18 @@ export default function SermonsPage() {
             </CardHeader>
             <CardContent className="flex-grow">
               <p className="text-muted-foreground text-sm">
-                Join us as we explore deep truths from the scriptures and learn how to apply them to our daily lives.
+                {t('itemDescription')}
               </p>
             </CardContent>
             <CardFooter className="flex gap-2">
                 {sermon.videoUrl && (
                     <Button className="w-full">
-                        <PlayCircle className="mr-2 h-4 w-4" /> Watch
+                        <PlayCircle className="mr-2 h-4 w-4" /> {t('watchButton')}
                     </Button>
                 )}
                 {sermon.audioUrl && (
                     <Button variant="outline" className="w-full">
-                        <Mic className="mr-2 h-4 w-4" /> Listen
+                        <Mic className="mr-2 h-4 w-4" /> {t('listenButton')}
                     </Button>
                 )}
             </CardFooter>

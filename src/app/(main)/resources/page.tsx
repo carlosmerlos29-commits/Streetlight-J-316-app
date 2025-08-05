@@ -1,22 +1,27 @@
+
+'use client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FileText, Video, BookOpen, Download } from 'lucide-react';
-
-const resources = [
-  { title: "Gospel Tract Pack", description: "A collection of printable gospel tracts for various audiences.", icon: FileText, type: 'PDF' },
-  { title: "Evangelism 101", description: "A video series covering the basics of effective evangelism.", icon: Video, type: 'Video' },
-  { title: "Street Preaching Guide", description: "An in-depth guide on the art of open-air preaching.", icon: BookOpen, type: 'Guide' },
-  { title: "The Bridge Illustration", description: "Visual aid for explaining the gospel message clearly.", icon: FileText, type: 'PDF' },
-  { title: "Follow-up Strategies", description: "Learn how to disciple new believers effectively.", icon: BookOpen, type: 'Guide' },
-  { title: "Testimony Sharing Workshop", description: "A video workshop on how to craft and share your personal testimony.", icon: Video, type: 'Video' },
-];
+import { useTranslations } from 'next-intl';
 
 export default function ResourcesPage() {
+  const t = useTranslations('Resources');
+
+  const resources = [
+    { title: t('items.gospelTract.title'), description: t('items.gospelTract.description'), icon: FileText, type: 'PDF' },
+    { title: t('items.evangelism101.title'), description: t('items.evangelism101.description'), icon: Video, type: t('types.video') },
+    { title: t('items.streetPreaching.title'), description: t('items.streetPreaching.description'), icon: BookOpen, type: t('types.guide') },
+    { title: t('items.bridgeIllustration.title'), description: t('items.bridgeIllustration.description'), icon: FileText, type: 'PDF' },
+    { title: t('items.followUp.title'), description: t('items.followUp.description'), icon: BookOpen, type: t('types.guide') },
+    { title: t('items.testimonyWorkshop.title'), description: t('items.testimonyWorkshop.description'), icon: Video, type: t('types.video') },
+  ];
+
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-headline text-3xl font-bold">Resource Library</h1>
-        <p className="text-muted-foreground">Downloadable tools and guides to aid your ministry.</p>
+        <h1 className="font-headline text-3xl font-bold">{t('title')}</h1>
+        <p className="text-muted-foreground">{t('description')}</p>
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {resources.map((resource, index) => (
@@ -33,7 +38,7 @@ export default function ResourcesPage() {
             </CardContent>
             <CardFooter>
               <Button className="w-full">
-                <Download className="mr-2 h-4 w-4" /> Download
+                <Download className="mr-2 h-4 w-4" /> {t('downloadButton')}
               </Button>
             </CardFooter>
           </Card>

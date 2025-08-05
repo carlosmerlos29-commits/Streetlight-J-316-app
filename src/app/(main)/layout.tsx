@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useEffect, useState, createContext, useContext, ReactNode } from 'react';
@@ -33,7 +34,8 @@ import {
   Clapperboard,
 } from 'lucide-react';
 import { UpcomingMissions } from '@/components/upcoming-missions';
-
+import { useTranslations } from 'next-intl';
+import { LanguageSwitcher } from '@/components/language-switcher';
 
 export interface AppEvent {
   id: string;
@@ -83,6 +85,7 @@ export const EventsProvider = ({ children }: { children: ReactNode }) => {
 
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
+  const t = useTranslations('Sidebar');
   const router = useRouter();
   const auth = getAuth(app);
   const [user, setUser] = useState<User | null>(null);
@@ -130,63 +133,64 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <SidebarMenu>
               <SidebarMenuItem>
                 <Link href="/dashboard" passHref>
-                  <SidebarMenuButton tooltip="AI Mission Planner">
+                  <SidebarMenuButton tooltip={t('aiMissionPlanner')}>
                     <Wand2 />
-                    <span>AI Mission Planner</span>
+                    <span>{t('aiMissionPlanner')}</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <Link href="/live-map" passHref>
-                  <SidebarMenuButton tooltip="Live Mission Map">
+                  <SidebarMenuButton tooltip={t('liveMissionMap')}>
                     <Map />
-                    <span>Live Mission Map</span>
+                    <span>{t('liveMissionMap')}</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <Link href="/team-chat" passHref>
-                  <SidebarMenuButton tooltip="Team Chat">
+                  <SidebarMenuButton tooltip={t('teamChat')}>
                     <MessageSquare />
-                    <span>Team Chat</span>
+                    <span>{t('teamChat')}</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <Link href="/sermons" passHref>
-                  <SidebarMenuButton tooltip="Sermons">
+                  <SidebarMenuButton tooltip={t('sermons')}>
                     <Clapperboard />
-                    <span>Sermons</span>
+                    <span>{t('sermons')}</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <Link href="/resources" passHref>
-                  <SidebarMenuButton tooltip="Resource Library">
+                  <SidebarMenuButton tooltip={t('resourceLibrary')}>
                     <Library />
-                    <span>Resource Library</span>
+                    <span>{t('resourceLibrary')}</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <Link href="/events" passHref>
-                  <SidebarMenuButton tooltip="Community Events">
+                  <SidebarMenuButton tooltip={t('communityEvents')}>
                     <CalendarDays />
-                    <span>Community Events</span>
+                    <span>{t('communityEvents')}</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <Link href="/support" passHref>
-                  <SidebarMenuButton tooltip="Support">
+                  <SidebarMenuButton tooltip={t('support')}>
                     <LifeBuoy />
-                    <span>Support</span>
+                    <span>{t('support')}</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter className="flex-col items-start gap-4">
+              <LanguageSwitcher />
               <Link href="/profile" passHref className="w-full">
                 <Button variant="ghost" className="w-full justify-start gap-2 px-2">
                   <Avatar className="h-8 w-8">
@@ -201,7 +205,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
               </Link>
               <Button variant="ghost" className="w-full justify-start gap-2 px-2" onClick={handleLogout}>
                 <LogOut className="h-4 w-4" />
-                <span>Logout</span>
+                <span>{t('logout')}</span>
               </Button>
           </SidebarFooter>
         </Sidebar>

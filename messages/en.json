@@ -1,0 +1,296 @@
+{
+  "General": {
+    "close": "Close",
+    "error": "Error",
+    "eventType": {
+      "Outreach": "Outreach",
+      "Worship": "Worship",
+      "Training": "Training",
+      "Community": "Community"
+    }
+  },
+  "Login": {
+    "mainTitle": "Streetlight J-316",
+    "description": "Lighting the way for modern evangelism.",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "loginButton": "Login",
+    "forgotPasswordLink": "Forgot your password?",
+    "googleButton": "Sign in with Google",
+    "appleButton": "Sign in with Apple",
+    "signupPrompt": "Don't have an account?",
+    "signupLink": "Sign up",
+    "toast": {
+      "loginFailedTitle": "Login Failed",
+      "loginFailedDescription": "Invalid email or password. Please try again.",
+      "googleFailedTitle": "Google Sign-In Failed",
+      "googleFailedDescription": "Could not sign in with Google. Please try again.",
+      "appleFailedTitle": "Apple Sign-In Failed",
+      "appleFailedDescription": "Could not sign in with Apple. Please try again."
+    }
+  },
+  "Signup": {
+    "title": "Create Account",
+    "description": "Join Streetlight J-316 to start your mission.",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "confirmPasswordLabel": "Confirm Password",
+    "signupButton": "Sign Up",
+    "loginPrompt": "Already have an account?",
+    "loginLink": "Login",
+    "toast": {
+      "passwordMismatchTitle": "Passwords do not match",
+      "passwordMismatchDescription": "Please make sure your passwords match.",
+      "successTitle": "Account Created",
+      "successDescription": "Your account has been successfully created. Please log in.",
+      "signupFailedTitle": "Signup Failed",
+      "signupFailedDescription": "Could not create an account. Please try again."
+    }
+  },
+  "Sidebar": {
+    "aiMissionPlanner": "AI Mission Planner",
+    "liveMissionMap": "Live Mission Map",
+    "teamChat": "Team Chat",
+    "sermons": "Sermons",
+    "resourceLibrary": "Resource Library",
+    "communityEvents": "Community Events",
+    "support": "Support",
+    "logout": "Logout"
+  },
+  "Dashboard": {
+    "title": "AI Assistant",
+    "description": "Plan your missions and get coaching tips.",
+    "mapsError": "Error loading maps. Please ensure your API key is correct.",
+    "planner": {
+      "tab": "Mission Planner",
+      "title": "AI Mission Planner",
+      "description": "Get AI-powered suggestions for optimal mission locations and times.",
+      "locationLabel": "General Location",
+      "locationPlaceholder": "e.g., Downtown, San Francisco",
+      "topicLabel": "Mission Topic/Theme",
+      "topicPlaceholder": "e.g., Handing out tracts, Street preaching",
+      "preferencesLabel": "Preferences (Optional)",
+      "preferencesPlaceholder": "e.g., Weekday afternoons, near a park",
+      "preferencesDescription": "Any specific preferences for time, venue, etc.",
+      "submitButton": "Generate Plan",
+      "error": "Failed to generate mission plan. Please try again.",
+      "results": {
+        "title": "Your Mission Plan",
+        "description": "Here are the AI-generated suggestions for your mission.",
+        "locations": "Suggested Locations",
+        "times": "Suggested Times",
+        "reasoning": "Reasoning"
+      }
+    },
+    "coaching": {
+      "tab": "Evangelism Coaching",
+      "title": "AI Evangelism Coaching",
+      "description": "Receive personalized coaching tips to improve your approach.",
+      "missionDescriptionLabel": "Mission Description",
+      "missionDescriptionPlaceholder": "Describe the evangelism mission you have planned.",
+      "experienceLabel": "Your Experience Level",
+      "experiencePlaceholder": "e.g., Beginner, Intermediate, Experienced",
+      "audienceLabel": "Target Audience",
+      "audiencePlaceholder": "e.g., College students, Commuters, Families",
+      "submitButton": "Get Coaching",
+      "error": "Failed to generate coaching tips. Please try again.",
+      "results": {
+        "title": "Your Coaching Tips",
+        "description": "Here are some tips to enhance your evangelism."
+      }
+    }
+  },
+  "LiveMap": {
+    "title": "Live Mission Map",
+    "description": "View active missions and user locations in real-time.",
+    "controls": {
+      "title": "Real-Time Controls",
+      "description": "Manage your live presence.",
+      "shareLocation": "Share My Location",
+      "filterMissions": "Filter Missions",
+      "createEvent": "Create Event"
+    },
+    "form": {
+        "eventTitleLabel": "Event Title",
+        "eventTitlePlaceholder": "e.g., Summer Outreach",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Tell us about the event...",
+        "dateLabel": "Event Date",
+        "datePlaceholder": "Pick a date",
+        "timeLabel": "Event Time",
+        "timePlaceholder": "e.g., 6:00 PM",
+        "addressLabel": "Address / Location",
+        "addressPlaceholder": "e.g., 123 Main St, Anytown",
+        "typeLabel": "Event Type",
+        "typePlaceholder": "Select an event type"
+    },
+    "toast": {
+      "eventCreatedTitle": "Event Created!",
+      "eventCreatedDescription": "The event \"{title}\" has been successfully added.",
+      "locationSharingTitle": "Location Sharing Enabled",
+      "locationSharingDescription": "Your location is now visible on the map.",
+      "geolocationErrorTitle": "Geolocation Error",
+      "geolocationErrorDescription": "Could not get your location. Please ensure you have granted permission and have a stable connection."
+    }
+  },
+  "TeamChat": {
+    "title": "Team Chat",
+    "description": "Coordinate with your team in real-time.",
+    "inputPlaceholder": "Type a message...",
+    "sendButton": "Send",
+    "sending": "Sending..."
+  },
+  "Sermons": {
+    "title": "Sermons",
+    "description": "Watch and listen to recent messages from our team.",
+    "itemDescription": "Join us as we explore deep truths from the scriptures and learn how to apply them to our daily lives.",
+    "watchButton": "Watch",
+    "listenButton": "Listen",
+    "items": {
+      "sermonOnTheMount": {
+        "title": "The Sermon on the Mount: The Beatitudes"
+      },
+      "goodSamaritan": {
+        "title": "The Parable of the Good Samaritan"
+      },
+      "prodigalSon": {
+        "title": "The Parable of the Prodigal Son"
+      },
+      "understandingGrace": {
+        "title": "Understanding Grace",
+        "speaker": "Guest Speaker Michael Chen"
+      },
+      "faithThatMovesMountains": {
+        "title": "Faith That Moves Mountains"
+      },
+      "lifeOfPurpose": {
+        "title": "Living a Life of Purpose"
+      }
+    }
+  },
+  "Resources": {
+    "title": "Resource Library",
+    "description": "Downloadable tools and guides to aid your ministry.",
+    "downloadButton": "Download",
+    "types": {
+      "video": "Video",
+      "guide": "Guide"
+    },
+    "items": {
+      "gospelTract": {
+        "title": "Gospel Tract Pack",
+        "description": "A collection of printable gospel tracts for various audiences."
+      },
+      "evangelism101": {
+        "title": "Evangelism 101",
+        "description": "A video series covering the basics of effective evangelism."
+      },
+      "streetPreaching": {
+        "title": "Street Preaching Guide",
+        "description": "An in-depth guide on the art of open-air preaching."
+      },
+      "bridgeIllustration": {
+        "title": "The Bridge Illustration",
+        "description": "Visual aid for explaining the gospel message clearly."
+      },
+      "followUp": {
+        "title": "Follow-up Strategies",
+        "description": "Learn how to disciple new believers effectively."
+      },
+      "testimonyWorkshop": {
+        "title": "Testimony Sharing Workshop",
+        "description": "A video workshop on how to craft and share your personal testimony."
+      }
+    }
+  },
+  "Events": {
+    "title": "Community Events",
+    "description": "Find and join upcoming ministry events.",
+    "upcomingEvents": "Upcoming Events",
+    "viewDetailsButton": "View Details",
+    "noEvents": {
+      "title": "No Upcoming Events",
+      "description": "Check back later or create a new event."
+    },
+    "form": {
+      "title": "Create New Event",
+      "description": "Fill in the details below to add a new event.",
+      "createEventButton": "Create Event",
+      "eventTitleLabel": "Event Title",
+      "eventTitlePlaceholder": "e.g., Summer Outreach",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Tell us about the event...",
+      "dateLabel": "Event Date",
+      "datePlaceholder": "Pick a date",
+      "timeLabel": "Event Time",
+      "timePlaceholder": "e.g., 6:00 PM",
+      "addressLabel": "Address / Location",
+      "addressPlaceholder": "e.g., 123 Main St, Anytown",
+      "typeLabel": "Event Type",
+      "typePlaceholder": "Select an event type"
+    },
+    "toast": {
+      "successTitle": "Event Created!",
+      "successDescription": "The event \"{title}\" has been successfully added."
+    }
+  },
+  "Support": {
+    "title": "Support Center",
+    "description": "Get help or provide feedback. We're here for you!",
+    "form": {
+      "title": "Contact Us",
+      "description": "Please fill out the form below and we will get back to you as soon as possible.",
+      "nameLabel": "Name",
+      "namePlaceholder": "Your Name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "your@email.com",
+      "subjectLabel": "Subject",
+      "subjectPlaceholder": "Select a subject",
+      "subjects": {
+        "bug": "Bug Report",
+        "feature": "Feature Request",
+        "question": "General Question",
+        "other": "Other"
+      },
+      "messageLabel": "Message",
+      "messagePlaceholder": "Describe your issue or request...",
+      "submitButton": "Submit Ticket"
+    }
+  },
+  "Profile": {
+    "title": "User Profile",
+    "description": "View and edit your personal information.",
+    "userAvatarAlt": "User Avatar",
+    "userName": "User Name",
+    "changeAvatarButton": "Change Avatar",
+    "details": {
+      "title": "Profile Details",
+      "description": "Update your bio and favorite verse.",
+      "usernameLabel": "Username",
+      "bioLabel": "Bio",
+      "bioPlaceholder": "Tell us a little about yourself.",
+      "bioDefaultValue": "Passionate about sharing the Gospel and serving the community.",
+      "verseLabel": "Favorite Bible Verse",
+      "versePlaceholder": "e.g., John 3:16",
+      "saveButton": "Save Changes"
+    }
+  },
+  "MissionsPanel": {
+    "title": "Missions",
+    "description": "Active, upcoming, and recent.",
+    "active": "Active",
+    "upcoming": "Upcoming",
+    "recent": "Recent",
+    "liveBadge": "Live",
+    "joinButton": "Join Mission",
+    "noActive": "No active missions.",
+    "noUpcoming": "No upcoming missions.",
+    "noRecent": "No recent missions.",
+    "time": {
+      "today": "Today at {time}",
+      "tomorrow": "Tomorrow at {time}",
+      "yesterday": "Yesterday at {time}",
+      "onDate": "{date} at {time}"
+    }
+  }
+}

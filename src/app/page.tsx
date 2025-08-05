@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState } from 'react';
@@ -13,9 +14,11 @@ import { Separator } from '@/components/ui/separator';
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, OAuthProvider } from 'firebase/auth';
 import { app } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslations } from 'next-intl';
 
 
 export default function LoginPage() {
+  const t = useTranslations('Login');
   const router = useRouter();
   const { toast } = useToast();
   const [email, setEmail] = useState('');
@@ -35,8 +38,8 @@ export default function LoginPage() {
     } catch (error: any) {
       console.error('Login Error:', error);
       toast({
-        title: "Login Failed",
-        description: error.message || "Invalid email or password. Please try again.",
+        title: t('toast.loginFailedTitle'),
+        description: error.message || t('toast.loginFailedDescription'),
         variant: "destructive",
       });
     } finally {
@@ -53,8 +56,8 @@ export default function LoginPage() {
     } catch (error: any) {
         console.error("Google Sign-In Error: ", error);
         toast({
-            title: "Google Sign-In Failed",
-            description: error.message || "Could not sign in with Google. Please try again.",
+            title: t('toast.googleFailedTitle'),
+            description: error.message || t('toast.googleFailedDescription'),
             variant: "destructive",
         });
     } finally {
@@ -71,8 +74,8 @@ export default function LoginPage() {
     } catch (error: any) {
         console.error("Apple Sign-In Error: ", error);
          toast({
-            title: "Apple Sign-In Failed",
-            description: error.message || "Could not sign in with Apple. Please try again.",
+            title: t('toast.appleFailedTitle'),
+            description: error.message || t('toast.appleFailedDescription'),
             variant: "destructive",
         });
     } finally {
@@ -85,27 +88,27 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center">
-          <h1 className="font-headline text-4xl font-bold text-primary">Streetlight J-316</h1>
-          <CardDescription>Lighting the way for modern evangelism.</CardDescription>
+          <h1 className="font-headline text-4xl font-bold text-primary">{t('mainTitle')}</h1>
+          <CardDescription>{t('description')}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('emailLabel')}</Label>
               <Input id="email" type="email" placeholder="john.doe@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} disabled={isGoogleLoading || isAppleLoading}/>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t('passwordLabel')}</Label>
               <Input id="password" type="password" placeholder="••••••••" required value={password} onChange={(e) => setPassword(e.target.value)} disabled={isGoogleLoading || isAppleLoading}/>
             </div>
             <Button type="submit" className="w-full font-bold" disabled={isLoading || isGoogleLoading || isAppleLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Login
+              {t('loginButton')}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
             <Link href="#" className="underline">
-              Forgot your password?
+              {t('forgotPasswordLink')}
             </Link>
           </div>
 
@@ -114,19 +117,19 @@ export default function LoginPage() {
           <div className="space-y-4">
             <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading || isGoogleLoading || isAppleLoading}>
               {isGoogleLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Chrome className="mr-2 h-4 w-4" />} 
-              Sign in with Google
+              {t('googleButton')}
             </Button>
             <Button variant="outline" className="w-full" onClick={handleAppleSignIn} disabled={isLoading || isGoogleLoading || isAppleLoading}>
               {isAppleLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Apple className="mr-2 h-4 w-4" />}
-               Sign in with Apple
+               {t('appleButton')}
             </Button>
           </div>
         </CardContent>
         <CardFooter className="flex-col gap-4 text-center">
           <p className="text-xs text-muted-foreground">
-            Don't have an account?{' '}
+            {t('signupPrompt')}{' '}
             <Link href="/signup" className="underline font-medium text-primary">
-              Sign up
+              {t('signupLink')}
             </Link>
           </p>
         </CardFooter>

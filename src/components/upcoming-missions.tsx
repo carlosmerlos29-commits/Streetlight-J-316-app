@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -7,6 +8,7 @@ import { ScrollArea } from './ui/scroll-area';
 import { Button } from './ui/button';
 import { useEvents, AppEvent } from '@/app/(main)/layout';
 import { useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 
 function getEventStatus(event: AppEvent) {
     const now = new Date();
@@ -27,7 +29,7 @@ function getEventStatus(event: AppEvent) {
     return 'recent';
 }
 
-function formatTime(event: AppEvent) {
+function formatTime(event: AppEvent, t: (key: string, values?: any) => string) {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const eventDate = new Date(event.date.getFullYear(), event.date.getMonth(), event.date.getDate());
@@ -39,34 +41,35 @@ function formatTime(event: AppEvent) {
     const timeString = `${displayHours}:${displayMinutes} ${ampm}`;
 
     if (eventDate.getTime() === today.getTime()) {
-        return `Today at ${timeString}`;
+        return t('time.today', { time: timeString });
     }
 
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
     if (eventDate.getTime() === tomorrow.getTime()) {
-        return `Tomorrow at ${timeString}`;
+        return t('time.tomorrow', { time: timeString });
     }
     
     const yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1);
     if (eventDate.getTime() === yesterday.getTime()) {
-        return `Yesterday at ${timeString}`;
+        return t('time.yesterday', { time: timeString });
     }
     
-    return `${event.date.toLocaleDateString()} at ${timeString}`;
+    return t('time.onDate', { date: event.date.toLocaleDateString(), time: timeString });
 }
 
 export function UpcomingMissions() {
+  const t = useTranslations('MissionsPanel');
   const { events } = useEvents();
 
   const missions = useMemo(() => {
     return events.map(event => ({
       ...event,
       status: getEventStatus(event),
-      displayTime: formatTime(event),
+      displayTime: formatTime(event, t),
     }));
-  }, [events]);
+  }, [events, t]);
 
   const activeMissions = missions.filter(m => m.status === 'active');
   const upcomingMissions = missions.filter(m => m.status === 'upcoming');
@@ -76,13 +79,13 @@ export function UpcomingMissions() {
   return (
     <div className="h-full flex flex-col">
       <div className="p-4">
-        <h2 className="text-2xl font-bold font-headline">Missions</h2>
-        <p className="text-sm text-muted-foreground">Active, upcoming, and recent.</p>
+        <h2 className="text-2xl font-bold font-headline">{t('title')}</h2>
+        <p className="text-sm text-muted-foreground">{t('description')}</p>
       </div>
       <ScrollArea className="flex-grow">
         <div className="p-4 space-y-4">
           <div>
-            <h3 className="font-semibold mb-2 px-2">Active</h3>
+            <h3 className="font-semibold mb-2 px-2">{t('active')}</h3>
             {activeMissions.length > 0 ? activeMissions.map((mission, index) => (
               <Card key={index} className="mb-2">
                 <CardContent className="p-3">
@@ -91,15 +94,15 @@ export function UpcomingMissions() {
                       <CardTitle className="text-base">{mission.title}</CardTitle>
                       <CardDescription>{mission.address}</CardDescription>
                     </div>
-                    <Badge variant="destructive">Live</Badge>
+                    <Badge variant="destructive">{t('liveBadge')}</Badge>
                   </div>
-                  <Button variant="secondary" size="sm" className="mt-2 w-full">Join Mission</Button>
+                  <Button variant="secondary" size="sm" className="mt-2 w-full">{t('joinButton')}</Button>
                 </CardContent>
               </Card>
-            )) : <p className="text-xs text-muted-foreground px-2">No active missions.</p>}
+            )) : <p className="text-xs text-muted-foreground px-2">{t('noActive')}</p>}
           </div>
           <div>
-            <h3 className="font-semibold mb-2 px-2">Upcoming</h3>
+            <h3 className="font-semibold mb-2 px-2">{t('upcoming')}</h3>
             {upcomingMissions.length > 0 ? upcomingMissions.map((mission, index) => (
               <Card key={index} className="mb-2 bg-card/50">
                 <CardContent className="p-3">
@@ -107,10 +110,10 @@ export function UpcomingMissions() {
                     <CardDescription>{mission.displayTime}</CardDescription>
                 </CardContent>
               </Card>
-            )) : <p className="text-xs text-muted-foreground px-2">No upcoming missions.</p>}
+            )) : <p className="text-xs text-muted-foreground px-2">{t('noUpcoming')}</p>}
           </div>
           <div>
-            <h3 className="font-semibold mb-2 px-2">Recent</h3>
+            <h3 className="font-semibold mb-2 px-2">{t('recent')}</h3>
              {recentMissions.length > 0 ? recentMissions.map((mission, index) => (
               <Card key={index} className="mb-2 bg-card/30 border-dashed">
                 <CardContent className="p-3">
@@ -118,7 +121,7 @@ export function UpcomingMissions() {
                     <CardDescription>{mission.displayTime}</CardDescription>
                 </CardContent>
               </Card>
-            )) : <p className="text-xs text-muted-foreground px-2">No recent missions.</p>}
+            )) : <p className="text-xs text-muted-foreground px-2">{t('noRecent')}</p>}
           </div>
         </div>
       </ScrollArea>

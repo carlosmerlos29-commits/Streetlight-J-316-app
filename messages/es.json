@@ -1,0 +1,296 @@
+{
+  "General": {
+    "close": "Cerrar",
+    "error": "Error",
+    "eventType": {
+      "Outreach": "Alcance",
+      "Worship": "Adoración",
+      "Training": "Capacitación",
+      "Community": "Comunidad"
+    }
+  },
+  "Login": {
+    "mainTitle": "Streetlight J-316",
+    "description": "Iluminando el camino para el evangelismo moderno.",
+    "emailLabel": "Correo electrónico",
+    "passwordLabel": "Contraseña",
+    "loginButton": "Iniciar sesión",
+    "forgotPasswordLink": "¿Olvidaste tu contraseña?",
+    "googleButton": "Iniciar sesión con Google",
+    "appleButton": "Iniciar sesión con Apple",
+    "signupPrompt": "¿No tienes una cuenta?",
+    "signupLink": "Regístrate",
+    "toast": {
+      "loginFailedTitle": "Error de inicio de sesión",
+      "loginFailedDescription": "Correo electrónico o contraseña no válidos. Por favor, inténtalo de nuevo.",
+      "googleFailedTitle": "Error al iniciar sesión con Google",
+      "googleFailedDescription": "No se pudo iniciar sesión con Google. Por favor, inténtalo de nuevo.",
+      "appleFailedTitle": "Error al iniciar sesión con Apple",
+      "appleFailedDescription": "No se pudo iniciar sesión con Apple. Por favor, inténtalo de nuevo."
+    }
+  },
+  "Signup": {
+    "title": "Crear cuenta",
+    "description": "Únete a Streetlight J-316 para comenzar tu misión.",
+    "emailLabel": "Correo electrónico",
+    "passwordLabel": "Contraseña",
+    "confirmPasswordLabel": "Confirmar contraseña",
+    "signupButton": "Registrarse",
+    "loginPrompt": "¿Ya tienes una cuenta?",
+    "loginLink": "Iniciar sesión",
+    "toast": {
+      "passwordMismatchTitle": "Las contraseñas no coinciden",
+      "passwordMismatchDescription": "Por favor, asegúrate de que tus contraseñas coincidan.",
+      "successTitle": "Cuenta creada",
+      "successDescription": "Tu cuenta ha sido creada con éxito. Por favor, inicia sesión.",
+      "signupFailedTitle": "Error al registrarse",
+      "signupFailedDescription": "No se pudo crear una cuenta. Por favor, inténtalo de nuevo."
+    }
+  },
+  "Sidebar": {
+    "aiMissionPlanner": "Planificador de Misiones IA",
+    "liveMissionMap": "Mapa de Misiones en Vivo",
+    "teamChat": "Chat de Equipo",
+    "sermons": "Sermones",
+    "resourceLibrary": "Biblioteca de Recursos",
+    "communityEvents": "Eventos Comunitarios",
+    "support": "Soporte",
+    "logout": "Cerrar sesión"
+  },
+  "Dashboard": {
+    "title": "Asistente de IA",
+    "description": "Planifica tus misiones y obtén consejos de entrenamiento.",
+    "mapsError": "Error al cargar los mapas. Asegúrate de que tu clave de API sea correcta.",
+    "planner": {
+      "tab": "Planificador de Misiones",
+      "title": "Planificador de Misiones IA",
+      "description": "Obtén sugerencias impulsadas por IA para ubicaciones y horarios óptimos de misiones.",
+      "locationLabel": "Ubicación General",
+      "locationPlaceholder": "p. ej., Centro, San Francisco",
+      "topicLabel": "Tema/Asunto de la Misión",
+      "topicPlaceholder": "p. ej., Repartir folletos, Predicación callejera",
+      "preferencesLabel": "Preferencias (Opcional)",
+      "preferencesPlaceholder": "p. ej., Tardes de lunes a viernes, cerca de un parque",
+      "preferencesDescription": "Cualquier preferencia específica de horario, lugar, etc.",
+      "submitButton": "Generar Plan",
+      "error": "No se pudo generar el plan de misión. Por favor, inténtalo de nuevo.",
+      "results": {
+        "title": "Tu Plan de Misión",
+        "description": "Aquí están las sugerencias generadas por la IA para tu misión.",
+        "locations": "Ubicaciones Sugeridas",
+        "times": "Horarios Sugeridos",
+        "reasoning": "Razonamiento"
+      }
+    },
+    "coaching": {
+      "tab": "Coaching de Evangelismo",
+      "title": "Coaching de Evangelismo con IA",
+      "description": "Recibe consejos de coaching personalizados para mejorar tu enfoque.",
+      "missionDescriptionLabel": "Descripción de la Misión",
+      "missionDescriptionPlaceholder": "Describe la misión de evangelismo que has planeado.",
+      "experienceLabel": "Tu Nivel de Experiencia",
+      "experiencePlaceholder": "p. ej., Principiante, Intermedio, Experimentado",
+      "audienceLabel": "Público Objetivo",
+      "audiencePlaceholder": "p. ej., Estudiantes universitarios, Viajeros, Familias",
+      "submitButton": "Obtener Coaching",
+      "error": "No se pudieron generar los consejos de coaching. Por favor, inténtalo de nuevo.",
+      "results": {
+        "title": "Tus Consejos de Coaching",
+        "description": "Aquí tienes algunos consejos para mejorar tu evangelismo."
+      }
+    }
+  },
+  "LiveMap": {
+    "title": "Mapa de Misiones en Vivo",
+    "description": "Ve misiones activas y ubicaciones de usuarios en tiempo real.",
+    "controls": {
+      "title": "Controles en Tiempo Real",
+      "description": "Gestiona tu presencia en vivo.",
+      "shareLocation": "Compartir mi Ubicación",
+      "filterMissions": "Filtrar Misiones",
+      "createEvent": "Crear Evento"
+    },
+     "form": {
+        "eventTitleLabel": "Título del Evento",
+        "eventTitlePlaceholder": "p. ej., Alcance de Verano",
+        "descriptionLabel": "Descripción",
+        "descriptionPlaceholder": "Cuéntanos sobre el evento...",
+        "dateLabel": "Fecha del Evento",
+        "datePlaceholder": "Elige una fecha",
+        "timeLabel": "Hora del Evento",
+        "timePlaceholder": "p. ej., 6:00 PM",
+        "addressLabel": "Dirección / Ubicación",
+        "addressPlaceholder": "p. ej., 123 Calle Principal, Anytown",
+        "typeLabel": "Tipo de Evento",
+        "typePlaceholder": "Selecciona un tipo de evento"
+    },
+    "toast": {
+      "eventCreatedTitle": "¡Evento Creado!",
+      "eventCreatedDescription": "El evento \"{title}\" ha sido añadido con éxito.",
+      "locationSharingTitle": "Ubicación Compartida Activada",
+      "locationSharingDescription": "Tu ubicación ahora es visible en el mapa.",
+      "geolocationErrorTitle": "Error de Geolocalización",
+      "geolocationErrorDescription": "No se pudo obtener tu ubicación. Asegúrate de haber otorgado permiso y tener una conexión estable."
+    }
+  },
+  "TeamChat": {
+    "title": "Chat de Equipo",
+    "description": "Coordina con tu equipo en tiempo real.",
+    "inputPlaceholder": "Escribe un mensaje...",
+    "sendButton": "Enviar",
+    "sending": "Enviando..."
+  },
+  "Sermons": {
+    "title": "Sermones",
+    "description": "Mira y escucha mensajes recientes de nuestro equipo.",
+    "itemDescription": "Únete a nosotros mientras exploramos verdades profundas de las escrituras y aprendemos a aplicarlas a nuestras vidas diarias.",
+    "watchButton": "Ver",
+    "listenButton": "Escuchar",
+    "items": {
+      "sermonOnTheMount": {
+        "title": "El Sermón del Monte: Las Bienaventuranzas"
+      },
+      "goodSamaritan": {
+        "title": "La Parábola del Buen Samaritano"
+      },
+      "prodigalSon": {
+        "title": "La Parábola del Hijo Pródigo"
+      },
+      "understandingGrace": {
+        "title": "Comprendiendo la Gracia",
+        "speaker": "Orador Invitado Michael Chen"
+      },
+      "faithThatMovesMountains": {
+        "title": "Fe que Mueve Montañas"
+      },
+      "lifeOfPurpose": {
+        "title": "Viviendo una Vida con Propósito"
+      }
+    }
+  },
+  "Resources": {
+    "title": "Biblioteca de Recursos",
+    "description": "Herramientas y guías descargables para ayudar en tu ministerio.",
+    "downloadButton": "Descargar",
+    "types": {
+      "video": "Video",
+      "guide": "Guía"
+    },
+    "items": {
+      "gospelTract": {
+        "title": "Paquete de Folletos del Evangelio",
+        "description": "Una colección de folletos del evangelio imprimibles para diversas audiencias."
+      },
+      "evangelism101": {
+        "title": "Evangelismo 101",
+        "description": "Una serie de videos que cubren los conceptos básicos del evangelismo efectivo."
+      },
+      "streetPreaching": {
+        "title": "Guía de Predicación Callejera",
+        "description": "Una guía detallada sobre el arte de la predicación al aire libre."
+      },
+      "bridgeIllustration": {
+        "title": "La Ilustración del Puente",
+        "description": "Ayuda visual para explicar claramente el mensaje del evangelio."
+      },
+      "followUp": {
+        "title": "Estrategias de Seguimiento",
+        "description": "Aprende cómo discipular a nuevos creyentes de manera efectiva."
+      },
+      "testimonyWorkshop": {
+        "title": "Taller para Compartir Testimonios",
+        "description": "Un taller en video sobre cómo elaborar y compartir tu testimonio personal."
+      }
+    }
+  },
+  "Events": {
+    "title": "Eventos Comunitarios",
+    "description": "Encuentra y únete a los próximos eventos del ministerio.",
+    "upcomingEvents": "Próximos Eventos",
+    "viewDetailsButton": "Ver Detalles",
+    "noEvents": {
+      "title": "No hay Próximos Eventos",
+      "description": "Vuelve más tarde o crea un nuevo evento."
+    },
+    "form": {
+      "title": "Crear Nuevo Evento",
+      "description": "Completa los detalles a continuación para añadir un nuevo evento.",
+      "createEventButton": "Crear Evento",
+      "eventTitleLabel": "Título del Evento",
+      "eventTitlePlaceholder": "p. ej., Alcance de Verano",
+      "descriptionLabel": "Descripción",
+      "descriptionPlaceholder": "Cuéntanos sobre el evento...",
+      "dateLabel": "Fecha del Evento",
+      "datePlaceholder": "Elige una fecha",
+      "timeLabel": "Hora del Evento",
+      "timePlaceholder": "p. ej., 6:00 PM",
+      "addressLabel": "Dirección / Ubicación",
+      "addressPlaceholder": "p. ej., 123 Calle Principal, Anytown",
+      "typeLabel": "Tipo de Evento",
+      "typePlaceholder": "Selecciona un tipo de evento"
+    },
+    "toast": {
+      "successTitle": "¡Evento Creado!",
+      "successDescription": "El evento \"{title}\" ha sido añadido con éxito."
+    }
+  },
+  "Support": {
+    "title": "Centro de Soporte",
+    "description": "Obtén ayuda o danos tu opinión. ¡Estamos aquí para ti!",
+    "form": {
+      "title": "Contáctanos",
+      "description": "Por favor, completa el siguiente formulario y nos pondremos en contacto contigo lo antes posible.",
+      "nameLabel": "Nombre",
+      "namePlaceholder": "Tu Nombre",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "tu@email.com",
+      "subjectLabel": "Asunto",
+      "subjectPlaceholder": "Selecciona un asunto",
+      "subjects": {
+        "bug": "Reporte de Error",
+        "feature": "Solicitud de Función",
+        "question": "Pregunta General",
+        "other": "Otro"
+      },
+      "messageLabel": "Mensaje",
+      "messagePlaceholder": "Describe tu problema o solicitud...",
+      "submitButton": "Enviar Ticket"
+    }
+  },
+  "Profile": {
+    "title": "Perfil de Usuario",
+    "description": "Ve y edita tu información personal.",
+    "userAvatarAlt": "Avatar de Usuario",
+    "userName": "Nombre de Usuario",
+    "changeAvatarButton": "Cambiar Avatar",
+    "details": {
+      "title": "Detalles del Perfil",
+      "description": "Actualiza tu biografía y tu versículo favorito.",
+      "usernameLabel": "Nombre de usuario",
+      "bioLabel": "Biografía",
+      "bioPlaceholder": "Cuéntanos un poco sobre ti.",
+      "bioDefaultValue": "Apasionado por compartir el Evangelio y servir a la comunidad.",
+      "verseLabel": "Versículo Bíblico Favorito",
+      "versePlaceholder": "p. ej., Juan 3:16",
+      "saveButton": "Guardar Cambios"
+    }
+  },
+  "MissionsPanel": {
+    "title": "Misiones",
+    "description": "Activas, próximas y recientes.",
+    "active": "Activas",
+    "upcoming": "Próximas",
+    "recent": "Recientes",
+    "liveBadge": "En vivo",
+    "joinButton": "Unirse a la Misión",
+    "noActive": "No hay misiones activas.",
+    "noUpcoming": "No hay misiones próximas.",
+    "noRecent": "No hay misiones recientes.",
+    "time": {
+      "today": "Hoy a las {time}",
+      "tomorrow": "Mañana a las {time}",
+      "yesterday": "Ayer a las {time}",
+      "onDate": "{date} a las {time}"
+    }
+  }
+}

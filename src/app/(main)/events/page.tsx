@@ -1,4 +1,5 @@
 
+
 'use client'
 
 import { useState, useRef } from 'react';
@@ -24,7 +25,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useEvents } from '@/app/(main)/layout';
-import { Dialog } from '@/components/ui/dialog';
+import { useTranslations } from 'next-intl';
 
 
 const eventSchema = z.object({
@@ -41,6 +42,8 @@ const libraries: ('places'|'drawing'|'geometry'|'localContext'|'visualization')[
 
 
 export default function EventsPage() {
+  const t = useTranslations('Events');
+  const t_general = useTranslations('General');
   const { toast } = useToast();
   const { events, addEvent } = useEvents();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -68,8 +71,8 @@ export default function EventsPage() {
   function onSubmit(data: EventFormValues) {
     addEvent({ ...data, id: (events.length + 1).toString() });
     toast({
-      title: 'Event Created!',
-      description: `The event "${data.title}" has been successfully added.`,
+      title: t('toast.successTitle'),
+      description: t('toast.successDescription', { title: data.title }),
     });
     form.reset();
     setIsFormOpen(false);
@@ -95,8 +98,8 @@ export default function EventsPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-            <h1 className="font-headline text-3xl font-bold">Community Events</h1>
-            <p className="text-muted-foreground">Find and join upcoming ministry events.</p>
+            <h1 className="font-headline text-3xl font-bold">{t('title')}</h1>
+            <p className="text-muted-foreground">{t('description')}</p>
         </div>
       </div>
       <div className="grid gap-8 md:grid-cols-3">
@@ -117,13 +120,13 @@ export default function EventsPage() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <div>
-                    <CardTitle>Create New Event</CardTitle>
-                    <CardDescription>Fill in the details below to add a new event.</CardDescription>
+                    <CardTitle>{t('form.title')}</CardTitle>
+                    <CardDescription>{t('form.description')}</CardDescription>
                   </div>
                   <CollapsibleTrigger asChild>
                     <Button variant="ghost" size="sm">
                       <PlusCircle className="mr-2 h-4 w-4" />
-                      {isFormOpen ? 'Close' : 'Create Event'}
+                      {isFormOpen ? t_general('close') : t('form.createEventButton')}
                     </Button>
                   </CollapsibleTrigger>
                 </CardHeader>
@@ -136,9 +139,9 @@ export default function EventsPage() {
                               name="title"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Event Title</FormLabel>
+                                  <FormLabel>{t('form.eventTitleLabel')}</FormLabel>
                                   <FormControl>
-                                    <Input placeholder="e.g., Summer Outreach" {...field} />
+                                    <Input placeholder={t('form.eventTitlePlaceholder')} {...field} />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -149,9 +152,9 @@ export default function EventsPage() {
                               name="description"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Description</FormLabel>
+                                  <FormLabel>{t('form.descriptionLabel')}</FormLabel>
                                   <FormControl>
-                                    <Textarea placeholder="Tell us about the event..." {...field} />
+                                    <Textarea placeholder={t('form.descriptionPlaceholder')} {...field} />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -163,7 +166,7 @@ export default function EventsPage() {
                                   name="date"
                                   render={({ field }) => (
                                     <FormItem className="flex flex-col">
-                                      <FormLabel>Event Date</FormLabel>
+                                      <FormLabel>{t('form.dateLabel')}</FormLabel>
                                       <Popover>
                                         <PopoverTrigger asChild>
                                           <FormControl>
@@ -177,7 +180,7 @@ export default function EventsPage() {
                                               {field.value ? (
                                                 format(field.value, "PPP")
                                               ) : (
-                                                <span>Pick a date</span>
+                                                <span>{t('form.datePlaceholder')}</span>
                                               )}
                                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                             </Button>
@@ -204,9 +207,9 @@ export default function EventsPage() {
                                   name="time"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel>Event Time</FormLabel>
+                                      <FormLabel>{t('form.timeLabel')}</FormLabel>
                                       <FormControl>
-                                        <Input type="time" placeholder="e.g., 6:00 PM" {...field} />
+                                        <Input type="time" placeholder={t('form.timePlaceholder')} {...field} />
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -215,7 +218,7 @@ export default function EventsPage() {
                             </div>
                              {!isLoaded ? (
                                 <div className="space-y-2">
-                                    <Label>Address / Location</Label>
+                                    <Label>{t('form.addressLabel')}</Label>
                                     <Skeleton className="h-10 w-full" />
                                 </div>
                               ) : (
@@ -224,7 +227,7 @@ export default function EventsPage() {
                                     name="address"
                                     render={({ field }) => (
                                       <FormItem>
-                                        <FormLabel>Address / Location</FormLabel>
+                                        <FormLabel>{t('form.addressLabel')}</FormLabel>
                                         <FormControl>
                                            <Autocomplete
                                               onLoad={(ref) => autocompleteRef.current = ref}
@@ -234,7 +237,7 @@ export default function EventsPage() {
                                                 componentRestrictions: { country: "us" },
                                               }}
                                           >
-                                              <Input placeholder="e.g., 123 Main St, Anytown" {...field} />
+                                              <Input placeholder={t('form.addressPlaceholder')} {...field} />
                                           </Autocomplete>
                                         </FormControl>
                                         <FormMessage />
@@ -247,18 +250,18 @@ export default function EventsPage() {
                               name="type"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Event Type</FormLabel>
+                                  <FormLabel>{t('form.typeLabel')}</FormLabel>
                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
                                       <SelectTrigger>
-                                        <SelectValue placeholder="Select an event type" />
+                                        <SelectValue placeholder={t('form.typePlaceholder')} />
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                      <SelectItem value="Outreach">Outreach</SelectItem>
-                                      <SelectItem value="Worship">Worship</SelectItem>
-                                      <SelectItem value="Training">Training</SelectItem>
-                                      <SelectItem value="Community">Community</SelectItem>
+                                      <SelectItem value="Outreach">{t_general('eventType.Outreach')}</SelectItem>
+                                      <SelectItem value="Worship">{t_general('eventType.Worship')}</SelectItem>
+                                      <SelectItem value="Training">{t_general('eventType.Training')}</SelectItem>
+                                      <SelectItem value="Community">{t_general('eventType.Community')}</SelectItem>
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />
@@ -267,7 +270,7 @@ export default function EventsPage() {
                             />
                         </CardContent>
                         <CardFooter>
-                          <Button type="submit">Create Event</Button>
+                          <Button type="submit">{t('form.createEventButton')}</Button>
                         </CardFooter>
                       </form>
                     </Form>
@@ -275,7 +278,7 @@ export default function EventsPage() {
               </Card>
             </Collapsible>
 
-            <h2 className="font-headline text-2xl font-semibold pt-4">Upcoming Events</h2>
+            <h2 className="font-headline text-2xl font-semibold pt-4">{t('upcomingEvents')}</h2>
             {events.length > 0 ? (
                 events.map((event, index) => (
                     <Card key={index}>
@@ -288,20 +291,20 @@ export default function EventsPage() {
                                       <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" /> {event.time}</span>
                                     </div>
                                 </div>
-                                <Badge variant={event.type === 'Outreach' ? 'default' : 'secondary'}>{event.type}</Badge>
+                                <Badge variant={event.type === 'Outreach' ? 'default' : 'secondary'}>{t_general(`eventType.${event.type}`)}</Badge>
                             </div>
                         </CardHeader>
                         <CardContent>
                             <p className="text-muted-foreground">{event.description}</p>
                             <p className="text-sm text-muted-foreground mt-2 flex items-center gap-1.5"><MapPin className="h-4 w-4"/>{event.address}</p>
-                            <Button className="mt-4">View Details</Button>
+                            <Button className="mt-4">{t('viewDetailsButton')}</Button>
                         </CardContent>
                     </Card>
                 ))
             ) : (
                 <Card className="flex flex-col items-center justify-center p-8 border-dashed">
-                    <CardTitle>No Upcoming Events</CardTitle>
-                    <CardDescription className="mt-2">Check back later or create a new event.</CardDescription>
+                    <CardTitle>{t('noEvents.title')}</CardTitle>
+                    <CardDescription className="mt-2">{t('noEvents.description')}</CardDescription>
                 </Card>
             )}
         </div>

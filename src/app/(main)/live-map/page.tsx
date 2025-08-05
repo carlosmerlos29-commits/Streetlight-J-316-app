@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -27,6 +28,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useEvents } from '@/app/(main)/layout';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { useTranslations } from 'next-intl';
 
 
 interface Location {
@@ -60,6 +62,8 @@ type EventFormValues = z.infer<typeof eventSchema>;
 const libraries: ('places'|'drawing'|'geometry'|'localContext'|'visualization')[] = ['places'];
 
 export default function LiveMapPage() {
+    const t = useTranslations('LiveMap');
+    const t_general = useTranslations('General');
     const { toast } = useToast();
     const auth = getAuth(app);
     const { events, addEvent } = useEvents();
@@ -144,8 +148,8 @@ export default function LiveMapPage() {
         }
         addEvent({ ...data, id: newEventId });
         toast({
-          title: 'Event Created!',
-          description: `The event "${data.title}" has been successfully added.`,
+          title: t('toast.eventCreatedTitle'),
+          description: t('toast.eventCreatedDescription', { title: data.title }),
         });
         form.reset({
             title: '',
@@ -170,15 +174,15 @@ export default function LiveMapPage() {
                     setCurrentLocation(newLocation);
                     setIsGettingLocation(false);
                     toast({
-                        title: "Location Sharing Enabled",
-                        description: "Your location is now visible on the map.",
+                        title: t('toast.locationSharingTitle'),
+                        description: t('toast.locationSharingDescription'),
                     });
                 },
                 (error) => {
                     console.error('Geolocation Error:', error);
                     toast({
-                        title: "Geolocation Error",
-                        description: "Could not get your location. Please ensure you have granted permission and have a stable connection.",
+                        title: t('toast.geolocationErrorTitle'),
+                        description: t('toast.geolocationErrorDescription'),
                         variant: "destructive",
                     });
                     setIsSharingLocation(false);
@@ -201,11 +205,17 @@ export default function LiveMapPage() {
         }
     };
 
+    const handleInteractOutside = (e: Event) => {
+        if ((e.target as HTMLElement).closest('.pac-container')) {
+            e.preventDefault();
+        }
+    };
+
   return (
     <div className="h-full flex flex-col">
         <div className="mb-6">
-          <h1 className="font-headline text-3xl font-bold">Live Mission Map</h1>
-          <p className="text-muted-foreground">View active missions and user locations in real-time.</p>
+          <h1 className="font-headline text-3xl font-bold">{t('title')}</h1>
+          <p className="text-muted-foreground">{t('description')}</p>
         </div>
         <Card className="flex-grow">
           <CardContent className="h-full p-2">
@@ -218,8 +228,8 @@ export default function LiveMapPage() {
                   <Card className="max-w-xs">
                     <Collapsible open={isFormOpen} onOpenChange={setIsFormOpen}>
                       <CardHeader>
-                          <CardTitle>Real-Time Controls</CardTitle>
-                          <CardDescription>Manage your live presence.</CardDescription>
+                          <CardTitle>{t('controls.title')}</CardTitle>
+                          <CardDescription>{t('controls.description')}</CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
                           <div className="flex items-center justify-between space-x-2">
@@ -231,7 +241,7 @@ export default function LiveMapPage() {
                                   ) : (
                                       <RadioTower className="h-4 w-4" />
                                   )}
-                                  <span>Share My Location</span>
+                                  <span>{t('controls.shareLocation')}</span>
                               </Label>
                               <Switch
                                 id="geo-sharing"
@@ -240,11 +250,11 @@ export default function LiveMapPage() {
                                 disabled={isGettingLocation}
                               />
                           </div>
-                           <Button variant="outline" className="w-full"><ListFilter className="mr-2 h-4 w-4" /> Filter Missions</Button>
+                           <Button variant="outline" className="w-full"><ListFilter className="mr-2 h-4 w-4" /> {t('controls.filterMissions')}</Button>
                            <CollapsibleTrigger asChild>
                              <Button className="w-full">
                                <PlusCircle className="mr-2 h-4 w-4" />
-                               {isFormOpen ? 'Close Form' : 'Create Event'}
+                               {isFormOpen ? t_general('close') : t('controls.createEvent')}
                              </Button>
                            </CollapsibleTrigger>
                       </CardContent>
@@ -257,9 +267,9 @@ export default function LiveMapPage() {
                                   name="title"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel>Event Title</FormLabel>
+                                      <FormLabel>{t('form.eventTitleLabel')}</FormLabel>
                                       <FormControl>
-                                        <Input placeholder="e.g., Summer Outreach" {...field} />
+                                        <Input placeholder={t('form.eventTitlePlaceholder')} {...field} />
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -270,9 +280,9 @@ export default function LiveMapPage() {
                                   name="description"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel>Description</FormLabel>
+                                      <FormLabel>{t('form.descriptionLabel')}</FormLabel>
                                       <FormControl>
-                                        <Textarea placeholder="Tell us about the event..." {...field} />
+                                        <Textarea placeholder={t('form.descriptionPlaceholder')} {...field} />
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -284,7 +294,7 @@ export default function LiveMapPage() {
                                       name="date"
                                       render={({ field }) => (
                                         <FormItem className="flex flex-col">
-                                          <FormLabel>Event Date</FormLabel>
+                                          <FormLabel>{t('form.dateLabel')}</FormLabel>
                                           <Popover>
                                             <PopoverTrigger asChild>
                                               <FormControl>
@@ -298,7 +308,7 @@ export default function LiveMapPage() {
                                                   {field.value ? (
                                                     format(field.value, "PPP")
                                                   ) : (
-                                                    <span>Pick a date</span>
+                                                    <span>{t('form.datePlaceholder')}</span>
                                                   )}
                                                   <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                 </Button>
@@ -325,9 +335,9 @@ export default function LiveMapPage() {
                                       name="time"
                                       render={({ field }) => (
                                         <FormItem>
-                                          <FormLabel>Event Time</FormLabel>
+                                          <FormLabel>{t('form.timeLabel')}</FormLabel>
                                           <FormControl>
-                                            <Input type="time" placeholder="e.g., 6:00 PM" {...field} />
+                                            <Input type="time" placeholder={t('form.timePlaceholder')} {...field} />
                                           </FormControl>
                                           <FormMessage />
                                         </FormItem>
@@ -336,7 +346,7 @@ export default function LiveMapPage() {
                                 </div>
                                 {!isLoaded ? (
                                     <div className="space-y-2">
-                                        <Label>Address / Location</Label>
+                                        <Label>{t('form.addressLabel')}</Label>
                                         <Skeleton className="h-10 w-full" />
                                     </div>
                                 ) : (
@@ -345,7 +355,7 @@ export default function LiveMapPage() {
                                   name="address"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel>Address / Location</FormLabel>
+                                      <FormLabel>{t('form.addressLabel')}</FormLabel>
                                       <FormControl>
                                         <Autocomplete
                                             onLoad={(ref) => autocompleteRef.current = ref}
@@ -355,7 +365,7 @@ export default function LiveMapPage() {
                                               componentRestrictions: { country: "us" },
                                             }}
                                         >
-                                            <Input placeholder="e.g., 123 Main St, Anytown" {...field} />
+                                            <Input placeholder={t('form.addressPlaceholder')} {...field} />
                                         </Autocomplete>
                                       </FormControl>
                                       <FormMessage />
@@ -368,18 +378,18 @@ export default function LiveMapPage() {
                                   name="type"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel>Event Type</FormLabel>
+                                      <FormLabel>{t('form.typeLabel')}</FormLabel>
                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
                                           <SelectTrigger>
-                                            <SelectValue placeholder="Select an event type" />
+                                            <SelectValue placeholder={t('form.typePlaceholder')} />
                                           </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                          <SelectItem value="Outreach">Outreach</SelectItem>
-                                          <SelectItem value="Worship">Worship</SelectItem>
-                                          <SelectItem value="Training">Training</SelectItem>
-                                          <SelectItem value="Community">Community</SelectItem>
+                                          <SelectItem value="Outreach">{t_general('eventType.Outreach')}</SelectItem>
+                                          <SelectItem value="Worship">{t_general('eventType.Worship')}</SelectItem>
+                                          <SelectItem value="Training">{t_general('eventType.Training')}</SelectItem>
+                                          <SelectItem value="Community">{t_general('eventType.Community')}</SelectItem>
                                         </SelectContent>
                                       </Select>
                                       <FormMessage />
@@ -388,7 +398,7 @@ export default function LiveMapPage() {
                                 />
                                </CardContent>
                                 <CardFooter>
-                                  <Button type="submit" className="w-full">Create Event</Button>
+                                  <Button type="submit" className="w-full">{t('controls.createEvent')}</Button>
                                 </CardFooter>
                               </form>
                             </Form>
