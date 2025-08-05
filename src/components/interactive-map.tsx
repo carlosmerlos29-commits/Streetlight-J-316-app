@@ -49,14 +49,13 @@ export function InteractiveMap({
   return (
     <GoogleMap
       mapContainerClassName="w-full h-full"
-      // UNCONTROLLED: use defaultCenter/Zoom only
-      defaultCenter={defaultCenter}
-      defaultZoom={10}
+      center={defaultCenter}
+      zoom={10}
       onLoad={(map) => { mapRef.current = map; }}
       options={{
         streetViewControl: false,
         mapTypeControl: false,
-fullscreenControl: false,
+        fullscreenControl: false,
         scrollwheel: true,
         mapId: 'fa151a7458f4a180',
       }}
