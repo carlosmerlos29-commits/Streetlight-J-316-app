@@ -24,6 +24,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useEvents } from '@/app/(main)/layout';
+import { Dialog } from '@/components/ui/dialog';
 
 
 const eventSchema = z.object({
@@ -48,7 +49,7 @@ export default function EventsPage() {
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
   const { isLoaded, loadError } = useJsApiLoader({
-      id: 'google-map-script-events',
+      id: 'google-map-script',
       googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
       libraries: libraries
   });
@@ -82,6 +83,13 @@ export default function EventsPage() {
           }
       }
   };
+
+  const handleInteractOutside = (e: Event) => {
+    // This is to prevent the dialog from closing when clicking on the autocomplete suggestions
+    if ((e.target as HTMLElement).closest('.pac-container')) {
+      e.preventDefault();
+    }
+  }
 
   return (
     <div className="space-y-8">
@@ -301,5 +309,3 @@ export default function EventsPage() {
     </div>
   );
 }
-
-    

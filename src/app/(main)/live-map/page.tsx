@@ -201,6 +201,13 @@ export default function LiveMapPage() {
         }
     };
 
+    const handleInteractOutside = (e: Event) => {
+        // This is to prevent the dialog from closing when clicking on the autocomplete suggestions
+        if ((e.target as HTMLElement).closest('.pac-container')) {
+          e.preventDefault();
+        }
+    }
+
   return (
     <div className="h-full flex flex-col">
         <div className="mb-6">
@@ -406,5 +413,3 @@ export default function LiveMapPage() {
     </div>
   );
 }
-
-    
