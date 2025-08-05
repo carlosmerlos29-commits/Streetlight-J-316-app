@@ -34,6 +34,31 @@ export function InteractiveMap({ userLocation, userAvatar }: InteractiveMapProps
     }
   }, [userLocation]);
 
+  const customMarkerIcon = useMemo(() => {
+    if (!userAvatar) return undefined;
+
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+        <circle cx="24" cy="24" r="22" fill="#A34BFF" stroke="#FFFFFF" stroke-width="2"/>
+        <clipPath id="clip">
+          <circle cx="24" cy="24" r="20"/>
+        </clipPath>
+        <image
+          href="${userAvatar}"
+          x="4" y="4" width="40" height="40"
+          clip-path="url(#clip)"
+          crossorigin="anonymous"
+        />
+      </svg>
+    `;
+
+    return {
+      url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`,
+      scaledSize: new google.maps.Size(48, 48),
+      anchor: new google.maps.Point(24, 24),
+    };
+  }, [userAvatar]);
+
 
   if (loadError) {
     return <div>Error loading maps. Please check the API key.</div>;
@@ -57,19 +82,11 @@ export function InteractiveMap({ userLocation, userAvatar }: InteractiveMapProps
         mapId: 'fa151a7458f4a180',
       }}
     >
-      {userLocation && userAvatar && (
-            <Marker
-                position={userLocation}
-                icon={{
-                    url: userAvatar,
-                    scaledSize: new google.maps.Size(40, 40),
-                    anchor: new google.maps.Point(20, 20),
-                }}
-                shape={{
-                    coords: [20, 20, 20],
-                    type: "circle",
-                }}
-            />
+      {userLocation && customMarkerIcon && (
+        <Marker
+          position={userLocation}
+          icon={customMarkerIcon}
+        />
       )}
     </GoogleMap>
   );
