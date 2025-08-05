@@ -37,7 +37,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/dashboard" className="flex items-center gap-2">
             <div className="p-1.5 rounded-lg bg-primary">
               <Wand2 className="h-6 w-6 text-primary-foreground" />
             </div>
@@ -47,7 +47,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <SidebarContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <Link href="/" passHref>
+              <Link href="/dashboard" passHref>
                 <SidebarMenuButton tooltip="AI Mission Planner">
                   <Wand2 />
                   <span>AI Mission Planner</span>
@@ -109,7 +109,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 </div>
               </Button>
             </Link>
-            <Link href="/login" passHref className="w-full">
+            <Link href="/" passHref className="w-full">
                 <Button variant="ghost" className="w-full justify-start gap-2 px-2">
                   <LogOut className="h-4 w-4" />
                   <span>Logout</span>

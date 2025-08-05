@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -14,7 +15,7 @@ export default function LoginPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push('/');
+    router.push('/dashboard');
   };
 
   return (
@@ -60,11 +61,10 @@ export default function LoginPage() {
               Sign up
             </Link>
           </p>
-          <Button variant="link" size="sm" onClick={() => router.push('/')}>
-            Continue as Guest
-          </Button>
         </CardFooter>
       </Card>
     </div>
   );
 }
+
+    
