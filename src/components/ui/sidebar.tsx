@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -33,7 +34,7 @@ type SidebarContext = {
   openMobile: boolean
   setOpenMobile: (open: boolean) => void
   isMobile: boolean
-  toggleSidebar: () => void
+  toggleSidebar: (id?: string) => void
 }
 
 const SidebarContext = React.createContext<SidebarContext | null>(null)
@@ -90,11 +91,31 @@ const SidebarProvider = React.forwardRef<
     )
 
     // Helper to toggle the sidebar.
-    const toggleSidebar = React.useCallback(() => {
-      return isMobile
-        ? setOpenMobile((open) => !open)
-        : setOpen((open) => !open)
-    }, [isMobile, setOpen, setOpenMobile])
+    const toggleSidebar = React.useCallback(
+      (id?: string) => {
+        const targetSidebar = document.querySelector(`[data-sidebar-id="${id}"]`)
+
+        // If an ID is provided, we only toggle the mobile sidebar if it matches.
+        if (id && targetSidebar?.dataset.mobile === "true") {
+          const mobileOpenState = targetSidebar.dataset.state as
+            | "open"
+            | "closed"
+          const setMobileOpen = targetSidebar.dataset.setOpen as
+            | "setOpen"
+            | undefined
+          if (setMobileOpen) {
+            // @ts-expect-error - This is a bit of a hack to get the setter.
+            window[setMobileOpen](mobileOpenState === "closed")
+          }
+          return
+        }
+
+        return isMobile
+          ? setOpenMobile((open) => !open)
+          : setOpen((open) => !open)
+      },
+      [isMobile, setOpen, setOpenMobile]
+    )
 
     // Adds a keyboard shortcut to toggle the sidebar.
     React.useEffect(() => {
@@ -159,6 +180,7 @@ SidebarProvider.displayName = "SidebarProvider"
 const Sidebar = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> & {
+    id?: string
     side?: "left" | "right"
     variant?: "sidebar" | "floating" | "inset"
     collapsible?: "offcanvas" | "icon" | "none"
@@ -166,6 +188,7 @@ const Sidebar = React.forwardRef<
 >(
   (
     {
+      id,
       side = "left",
       variant = "sidebar",
       collapsible = "offcanvas",
@@ -175,7 +198,17 @@ const Sidebar = React.forwardRef<
     },
     ref
   ) => {
-    const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+    const { isMobile, state } = useSidebar()
+    const [openMobile, setOpenMobile] = React.useState(false)
+
+    // This is a hack to get the setter for the mobile sidebar.
+    // This allows us to have multiple sidebars on the same page.
+    React.useEffect(() => {
+      if (id) {
+        // @ts-expect-error - This is a bit of a hack to get the setter.
+        window[`set${id}`] = setOpenMobile
+      }
+    }, [id])
 
     if (collapsible === "none") {
       return (
@@ -194,10 +227,26 @@ const Sidebar = React.forwardRef<
 
     if (isMobile) {
       return (
-        <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+        <Sheet
+          open={openMobile}
+          onOpenChange={(value) => {
+            // @ts-expect-error - This is a bit of a hack to get the setter.
+            if (id && window[`set${id}`]) {
+              // @ts-expect-error - This is a bit of a hack to get the setter.
+              window[`set${id}`](value)
+            } else {
+              setOpenMobile(value)
+            }
+          }}
+          {...props}
+        >
           <SheetContent
             data-sidebar="sidebar"
             data-mobile="true"
+            data-sidebar-id={id}
+            // @ts-expect-error - This is a bit of a hack to get the setter.
+            data-set-open={id ? `set${id}` : undefined}
+            data-state={openMobile ? "open" : "closed"}
             className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
             style={
               {
@@ -220,6 +269,7 @@ const Sidebar = React.forwardRef<
         data-collapsible={state === "collapsed" ? collapsible : ""}
         data-variant={variant}
         data-side={side}
+        data-sidebar-id={id}
       >
         {/* This is what handles the sidebar gap on desktop */}
         <div
@@ -261,8 +311,10 @@ Sidebar.displayName = "Sidebar"
 
 const SidebarTrigger = React.forwardRef<
   React.ElementRef<typeof Button>,
-  React.ComponentProps<typeof Button>
->(({ className, onClick, ...props }, ref) => {
+  React.ComponentProps<typeof Button> & {
+    sidebar?: string
+  }
+>(({ className, onClick, "data-sidebar-for": sidebar, ...props }, ref) => {
   const { toggleSidebar } = useSidebar()
 
   return (
@@ -274,7 +326,7 @@ const SidebarTrigger = React.forwardRef<
       className={cn("h-7 w-7", className)}
       onClick={(event) => {
         onClick?.(event)
-        toggleSidebar()
+        toggleSidebar(sidebar)
       }}
       {...props}
     >
@@ -297,7 +349,7 @@ const SidebarRail = React.forwardRef<
       data-sidebar="rail"
       aria-label="Toggle Sidebar"
       tabIndex={-1}
-      onClick={toggleSidebar}
+      onClick={() => toggleSidebar()}
       title="Toggle Sidebar"
       className={cn(
         "absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border group-data-[side=left]:-right-4 group-data-[side=right]:left-0 sm:flex",

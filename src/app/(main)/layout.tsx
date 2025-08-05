@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
@@ -21,7 +22,10 @@ import {
   CalendarDays,
   LifeBuoy,
   LogOut,
+  MessageSquare,
+  Users,
 } from 'lucide-react';
+import { UpcomingMissions } from '@/components/upcoming-missions';
 
 export const metadata: Metadata = {
   title: 'StreetLight Dashboard',
@@ -108,9 +112,14 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <SidebarInset>
         <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-sm sm:h-16 sm:px-6">
           <SidebarTrigger className="md:hidden" />
+          <div className="flex-1" />
+          <SidebarTrigger className="md:hidden" data-sidebar-for="right-sidebar" />
         </header>
         <main className="flex-1 p-4 sm:p-6">{children}</main>
       </SidebarInset>
+      <Sidebar side="right" id="right-sidebar" collapsible="offcanvas">
+        <UpcomingMissions />
+      </Sidebar>
     </SidebarProvider>
   );
 }
