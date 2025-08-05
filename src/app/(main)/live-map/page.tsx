@@ -27,7 +27,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useEvents } from '@/app/(main)/layout';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Dialog } from '@/components/ui/dialog';
 
 
 interface Location {
@@ -221,14 +220,10 @@ export default function LiveMapPage() {
               <InteractiveMap
                 isLoaded={isLoaded}
                 loadError={loadError}
-                userLocation={currentLocation}
-                userAvatar={user?.photoURL || undefined}
-                userName={user?.displayName || "You"}
-                events={eventLocations}
               />
               <div className="absolute top-4 right-4 z-10">
                   <Card className="max-w-xs">
-                    <Collapsible open={isFormOpen} onOpenChange={setIsFormOpen}>
+                    <Collapsible open={isFormOpen} onOpenChange={setIsFormOpen} onInteractOutside={handleInteractOutside}>
                       <CardHeader>
                           <CardTitle>Real-Time Controls</CardTitle>
                           <CardDescription>Manage your live presence.</CardDescription>
@@ -261,10 +256,9 @@ export default function LiveMapPage() {
                            </CollapsibleTrigger>
                       </CardContent>
                       <CollapsibleContent>
-                        <Dialog modal={false}>
                             <Form {...form}>
                               <form onSubmit={form.handleSubmit(onEventSubmit)}>
-                               <CardContent className="space-y-4">
+                               <CardContent className="space-y-4 pt-4">
                                 <FormField
                                   control={form.control}
                                   name="title"
@@ -405,7 +399,6 @@ export default function LiveMapPage() {
                                 </CardFooter>
                               </form>
                             </Form>
-                        </Dialog>
                       </CollapsibleContent>
                     </Collapsible>
                   </Card>
