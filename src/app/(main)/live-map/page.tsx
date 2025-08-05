@@ -201,13 +201,6 @@ export default function LiveMapPage() {
         }
     };
 
-    const handleInteractOutside = (e: Event) => {
-        // This is to prevent the dialog from closing when clicking on the autocomplete suggestions
-        if ((e.target as HTMLElement).closest('.pac-container')) {
-          e.preventDefault();
-        }
-    }
-
   return (
     <div className="h-full flex flex-col">
         <div className="mb-6">
@@ -223,7 +216,7 @@ export default function LiveMapPage() {
               />
               <div className="absolute top-4 right-4 z-10">
                   <Card className="max-w-xs">
-                    <Collapsible open={isFormOpen} onOpenChange={setIsFormOpen} onInteractOutside={handleInteractOutside}>
+                    <Collapsible open={isFormOpen} onOpenChange={setIsFormOpen}>
                       <CardHeader>
                           <CardTitle>Real-Time Controls</CardTitle>
                           <CardDescription>Manage your live presence.</CardDescription>
