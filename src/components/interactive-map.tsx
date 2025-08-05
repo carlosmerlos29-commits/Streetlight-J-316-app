@@ -35,7 +35,7 @@ export function InteractiveMap({ userLocation, userAvatar }: InteractiveMapProps
   }, [userLocation]);
 
   const customMarkerIcon = useMemo(() => {
-    if (!userAvatar) return undefined;
+    if (!isLoaded || !userAvatar) return undefined;
 
     const svg = `
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
@@ -57,7 +57,7 @@ export function InteractiveMap({ userLocation, userAvatar }: InteractiveMapProps
       scaledSize: new google.maps.Size(48, 48),
       anchor: new google.maps.Point(24, 24),
     };
-  }, [userAvatar]);
+  }, [userAvatar, isLoaded]);
 
 
   if (loadError) {
