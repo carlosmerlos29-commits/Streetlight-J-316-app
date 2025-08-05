@@ -5,7 +5,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import {
   GoogleMap,
   useJsApiLoader,
-  OverlayView,               // ← pull in the OverlayView component
+  OverlayView,
 } from '@react-google-maps/api';
 import { Skeleton }    from './ui/skeleton';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
@@ -47,7 +47,7 @@ export function InteractiveMap({
     <GoogleMap
       mapContainerClassName="w-full h-full"
       center={userLocation || defaultCenter}
-      zoom={10}
+      zoom={userLocation ? 15 : 10}
       onLoad={(map) => { mapRef.current = map; }}
       options={{
         streetViewControl: false,
