@@ -3,19 +3,41 @@
 
 import { useState, useEffect } from 'react';
 import { getAuth, User } from 'firebase/auth';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { format } from 'date-fns';
+
 import { app } from '@/lib/firebase';
 import { InteractiveMap } from '@/components/interactive-map';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { ListFilter, RadioTower, LocateFixed, Loader2 } from 'lucide-react';
+import { ListFilter, RadioTower, LocateFixed, Loader2, PlusCircle, Calendar as CalendarIcon } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger, DialogClose } from '@/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
 
 interface Location {
   lat: number;
   lng: number;
 }
+
+const eventSchema = z.object({
+  title: z.string().min(3, 'Title must be at least 3 characters.'),
+  description: z.string().min(10, 'Description must be at least 10 characters.'),
+  date: z.date({ required_error: 'A date is required.' }),
+  type: z.enum(['Outreach', 'Worship', 'Training', 'Community']),
+});
+
+type EventFormValues = z.infer<typeof eventSchema>;
 
 export default function LiveMapPage() {
     const { toast } = useToast();
@@ -24,11 +46,26 @@ export default function LiveMapPage() {
     const [isSharingLocation, setIsSharingLocation] = useState(false);
     const [isGettingLocation, setIsGettingLocation] = useState(false);
     const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(setUser);
         return () => unsubscribe();
     }, [auth]);
+
+    const form = useForm<EventFormValues>({
+        resolver: zodResolver(eventSchema),
+    });
+
+    function onEventSubmit(data: EventFormValues) {
+        console.log("New Event Created:", data);
+        toast({
+          title: 'Event Created!',
+          description: `The event "${data.title}" has been successfully added.`,
+        });
+        form.reset();
+        setIsDialogOpen(false);
+    }
 
     const handleLocationSharing = (checked: boolean) => {
         setIsSharingLocation(checked);
@@ -97,14 +134,127 @@ export default function LiveMapPage() {
                                   )}
                                   <span>Share My Location</span>
                               </Label>
-                              <Switch 
-                                id="geo-sharing" 
+                              <Switch
+                                id="geo-sharing"
                                 checked={isSharingLocation}
                                 onCheckedChange={handleLocationSharing}
                                 disabled={isGettingLocation}
                               />
                           </div>
                            <Button variant="outline" className="w-full"><ListFilter className="mr-2 h-4 w-4" /> Filter Missions</Button>
+                           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                              <DialogTrigger asChild>
+                                <Button className="w-full">
+                                  <PlusCircle className="mr-2 h-4 w-4" />
+                                  Create Event
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="sm:max-w-[425px]">
+                                <DialogHeader>
+                                  <DialogTitle>Create New Event</DialogTitle>
+                                  <DialogDescription>
+                                    Fill in the details below to add a new event to the calendar.
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <Form {...form}>
+                                  <form onSubmit={form.handleSubmit(onEventSubmit)} className="space-y-4">
+                                    <FormField
+                                      control={form.control}
+                                      name="title"
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel>Event Title</FormLabel>
+                                          <FormControl>
+                                            <Input placeholder="e.g., Summer Outreach" {...field} />
+                                          </FormControl>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                    <FormField
+                                      control={form.control}
+                                      name="description"
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel>Description</FormLabel>
+                                          <FormControl>
+                                            <Textarea placeholder="Tell us about the event..." {...field} />
+                                          </FormControl>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                    <FormField
+                                      control={form.control}
+                                      name="date"
+                                      render={({ field }) => (
+                                        <FormItem className="flex flex-col">
+                                          <FormLabel>Event Date</FormLabel>
+                                          <Popover>
+                                            <PopoverTrigger asChild>
+                                              <FormControl>
+                                                <Button
+                                                  variant={"outline"}
+                                                  className={cn(
+                                                    "w-full pl-3 text-left font-normal",
+                                                    !field.value && "text-muted-foreground"
+                                                  )}
+                                                >
+                                                  {field.value ? (
+                                                    format(field.value, "PPP")
+                                                  ) : (
+                                                    <span>Pick a date</span>
+                                                  )}
+                                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                </Button>
+                                              </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0" align="start">
+                                              <Calendar
+                                                mode="single"
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                disabled={(date) =>
+                                                  date < new Date(new Date().setHours(0,0,0,0))
+                                                }
+                                                initialFocus
+                                              />
+                                            </PopoverContent>
+                                          </Popover>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                    <FormField
+                                      control={form.control}
+                                      name="type"
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel>Event Type</FormLabel>
+                                           <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                              <SelectTrigger>
+                                                <SelectValue placeholder="Select an event type" />
+                                              </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                              <SelectItem value="Outreach">Outreach</SelectItem>
+                                              <SelectItem value="Worship">Worship</SelectItem>
+                                              <SelectItem value="Training">Training</SelectItem>
+                                              <SelectItem value="Community">Community</SelectItem>
+                                            </SelectContent>
+                                          </Select>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                    <DialogFooter>
+                                      <Button type="submit">Create Event</Button>
+                                    </DialogFooter>
+                                  </form>
+                                </Form>
+                              </DialogContent>
+                            </Dialog>
                       </CardContent>
                   </Card>
               </div>
