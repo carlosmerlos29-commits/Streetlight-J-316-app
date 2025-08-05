@@ -11,7 +11,7 @@ export function InteractiveMap() {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
   });
 
-  const center = useMemo(() => ({ lat: 34.0522, lng: -118.2437 }), []);
+  const center = useMemo(() => ({ lat: 38.6582, lng: -77.2497 }), []);
 
   if (loadError) {
     return <div>Error loading maps. Please check the API key.</div>;
@@ -25,7 +25,7 @@ export function InteractiveMap() {
     <GoogleMap
       mapContainerClassName="w-full h-full"
       center={center}
-      zoom={10}
+      zoom={12}
       options={{
         streetViewControl: false,
         mapTypeControl: false,
