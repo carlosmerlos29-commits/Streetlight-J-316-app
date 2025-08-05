@@ -205,12 +205,6 @@ export default function LiveMapPage() {
         }
     };
 
-    const handleInteractOutside = (e: Event) => {
-        if ((e.target as HTMLElement).closest('.pac-container')) {
-            e.preventDefault();
-        }
-    };
-
   return (
     <div className="h-full flex flex-col">
         <div className="mb-6">
