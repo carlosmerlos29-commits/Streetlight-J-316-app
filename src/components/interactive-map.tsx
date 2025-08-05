@@ -5,7 +5,7 @@ import { useMemo, useEffect, useRef } from 'react';
 import { GoogleMap, useJsApiLoader, MarkerF } from '@react-google-maps/api';
 import { Skeleton } from './ui/skeleton';
 
-const libraries: ('places')[] = ['places'];
+const libraries: ('places' | 'drawing' | 'geometry' | 'localContext' | 'visualization')[] = ['places'];
 
 interface Location {
   lat: number;
@@ -47,7 +47,7 @@ export function InteractiveMap({ userLocation, userAvatar }: InteractiveMapProps
   return (
     <GoogleMap
       mapContainerClassName="w-full h-full"
-      center={defaultCenter}
+      center={userLocation || defaultCenter}
       zoom={12}
       onLoad={(map) => { mapRef.current = map; }}
       options={{
@@ -64,7 +64,18 @@ export function InteractiveMap({ userLocation, userAvatar }: InteractiveMapProps
                 url: userAvatar,
                 scaledSize: new google.maps.Size(40, 40),
                 anchor: new google.maps.Point(20, 20),
-            } : undefined}
+                path: google.maps.SymbolPath.CIRCLE,
+                strokeColor: '#FFFFFF',
+                strokeWeight: 2,
+                scale: 1.5
+            } : {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 8,
+                fillColor: "#4285F4",
+                fillOpacity: 1,
+                strokeWeight: 2,
+                strokeColor: "#ffffff"
+            }}
             options={{
               zIndex: 999, // Render user marker above others
             }}
