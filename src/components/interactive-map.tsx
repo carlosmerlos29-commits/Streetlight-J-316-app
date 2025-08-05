@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
@@ -31,7 +32,7 @@ export function InteractiveMap({
   });
 
   const mapRef = useRef<google.maps.Map|null>(null);
-  const defaultCenter = useMemo(() => ({ lat: 40.7128, lng: -74.0060 }), []);
+  const defaultCenter = useMemo(() => ({ lat: 38.8315, lng: -77.3061 }), []);
 
   useEffect(() => {
     if (userLocation && mapRef.current) {
