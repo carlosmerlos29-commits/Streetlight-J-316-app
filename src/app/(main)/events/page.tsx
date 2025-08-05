@@ -61,7 +61,7 @@ export default function EventsPage() {
             <h1 className="font-headline text-3xl font-bold">Community Events</h1>
             <p className="text-muted-foreground">Find and join upcoming ministry events.</p>
         </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} modal={false}>
           <DialogTrigger asChild>
             <Button>
               <PlusCircle className="mr-2 h-4 w-4" />

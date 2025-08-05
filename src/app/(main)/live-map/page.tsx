@@ -239,7 +239,7 @@ export default function LiveMapPage() {
                               />
                           </div>
                            <Button variant="outline" className="w-full"><ListFilter className="mr-2 h-4 w-4" /> Filter Missions</Button>
-                           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} modal={false}>
                               <DialogTrigger asChild>
                                 <Button className="w-full">
                                   <PlusCircle className="mr-2 h-4 w-4" />
