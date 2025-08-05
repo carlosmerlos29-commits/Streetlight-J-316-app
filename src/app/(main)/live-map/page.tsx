@@ -1,12 +1,13 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getAuth, User } from 'firebase/auth';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { format } from 'date-fns';
+import { useJsApiLoader, Autocomplete } from '@react-google-maps/api';
 
 import { app } from '@/lib/firebase';
 import { InteractiveMap } from '@/components/interactive-map';
@@ -23,6 +24,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useEvents } from '@/app/(main)/layout';
 
@@ -54,6 +56,7 @@ const eventSchema = z.object({
 });
 
 type EventFormValues = z.infer<typeof eventSchema>;
+const libraries: ('places'|'drawing'|'geometry'|'localContext'|'visualization')[] = ['places'];
 
 export default function LiveMapPage() {
     const { toast } = useToast();
@@ -65,6 +68,14 @@ export default function LiveMapPage() {
     const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [eventLocations, setEventLocations] = useState<EventLocation[]>([]);
+    
+    const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+    const { isLoaded, loadError } = useJsApiLoader({
+        id: 'google-map-script-livemap',
+        googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+        libraries: libraries
+    });
+
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(setUser);
@@ -114,6 +125,7 @@ export default function LiveMapPage() {
         defaultValues: {
             title: '',
             description: '',
+            date: undefined,
             time: '',
             address: '',
         }
@@ -130,7 +142,13 @@ export default function LiveMapPage() {
           title: 'Event Created!',
           description: `The event "${data.title}" has been successfully added.`,
         });
-        form.reset();
+        form.reset({
+            title: '',
+            description: '',
+            date: undefined,
+            time: '',
+            address: '',
+        });
         setIsDialogOpen(false);
     }
 
@@ -166,6 +184,15 @@ export default function LiveMapPage() {
         } else {
             setCurrentLocation(null);
             setIsGettingLocation(false);
+        }
+    };
+    
+    const handlePlaceChanged = () => {
+        if (autocompleteRef.current) {
+            const place = autocompleteRef.current.getPlace();
+            if (place && place.formatted_address) {
+                form.setValue('address', place.formatted_address);
+            }
         }
     };
 
@@ -308,6 +335,12 @@ export default function LiveMapPage() {
                                           )}
                                         />
                                     </div>
+                                    {!isLoaded ? (
+                                        <div className="space-y-2">
+                                            <Label>Address / Location</Label>
+                                            <Skeleton className="h-10 w-full" />
+                                        </div>
+                                    ) : (
                                     <FormField
                                       control={form.control}
                                       name="address"
@@ -315,12 +348,22 @@ export default function LiveMapPage() {
                                         <FormItem>
                                           <FormLabel>Address / Location</FormLabel>
                                           <FormControl>
-                                            <Input placeholder="e.g., 123 Main St, Anytown" {...field} />
+                                            <Autocomplete
+                                                onLoad={(ref) => autocompleteRef.current = ref}
+                                                onPlaceChanged={handlePlaceChanged}
+                                                options={{
+                                                  types: ["geocode"],
+                                                  componentRestrictions: { country: "us" },
+                                                }}
+                                            >
+                                                <Input placeholder="e.g., 123 Main St, Anytown" {...field} />
+                                            </Autocomplete>
                                           </FormControl>
                                           <FormMessage />
                                         </FormItem>
                                       )}
                                     />
+                                    )}
                                     <FormField
                                       control={form.control}
                                       name="type"
