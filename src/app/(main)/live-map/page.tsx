@@ -34,6 +34,8 @@ const eventSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
   description: z.string().min(10, 'Description must be at least 10 characters.'),
   date: z.date({ required_error: 'A date is required.' }),
+  time: z.string().nonempty('A time is required.'),
+  address: z.string().min(5, 'An address is required.'),
   type: z.enum(['Outreach', 'Worship', 'Training', 'Community']),
 });
 
@@ -149,11 +151,11 @@ export default function LiveMapPage() {
                                   Create Event
                                 </Button>
                               </DialogTrigger>
-                              <DialogContent className="sm:max-w-[425px]">
+                              <DialogContent className="sm:max-w-md">
                                 <DialogHeader>
                                   <DialogTitle>Create New Event</DialogTitle>
                                   <DialogDescription>
-                                    Fill in the details below to add a new event to the calendar.
+                                    Fill in the details below to add a new event.
                                   </DialogDescription>
                                 </DialogHeader>
                                 <Form {...form}>
@@ -184,43 +186,71 @@ export default function LiveMapPage() {
                                         </FormItem>
                                       )}
                                     />
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <FormField
+                                          control={form.control}
+                                          name="date"
+                                          render={({ field }) => (
+                                            <FormItem className="flex flex-col">
+                                              <FormLabel>Event Date</FormLabel>
+                                              <Popover>
+                                                <PopoverTrigger asChild>
+                                                  <FormControl>
+                                                    <Button
+                                                      variant={"outline"}
+                                                      className={cn(
+                                                        "w-full pl-3 text-left font-normal",
+                                                        !field.value && "text-muted-foreground"
+                                                      )}
+                                                    >
+                                                      {field.value ? (
+                                                        format(field.value, "PPP")
+                                                      ) : (
+                                                        <span>Pick a date</span>
+                                                      )}
+                                                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                    </Button>
+                                                  </FormControl>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-auto p-0" align="start">
+                                                  <Calendar
+                                                    mode="single"
+                                                    selected={field.value}
+                                                    onSelect={field.onChange}
+                                                    disabled={(date) =>
+                                                      date < new Date(new Date().setHours(0,0,0,0))
+                                                    }
+                                                    initialFocus
+                                                  />
+                                                </PopoverContent>
+                                              </Popover>
+                                              <FormMessage />
+                                            </FormItem>
+                                          )}
+                                        />
+                                        <FormField
+                                          control={form.control}
+                                          name="time"
+                                          render={({ field }) => (
+                                            <FormItem>
+                                              <FormLabel>Event Time</FormLabel>
+                                              <FormControl>
+                                                <Input placeholder="e.g., 6:00 PM" {...field} />
+                                              </FormControl>
+                                              <FormMessage />
+                                            </FormItem>
+                                          )}
+                                        />
+                                    </div>
                                     <FormField
                                       control={form.control}
-                                      name="date"
+                                      name="address"
                                       render={({ field }) => (
-                                        <FormItem className="flex flex-col">
-                                          <FormLabel>Event Date</FormLabel>
-                                          <Popover>
-                                            <PopoverTrigger asChild>
-                                              <FormControl>
-                                                <Button
-                                                  variant={"outline"}
-                                                  className={cn(
-                                                    "w-full pl-3 text-left font-normal",
-                                                    !field.value && "text-muted-foreground"
-                                                  )}
-                                                >
-                                                  {field.value ? (
-                                                    format(field.value, "PPP")
-                                                  ) : (
-                                                    <span>Pick a date</span>
-                                                  )}
-                                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                </Button>
-                                              </FormControl>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-auto p-0" align="start">
-                                              <Calendar
-                                                mode="single"
-                                                selected={field.value}
-                                                onSelect={field.onChange}
-                                                disabled={(date) =>
-                                                  date < new Date(new Date().setHours(0,0,0,0))
-                                                }
-                                                initialFocus
-                                              />
-                                            </PopoverContent>
-                                          </Popover>
+                                        <FormItem>
+                                          <FormLabel>Address / Location</FormLabel>
+                                          <FormControl>
+                                            <Input placeholder="e.g., 123 Main St, Anytown" {...field} />
+                                          </FormControl>
                                           <FormMessage />
                                         </FormItem>
                                       )}
