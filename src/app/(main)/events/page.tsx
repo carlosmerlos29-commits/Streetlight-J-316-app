@@ -1,12 +1,13 @@
 
 'use client'
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon, PlusCircle, Clock, MapPin } from 'lucide-react';
+import { useJsApiLoader, Autocomplete } from '@react-google-maps/api';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Calendar } from '@/components/ui/calendar';
@@ -18,6 +19,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useEvents } from '@/app/(main)/layout';
@@ -33,6 +36,8 @@ const eventSchema = z.object({
 });
 
 type EventFormValues = z.infer<typeof eventSchema>;
+const libraries: ('places'|'drawing'|'geometry'|'localContext'|'visualization')[] = ['places'];
+
 
 export default function EventsPage() {
   const { toast } = useToast();
@@ -40,8 +45,23 @@ export default function EventsPage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+
+  const { isLoaded, loadError } = useJsApiLoader({
+      id: 'google-map-script-events',
+      googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+      libraries: libraries
+  });
+
   const form = useForm<EventFormValues>({
     resolver: zodResolver(eventSchema),
+    defaultValues: {
+        title: '',
+        description: '',
+        date: undefined,
+        time: '',
+        address: '',
+    }
   });
 
   function onSubmit(data: EventFormValues) {
@@ -53,6 +73,15 @@ export default function EventsPage() {
     form.reset();
     setIsDialogOpen(false);
   }
+  
+  const handlePlaceChanged = () => {
+      if (autocompleteRef.current) {
+          const place = autocompleteRef.current.getPlace();
+          if (place && place.formatted_address) {
+              form.setValue('address', place.formatted_address);
+          }
+      }
+  };
 
   return (
     <div className="space-y-8">
@@ -68,7 +97,14 @@ export default function EventsPage() {
               Create Event
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent 
+             onInteractOutside={(e) => {
+              if (e.target instanceof HTMLElement && e.target.closest('.pac-container')) {
+                e.preventDefault();
+              }
+            }}
+            className="sm:max-w-md"
+          >
             <DialogHeader>
               <DialogTitle>Create New Event</DialogTitle>
               <DialogDescription>
@@ -159,19 +195,35 @@ export default function EventsPage() {
                       )}
                     />
                 </div>
-                 <FormField
-                      control={form.control}
-                      name="address"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Address / Location</FormLabel>
-                          <FormControl>
-                            <Input placeholder="e.g., 123 Main St, Anytown" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                 {!isLoaded ? (
+                    <div className="space-y-2">
+                        <Label>Address / Location</Label>
+                        <Skeleton className="h-10 w-full" />
+                    </div>
+                  ) : (
+                    <FormField
+                        control={form.control}
+                        name="address"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Address / Location</FormLabel>
+                            <FormControl>
+                               <Autocomplete
+                                  onLoad={(ref) => autocompleteRef.current = ref}
+                                  onPlaceChanged={handlePlaceChanged}
+                                  options={{
+                                    types: ["geocode"],
+                                    componentRestrictions: { country: "us" },
+                                  }}
+                              >
+                                  <Input placeholder="e.g., 123 Main St, Anytown" {...field} />
+                              </Autocomplete>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                  )}
                 <FormField
                   control={form.control}
                   name="type"
