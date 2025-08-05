@@ -28,7 +28,7 @@ import {
 import { UpcomingMissions } from '@/components/upcoming-missions';
 
 export const metadata: Metadata = {
-  title: 'StreetLight Dashboard',
+  title: 'Streetlight J-316 Dashboard',
   description: 'Your dashboard for mission planning and execution.',
 };
 
@@ -41,7 +41,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <div className="p-1.5 rounded-lg bg-primary">
               <Wand2 className="h-6 w-6 text-primary-foreground" />
             </div>
-            <span className="font-headline text-xl font-semibold">StreetLight</span>
+            <span className="font-headline text-xl font-semibold">Streetlight J-316</span>
           </Link>
         </SidebarHeader>
         <SidebarContent>

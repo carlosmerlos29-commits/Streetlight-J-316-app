@@ -21,7 +21,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center">
-          <h1 className="font-headline text-4xl font-bold text-primary">StreetLight</h1>
+          <h1 className="font-headline text-4xl font-bold text-primary">Streetlight J-316</h1>
           <CardDescription>Lighting the way for modern evangelism.</CardDescription>
         </CardHeader>
         <CardContent>
