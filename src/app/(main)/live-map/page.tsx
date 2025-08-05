@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { ListFilter, RadioTower, LocateFixed, Loader2, PlusCircle, Calendar as CalendarIcon, Flame, CalendarDays } from 'lucide-react';
+import { ListFilter, RadioTower, LocateFixed, Loader2, PlusCircle, Calendar as CalendarIcon, Flame, CalendarDays, Clock } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -81,9 +81,20 @@ export default function LiveMapPage() {
         const now = new Date();
         const locations = events.map(event => {
             const eventDateTime = new Date(event.date);
-            const [hours, minutes] = event.time.split(/:| /);
-            eventDateTime.setHours(parseInt(hours, 10) + (event.time.includes('PM') && hours !== '12' ? 12 : 0));
-            eventDateTime.setMinutes(parseInt(minutes, 10));
+            const [time, ampm] = event.time.split(' ');
+            let [hours, minutes] = time.split(':').map(Number);
+            
+            if (ampm === 'PM' && hours !== 12) {
+                hours += 12;
+            }
+            if (ampm === 'AM' && hours === 12) {
+                hours = 0;
+            }
+
+            eventDateTime.setHours(hours);
+            eventDateTime.setMinutes(minutes);
+            eventDateTime.setSeconds(0);
+
 
             const isLive = now >= eventDateTime;
 
@@ -103,16 +114,23 @@ export default function LiveMapPage() {
         setEventLocations(locations);
         
         const interval = setInterval(() => {
-            // Re-check every minute to see if events went live
              const now = new Date();
              setEventLocations(prevLocations => prevLocations.map(loc => {
                 const event = events.find(e => e.id === loc.id);
                 if (!event) return loc;
                 
                 const eventDateTime = new Date(event.date);
-                const [hours, minutes] = event.time.split(/:| /);
-                eventDateTime.setHours(parseInt(hours, 10) + (event.time.includes('PM') && hours !== '12' ? 12 : 0));
-                eventDateTime.setMinutes(parseInt(minutes, 10));
+                const [time, ampm] = event.time.split(' ');
+                let [hours, minutes] = time.split(':').map(Number);
+                 if (ampm === 'PM' && hours !== 12) {
+                    hours += 12;
+                }
+                if (ampm === 'AM' && hours === 12) {
+                    hours = 0;
+                }
+                eventDateTime.setHours(hours);
+                eventDateTime.setMinutes(minutes);
+                eventDateTime.setSeconds(0);
 
                 return {...loc, isLive: now >= eventDateTime };
              }));
@@ -125,6 +143,12 @@ export default function LiveMapPage() {
 
     const form = useForm<EventFormValues>({
         resolver: zodResolver(eventSchema),
+        defaultValues: {
+            title: '',
+            description: '',
+            time: '',
+            address: '',
+        }
     });
 
     function onEventSubmit(data: EventFormValues) {
