@@ -32,7 +32,7 @@ export function InteractiveMap({
   });
 
   const mapRef = useRef<google.maps.Map|null>(null);
-  const defaultCenter = useMemo(() => ({ lat: 38.8315, lng: -77.3061 }), []);
+  const defaultCenter = useMemo(() => ({ lat: 38.9072, lng: -77.0369 }), []);
 
   useEffect(() => {
     if (userLocation && mapRef.current) {
@@ -47,7 +47,7 @@ export function InteractiveMap({
     <GoogleMap
       mapContainerClassName="w-full h-full"
       center={userLocation || defaultCenter}
-      zoom={userLocation ? 15 : 12}
+      zoom={userLocation ? 15 : 10}
       onLoad={(map) => { mapRef.current = map; }}
       options={{
         streetViewControl: false,
