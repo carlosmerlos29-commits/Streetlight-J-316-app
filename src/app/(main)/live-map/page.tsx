@@ -239,14 +239,22 @@ export default function LiveMapPage() {
                               />
                           </div>
                            <Button variant="outline" className="w-full"><ListFilter className="mr-2 h-4 w-4" /> Filter Missions</Button>
-                           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} modal={false}>
+                           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                               <DialogTrigger asChild>
                                 <Button className="w-full">
                                   <PlusCircle className="mr-2 h-4 w-4" />
                                   Create Event
                                 </Button>
                               </DialogTrigger>
-                              <DialogContent className="sm:max-w-md">
+                              <DialogContent
+                                onInteractOutside={(e) => {
+                                  // Prevent closing when clicking on autocomplete suggestions
+                                  if (e.target instanceof HTMLElement && e.target.closest('.pac-container')) {
+                                    e.preventDefault();
+                                  }
+                                }}
+                                className="sm:max-w-md"
+                              >
                                 <DialogHeader>
                                   <DialogTitle>Create New Event</DialogTitle>
                                   <DialogDescription>
