@@ -2,7 +2,7 @@
 'use client';
 
 import { useMemo, useEffect, useRef } from 'react';
-import { GoogleMap, useJsApiLoader, OverlayViewF } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, OverlayViewF, OverlayView } from '@react-google-maps/api';
 import { Skeleton } from './ui/skeleton';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 
@@ -61,12 +61,16 @@ export function InteractiveMap({ userLocation, userAvatar, userName }: Interacti
       {userLocation && isLoaded && (
         <OverlayViewF
             position={userLocation}
-            mapPaneName={OverlayViewF.OVERLAY_MOUSE_TARGET}
+            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+            getPixelPositionOffset={(size) => ({
+              x: -(size.width / 2),
+              y: -size.height,
+            })}
         >
             <div className="flex flex-col items-center">
                 <div className="flex items-center gap-2 p-1 bg-background rounded-full shadow-lg border border-primary">
                     <Avatar className="h-8 w-8">
-                        <AvatarImage src={userAvatar} alt={userName || 'User'} />
+                        <AvatarImage src={userAvatar} alt={userName || 'User'} data-ai-hint="person portrait"/>
                         <AvatarFallback>{userName?.charAt(0) || 'U'}</AvatarFallback>
                     </Avatar>
                     <span className="text-sm font-semibold pr-3">{userName}</span>
