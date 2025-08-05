@@ -47,7 +47,7 @@ export function InteractiveMap({
     <GoogleMap
       mapContainerClassName="w-full h-full"
       center={userLocation || defaultCenter}
-      zoom={userLocation ? 15 : 10}
+      zoom={10}
       onLoad={(map) => { mapRef.current = map; }}
       options={{
         streetViewControl: false,
