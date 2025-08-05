@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState } from 'react';
@@ -206,7 +207,7 @@ export default function MissionPlannerPage() {
                                 {missionPlan.suggestedTimes.map((time, i) => <li key={i}>{time}</li>)}
                             </ul>
                         </div>
-                        <div>
+<div>
                             <h3 className="font-semibold flex items-center mb-2"><Lightbulb className="mr-2 h-5 w-5 text-primary" />Reasoning</h3>
                             <p className="text-muted-foreground">{missionPlan.reasoning}</p>
                         </div>
