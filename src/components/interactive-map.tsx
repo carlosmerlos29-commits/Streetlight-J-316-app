@@ -11,7 +11,7 @@ export function InteractiveMap() {
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-    libraries: libraries,
+    libraries,
   });
 
   const center = useMemo(() => ({ lat: 38.6582, lng: -77.2497 }), []);
@@ -33,6 +33,7 @@ export function InteractiveMap() {
         streetViewControl: false,
         mapTypeControl: false,
         fullscreenControl: false,
+        scrollwheel: true,
       }}
     >
       <Marker position={center} />
