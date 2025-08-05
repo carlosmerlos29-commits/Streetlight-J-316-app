@@ -31,7 +31,6 @@ export function InteractiveMap({ userLocation, userAvatar }: InteractiveMapProps
   useEffect(() => {
     if (userLocation && mapRef.current) {
         mapRef.current.panTo(userLocation);
-        mapRef.current.setZoom(15);
     }
   }, [userLocation]);
 
@@ -43,16 +42,6 @@ export function InteractiveMap({ userLocation, userAvatar }: InteractiveMapProps
   if (!isLoaded) {
     return <Skeleton className="w-full h-full" />;
   }
-
-  const markerIcon = userLocation && userAvatar ? {
-    path: 'M 0, 0 m -15, 0 a 15,15 0 1,0 30,0 a 15,15 0 1,0 -30,0',
-    fillColor: '#ffffff',
-    fillOpacity: 1,
-    strokeColor: 'hsl(var(--primary))',
-    strokeWeight: 2,
-    anchor: new google.maps.Point(0, 0),
-    labelOrigin: new google.maps.Point(0,0),
-  } : undefined;
 
   return (
     <GoogleMap
@@ -69,7 +58,6 @@ export function InteractiveMap({ userLocation, userAvatar }: InteractiveMapProps
       }}
     >
       {userLocation && userAvatar && (
-        <>
             <Marker
                 position={userLocation}
                 icon={{
@@ -82,7 +70,6 @@ export function InteractiveMap({ userLocation, userAvatar }: InteractiveMapProps
                     type: "circle",
                 }}
             />
-        </>
       )}
     </GoogleMap>
   );
