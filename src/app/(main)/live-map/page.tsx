@@ -39,9 +39,9 @@ export interface EventLocation extends Location {
 
 // Mock geocoded locations for demo purposes
 const eventCoordinates: { [key: string]: Location } = {
-    'City Center Plaza': { lat: 38.8305, lng: -77.3060 },
-    '123 Main St, Community Church': { lat: 38.8330, lng: -77.3090 },
-    'Online via Zoom': { lat: 38.829, lng: -77.304 },
+    '4110 Chain Bridge Rd, Fairfax, VA 22030': { lat: 38.8463, lng: -77.3065 },
+    '4400 University Dr, Fairfax, VA 22030': { lat: 38.8315, lng: -77.3061 },
+    '7315 Ox Rd, Fairfax Station, VA 22039': { lat: 38.7997, lng: -77.2917 },
 };
 
 const eventSchema = z.object({

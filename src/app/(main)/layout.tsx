@@ -45,9 +45,9 @@ export interface AppEvent {
 }
 
 const initialEvents: AppEvent[] = [
-    { id: '1', date: new Date(new Date().getTime() - 2 * 60 * 60 * 1000), title: 'City-Wide Outreach', description: 'Join us for a large-scale evangelism event at the city center.', type: 'Outreach', time: '12:00', address: 'City Center Plaza' },
-    { id: '2', date: new Date(new Date().getTime() + 24 * 60 * 60 * 1000), title: 'Prayer & Worship Night', description: 'A night dedicated to prayer for our city and worship.', type: 'Worship', time: '19:00', address: '123 Main St, Community Church' },
-    { id: '3', date: new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000), title: 'Evangelism Training Workshop', description: 'Learn practical skills for sharing your faith.', type: 'Training', time: '10:00', address: 'Online via Zoom' },
+    { id: '1', date: new Date(new Date().getTime() - 2 * 60 * 60 * 1000), title: 'Fairfax County Courthouse Outreach', description: 'Handing out tracts and engaging in conversations near the courthouse.', type: 'Outreach', time: '11:00', address: '4110 Chain Bridge Rd, Fairfax, VA 22030' },
+    { id: '2', date: new Date(new Date().getTime() + 24 * 60 * 60 * 1000), title: 'George Mason University Campus Meetup', description: 'Connecting with students on campus and sharing the Gospel.', type: 'Community', time: '14:00', address: '4400 University Dr, Fairfax, VA 22030' },
+    { id: '3', date: new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000), title: 'Community Cookout at Burke Lake Park', description: 'A friendly community event with free food and fellowship.', type: 'Community', time: '13:00', address: '7315 Ox Rd, Fairfax Station, VA 22039' },
 ];
 
 
