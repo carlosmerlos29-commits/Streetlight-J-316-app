@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useRef, useMemo } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import {
   GoogleMap,
   useJsApiLoader,
@@ -11,10 +10,7 @@ import { Skeleton } from './ui/skeleton';
 
 const libraries = ['places'] as const;
 
-interface Location {
-  lat: number;
-  lng: number;
-}
+interface Location { lat: number; lng: number; }
 
 interface InteractiveMapProps {
   userLocation?: Location | null;
@@ -33,28 +29,34 @@ export function InteractiveMap({
     libraries,
   });
 
-  const mapRef = useRef<google.maps.Map | null>(null);
-  const defaultCenter = useMemo(() => ({ lat: 38.8315, lng: -77.3061 }), []);
+  const mapRef = useRef<google.maps.Map|null>(null);
+  const defaultCenter = useMemo<Location>(
+    () => ({ lat: 38.8315, lng: -77.3061 }),
+    []
+  );
 
-  if (loadError) {
-    return <div>Error loading maps. Please check the API key.</div>;
-  }
-  if (!isLoaded) {
-    return <Skeleton className="w-full h-full" />;
-  }
+  // Pan only once when userLocation changes:
+  useEffect(() => {
+    if (userLocation && mapRef.current) {
+      mapRef.current.panTo(userLocation);
+      mapRef.current.setZoom(15);
+    }
+  }, [userLocation]);
+
+  if (loadError) return <div>Error loading maps.</div>;
+  if (!isLoaded) return <Skeleton className="w-full h-full" />;
 
   return (
     <GoogleMap
       mapContainerClassName="w-full h-full"
-      center={defaultCenter}
-      zoom={10}
-      onLoad={(map) => {
-        mapRef.current = map;
-      }}
+      // UNCONTROLLED: use defaultCenter/Zoom only
+      defaultCenter={defaultCenter}
+      defaultZoom={10}
+      onLoad={(map) => { mapRef.current = map; }}
       options={{
         streetViewControl: false,
         mapTypeControl: false,
-        fullscreenControl: false,
+fullscreenControl: false,
         scrollwheel: true,
         mapId: 'fa151a7458f4a180',
       }}
@@ -64,18 +66,11 @@ export function InteractiveMap({
           position={userLocation}
           mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
           getPixelPositionOffset={({ width, height }) => ({
-            x: -width / 2,
+            x: -width / 2,    // bottom-center alignment
             y: -height,
           })}
         >
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              background: 'transparent',
-            }}
-          >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <img
               src={userAvatar}
               alt={userName}
