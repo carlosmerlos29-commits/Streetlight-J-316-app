@@ -2,7 +2,7 @@
 'use client';
 
 import { useMemo, useEffect, useRef } from 'react';
-import { GoogleMap, useJsApiLoader, MarkerF } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import { Skeleton } from './ui/skeleton';
 
 const libraries: ('places')[] = ['places'];
@@ -44,6 +44,16 @@ export function InteractiveMap({ userLocation, userAvatar }: InteractiveMapProps
     return <Skeleton className="w-full h-full" />;
   }
 
+  const markerIcon = userLocation && userAvatar ? {
+    path: 'M 0, 0 m -15, 0 a 15,15 0 1,0 30,0 a 15,15 0 1,0 -30,0',
+    fillColor: '#ffffff',
+    fillOpacity: 1,
+    strokeColor: 'hsl(var(--primary))',
+    strokeWeight: 2,
+    anchor: new google.maps.Point(0, 0),
+    labelOrigin: new google.maps.Point(0,0),
+  } : undefined;
+
   return (
     <GoogleMap
       mapContainerClassName="w-full h-full"
@@ -55,24 +65,24 @@ export function InteractiveMap({ userLocation, userAvatar }: InteractiveMapProps
         mapTypeControl: false,
         fullscreenControl: false,
         scrollwheel: true,
+        mapId: 'fa151a7458f4a180',
       }}
     >
-      {userLocation && (
-        <MarkerF
-          position={userLocation}
-          icon={userAvatar ? {
-              url: userAvatar,
-              scaledSize: new google.maps.Size(40, 40),
-              anchor: new google.maps.Point(20, 20),
-          } : {
-              path: google.maps.SymbolPath.CIRCLE,
-              scale: 8,
-              fillColor: "#4285F4",
-              fillOpacity: 1,
-              strokeWeight: 2,
-              strokeColor: "#ffffff"
-          }}
-        />
+      {userLocation && userAvatar && (
+        <>
+            <Marker
+                position={userLocation}
+                icon={{
+                    url: userAvatar,
+                    scaledSize: new google.maps.Size(40, 40),
+                    anchor: new google.maps.Point(20, 20),
+                }}
+                shape={{
+                    coords: [20, 20, 20],
+                    type: "circle",
+                }}
+            />
+        </>
       )}
     </GoogleMap>
   );
