@@ -2,8 +2,9 @@
 'use client';
 
 import { useMemo, useEffect, useRef } from 'react';
-import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, OverlayViewF } from '@react-google-maps/api';
 import { Skeleton } from './ui/skeleton';
+import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 
 const libraries: ('places')[] = ['places'];
 
@@ -15,9 +16,10 @@ interface Location {
 interface InteractiveMapProps {
     userLocation?: Location | null;
     userAvatar?: string;
+    userName?: string;
 }
 
-export function InteractiveMap({ userLocation, userAvatar }: InteractiveMapProps) {
+export function InteractiveMap({ userLocation, userAvatar, userName }: InteractiveMapProps) {
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
@@ -33,32 +35,6 @@ export function InteractiveMap({ userLocation, userAvatar }: InteractiveMapProps
         mapRef.current.panTo(userLocation);
     }
   }, [userLocation]);
-
-  const customMarkerIcon = useMemo(() => {
-    if (!isLoaded || !userAvatar) return undefined;
-
-    const svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-        <circle cx="24" cy="24" r="22" fill="#A34BFF" stroke="#FFFFFF" stroke-width="2"/>
-        <clipPath id="clip">
-          <circle cx="24" cy="24" r="20"/>
-        </clipPath>
-        <image
-          href="${userAvatar}"
-          x="4" y="4" width="40" height="40"
-          clip-path="url(#clip)"
-          crossorigin="anonymous"
-        />
-      </svg>
-    `;
-
-    return {
-      url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`,
-      scaledSize: new google.maps.Size(48, 48),
-      anchor: new google.maps.Point(24, 24),
-    };
-  }, [userAvatar, isLoaded]);
-
 
   if (loadError) {
     return <div>Error loading maps. Please check the API key.</div>;
@@ -82,11 +58,22 @@ export function InteractiveMap({ userLocation, userAvatar }: InteractiveMapProps
         mapId: 'fa151a7458f4a180',
       }}
     >
-      {userLocation && customMarkerIcon && (
-        <Marker
-          position={userLocation}
-          icon={customMarkerIcon}
-        />
+      {userLocation && isLoaded && (
+        <OverlayViewF
+            position={userLocation}
+            mapPaneName={OverlayViewF.OVERLAY_MOUSE_TARGET}
+        >
+            <div className="flex flex-col items-center">
+                <div className="flex items-center gap-2 p-1 bg-background rounded-full shadow-lg border border-primary">
+                    <Avatar className="h-8 w-8">
+                        <AvatarImage src={userAvatar} alt={userName || 'User'} />
+                        <AvatarFallback>{userName?.charAt(0) || 'U'}</AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm font-semibold pr-3">{userName}</span>
+                </div>
+                <div className="w-0 h-0 border-x-8 border-x-transparent border-t-8 border-t-primary -mt-1"></div>
+            </div>
+        </OverlayViewF>
       )}
     </GoogleMap>
   );

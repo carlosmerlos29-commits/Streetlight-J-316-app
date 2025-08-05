@@ -76,6 +76,7 @@ export default function LiveMapPage() {
               <InteractiveMap
                 userLocation={currentLocation}
                 userAvatar={user?.photoURL || undefined}
+                userName={user?.displayName || "You"}
               />
               <div className="absolute top-4 right-4 z-10">
                   <Card className="max-w-xs">
