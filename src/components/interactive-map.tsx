@@ -2,7 +2,7 @@
 'use client';
 
 import { useMemo, useEffect, useRef } from 'react';
-import { GoogleMap, useJsAptemplatingiLoader, OverlayViewF } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, OverlayViewF } from '@react-google-maps/api';
 import { Skeleton } from './ui/skeleton';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 
