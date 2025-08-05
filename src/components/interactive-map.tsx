@@ -1,17 +1,20 @@
 
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useRef, useMemo } from 'react';
 import {
   GoogleMap,
   useJsApiLoader,
   OverlayView,
 } from '@react-google-maps/api';
-import { Skeleton }    from './ui/skeleton';
+import { Skeleton } from './ui/skeleton';
 
 const libraries = ['places'] as const;
 
-interface Location { lat: number; lng: number; }
+interface Location {
+  lat: number;
+  lng: number;
+}
 
 interface InteractiveMapProps {
   userLocation?: Location | null;
@@ -30,18 +33,24 @@ export function InteractiveMap({
     libraries,
   });
 
-  const mapRef = useRef<google.maps.Map|null>(null);
-  const defaultCenter = useMemo(() => ({ lat: 38.8315, lng: -77.0369 }), []);
+  const mapRef = useRef<google.maps.Map | null>(null);
+  const defaultCenter = useMemo(() => ({ lat: 38.8315, lng: -77.3061 }), []);
 
-  if (loadError) return <div>Error loading maps. Please check the API key.</div>;
-  if (!isLoaded) return <Skeleton className="w-full h-full" />;
+  if (loadError) {
+    return <div>Error loading maps. Please check the API key.</div>;
+  }
+  if (!isLoaded) {
+    return <Skeleton className="w-full h-full" />;
+  }
 
   return (
     <GoogleMap
       mapContainerClassName="w-full h-full"
       center={defaultCenter}
       zoom={10}
-      onLoad={(map) => { mapRef.current = map; }}
+      onLoad={(map) => {
+        mapRef.current = map;
+      }}
       options={{
         streetViewControl: false,
         mapTypeControl: false,

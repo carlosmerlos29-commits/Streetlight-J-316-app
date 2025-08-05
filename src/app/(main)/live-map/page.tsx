@@ -74,7 +74,7 @@ export default function LiveMapPage() {
           <CardContent className="h-full p-2">
             <div className="relative h-full w-full rounded-lg overflow-hidden border bg-muted">
               <InteractiveMap
-                userLocation={currentLocation}
+                userLocation={isSharingLocation ? currentLocation : null}
                 userAvatar={user?.photoURL || undefined}
                 userName={user?.displayName || "You"}
               />
