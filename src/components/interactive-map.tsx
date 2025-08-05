@@ -5,14 +5,11 @@ import { useEffect, useRef, useMemo } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import {
   GoogleMap,
-  useJsApiLoader,
   OverlayView,
   MarkerF,
 } from '@react-google-maps/api';
 import { Skeleton } from './ui/skeleton';
 import { Flame, Hourglass } from 'lucide-react';
-
-const libraries = ['places'] as const;
 
 interface Location { lat: number; lng: number; }
 
@@ -23,6 +20,8 @@ export interface EventLocation extends Location {
 }
 
 interface InteractiveMapProps {
+  isLoaded: boolean;
+  loadError?: Error;
   userLocation?: Location | null;
   userAvatar?: string;
   userName?: string;
@@ -55,17 +54,13 @@ const createMarkerIcon = (isLive: boolean) => {
 
 
 export function InteractiveMap({
+  isLoaded,
+  loadError,
   userLocation,
   userAvatar,
   userName,
   events = [],
 }: InteractiveMapProps) {
-  const { isLoaded, loadError } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-    libraries,
-  });
-
   const mapRef = useRef<google.maps.Map|null>(null);
   const defaultCenter = useMemo<Location>(
     () => ({ lat: 38.8315, lng: -77.3061 }),

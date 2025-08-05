@@ -71,7 +71,7 @@ export default function LiveMapPage() {
     
     const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
     const { isLoaded, loadError } = useJsApiLoader({
-        id: 'google-map-script-livemap',
+        id: 'google-map-script',
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
         libraries: libraries
     });
@@ -206,6 +206,8 @@ export default function LiveMapPage() {
           <CardContent className="h-full p-2">
             <div className="relative h-full w-full rounded-lg overflow-hidden border bg-muted">
               <InteractiveMap
+                isLoaded={isLoaded}
+                loadError={loadError}
                 userLocation={currentLocation}
                 userAvatar={user?.photoURL || undefined}
                 userName={user?.displayName || "You"}
