@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Chrome, Apple, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, OAuthProvider } from 'firebase/auth';
 import { app } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 
@@ -21,6 +21,8 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isAppleLoading, setIsAppleLoading] = useState(false);
   const auth = getAuth(app);
 
 
@@ -42,6 +44,43 @@ export default function LoginPage() {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true);
+    const provider = new GoogleAuthProvider();
+    try {
+        await signInWithPopup(auth, provider);
+        router.push('/dashboard');
+    } catch (error: any) {
+        console.error("Google Sign-In Error: ", error);
+        toast({
+            title: "Google Sign-In Failed",
+            description: error.message || "Could not sign in with Google. Please try again.",
+            variant: "destructive",
+        });
+    } finally {
+        setIsGoogleLoading(false);
+    }
+  };
+
+  const handleAppleSignIn = async () => {
+    setIsAppleLoading(true);
+    const provider = new OAuthProvider('apple.com');
+    try {
+        await signInWithPopup(auth, provider);
+        router.push('/dashboard');
+    } catch (error: any) {
+        console.error("Apple Sign-In Error: ", error);
+         toast({
+            title: "Apple Sign-In Failed",
+            description: error.message || "Could not sign in with Apple. Please try again.",
+            variant: "destructive",
+        });
+    } finally {
+        setIsAppleLoading(false);
+    }
+  };
+
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
       <Card className="w-full max-w-md shadow-2xl">
@@ -53,13 +92,13 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="john.doe@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Input id="email" type="email" placeholder="john.doe@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} disabled={isGoogleLoading || isAppleLoading}/>
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" placeholder="••••••••" required value={password} onChange={(e) => setPassword(e.target.value)} />
+              <Input id="password" type="password" placeholder="••••••••" required value={password} onChange={(e) => setPassword(e.target.value)} disabled={isGoogleLoading || isAppleLoading}/>
             </div>
-            <Button type="submit" className="w-full font-bold" disabled={isLoading}>
+            <Button type="submit" className="w-full font-bold" disabled={isLoading || isGoogleLoading || isAppleLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Login
             </Button>
@@ -73,11 +112,13 @@ export default function LoginPage() {
           <Separator className="my-6" />
 
           <div className="space-y-4">
-            <Button variant="outline" className="w-full">
-              <Chrome className="mr-2 h-4 w-4" /> Sign in with Google
+            <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading || isGoogleLoading || isAppleLoading}>
+              {isGoogleLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Chrome className="mr-2 h-4 w-4" />} 
+              Sign in with Google
             </Button>
-            <Button variant="outline" className="w-full">
-              <Apple className="mr-2 h-4 w-4" /> Sign in with Apple
+            <Button variant="outline" className="w-full" onClick={handleAppleSignIn} disabled={isLoading || isGoogleLoading || isAppleLoading}>
+              {isAppleLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Apple className="mr-2 h-4 w-4" />}
+               Sign in with Apple
             </Button>
           </div>
         </CardContent>
