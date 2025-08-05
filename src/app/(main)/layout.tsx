@@ -30,6 +30,7 @@ import {
   MessageSquare,
   Users,
   Loader2,
+  Clapperboard,
 } from 'lucide-react';
 import { UpcomingMissions } from '@/components/upcoming-missions';
 
@@ -148,6 +149,14 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                   <SidebarMenuButton tooltip="Team Chat">
                     <MessageSquare />
                     <span>Team Chat</span>
+                  </SidebarMenuButton>
+                </Link>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <Link href="/sermons" passHref>
+                  <SidebarMenuButton tooltip="Sermons">
+                    <Clapperboard />
+                    <span>Sermons</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
