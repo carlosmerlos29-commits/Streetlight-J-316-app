@@ -8,7 +8,6 @@ import {
   OverlayView,
 } from '@react-google-maps/api';
 import { Skeleton }    from './ui/skeleton';
-import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 
 const libraries = ['places'] as const;
 
@@ -32,13 +31,7 @@ export function InteractiveMap({
   });
 
   const mapRef = useRef<google.maps.Map|null>(null);
-  const defaultCenter = useMemo(() => ({ lat: 38.9072, lng: -77.0369 }), []);
-
-  useEffect(() => {
-    if (userLocation && mapRef.current) {
-      mapRef.current.panTo(userLocation);
-    }
-  }, [userLocation]);
+  const defaultCenter = useMemo(() => ({ lat: 38.8315, lng: -77.0369 }), []);
 
   if (loadError) return <div>Error loading maps. Please check the API key.</div>;
   if (!isLoaded) return <Skeleton className="w-full h-full" />;
@@ -46,8 +39,8 @@ export function InteractiveMap({
   return (
     <GoogleMap
       mapContainerClassName="w-full h-full"
-      center={userLocation || defaultCenter}
-      zoom={userLocation ? 15 : 10}
+      center={defaultCenter}
+      zoom={10}
       onLoad={(map) => { mapRef.current = map; }}
       options={{
         streetViewControl: false,
