@@ -36,7 +36,7 @@ export function InteractiveMap() {
         scrollwheel: true,
       }}
     >
-      <Marker position={center} />
+      {/* <Marker position={center} /> */}
     </GoogleMap>
   );
 }
