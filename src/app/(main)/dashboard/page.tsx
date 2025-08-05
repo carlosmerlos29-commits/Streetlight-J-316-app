@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -18,6 +18,9 @@ import { Loader2, Lightbulb, MapPin, Clock } from 'lucide-react';
 import type { AiMissionPlanningOutput } from '@/ai/flows/ai-mission-planning';
 import type { GetEvangelismCoachingOutput } from '@/ai/flows/ai-evangelism-coaching';
 import { useToast } from "@/hooks/use-toast"
+import { useJsApiLoader, Autocomplete } from '@react-google-maps/api';
+import { Skeleton } from '@/components/ui/skeleton';
+
 
 const missionPlannerSchema = z.object({
   location: z.string().min(3, 'Location must be at least 3 characters.'),
@@ -34,6 +37,8 @@ const coachingSchema = z.object({
 type MissionPlan = AiMissionPlanningOutput;
 type CoachingTips = GetEvangelismCoachingOutput;
 
+const libraries: ('places'|'drawing'|'geometry'|'localContext'|'visualization')[] = ['places'];
+
 
 export default function MissionPlannerPage() {
     const { toast } = useToast();
@@ -41,6 +46,14 @@ export default function MissionPlannerPage() {
     const [isCoaching, setIsCoaching] = useState(false);
     const [missionPlan, setMissionPlan] = useState<MissionPlan | null>(null);
     const [coachingTips, setCoachingTips] = useState<CoachingTips | null>(null);
+
+    const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+
+    const { isLoaded, loadError } = useJsApiLoader({
+        id: 'google-map-script-dashboard',
+        googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+        libraries: libraries
+    });
 
     const plannerForm = useForm<z.infer<typeof missionPlannerSchema>>({
         resolver: zodResolver(missionPlannerSchema),
@@ -87,7 +100,20 @@ export default function MissionPlannerPage() {
             setIsCoaching(false);
         }
     }
+
+    const handlePlaceChanged = () => {
+        if (autocompleteRef.current) {
+            const place = autocompleteRef.current.getPlace();
+            if (place && place.formatted_address) {
+                plannerForm.setValue('location', place.formatted_address);
+            }
+        }
+    };
   
+    if (loadError) {
+        return <div>Error loading maps. Please ensure your API key is correct.</div>;
+    }
+
     return (
         <div className="space-y-8">
             <div className="flex items-center justify-between">
@@ -111,13 +137,31 @@ export default function MissionPlannerPage() {
                         <Form {...plannerForm}>
                             <form onSubmit={plannerForm.handleSubmit(onPlannerSubmit)}>
                                 <CardContent className="space-y-4">
-                                    <FormField control={plannerForm.control} name="location" render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>General Location</FormLabel>
-                                            <FormControl><Input placeholder="e.g., Downtown, San Francisco" {...field} /></FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )} />
+                                    {!isLoaded ? (
+                                        <div className="space-y-2">
+                                            <Label>General Location</Label>
+                                            <Skeleton className="h-10 w-full" />
+                                        </div>
+                                    ) : (
+                                        <FormField control={plannerForm.control} name="location" render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>General Location</FormLabel>
+                                                <FormControl>
+                                                    <Autocomplete
+                                                        onLoad={(ref) => autocompleteRef.current = ref}
+                                                        onPlaceChanged={handlePlaceChanged}
+                                                        options={{
+                                                          types: ["geocode"],
+                                                          componentRestrictions: { country: "us" },
+                                                        }}
+                                                    >
+                                                        <Input placeholder="e.g., Downtown, San Francisco" {...field} />
+                                                    </Autocomplete>
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )} />
+                                    )}
                                     <FormField control={plannerForm.control} name="topic" render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Mission Topic/Theme</FormLabel>
