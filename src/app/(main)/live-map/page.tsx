@@ -1,7 +1,7 @@
 
 'use client';
 
-import Image from 'next/image';
+import { InteractiveMap } from '@/components/interactive-map';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -18,14 +18,7 @@ export default function LiveMapPage() {
         <Card className="flex-grow">
           <CardContent className="h-full p-2">
             <div className="relative h-full w-full rounded-lg overflow-hidden border bg-muted">
-              <Image
-                src="https://placehold.co/1200x800.png"
-                alt="Live mission map"
-                layout="fill"
-                objectFit="cover"
-                className="w-full h-full"
-                data-ai-hint="world map"
-              />
+              <InteractiveMap />
               <div className="absolute top-4 right-4 z-10">
                   <Card className="max-w-xs">
                       <CardHeader>
