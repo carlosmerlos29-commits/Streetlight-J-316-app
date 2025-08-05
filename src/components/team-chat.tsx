@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -11,7 +10,6 @@ import { Send } from 'lucide-react';
 import { ScrollArea } from './ui/scroll-area';
 import { app } from '@/lib/firebase';
 import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, Timestamp } from 'firebase/firestore';
-import { useTranslations } from 'next-intl';
 
 interface Message {
   id: string;
@@ -23,7 +21,6 @@ interface Message {
 }
 
 export function TeamChat() {
-  const t = useTranslations('TeamChat');
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -77,7 +74,7 @@ export function TeamChat() {
   };
 
   const formatTimestamp = (timestamp: Timestamp | null) => {
-    if (!timestamp) return t('sending');
+    if (!timestamp) return 'Sending...';
     return new Date(timestamp.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
@@ -85,8 +82,8 @@ export function TeamChat() {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
-        <CardTitle>{t('title')}</CardTitle>
-        <CardDescription>{t('description')}</CardDescription>
+        <CardTitle>Team Chat</CardTitle>
+        <CardDescription>Coordinate with your team in real-time.</CardDescription>
       </CardHeader>
       <CardContent className="flex-grow flex flex-col gap-4">
         <ScrollArea className="flex-grow h-[calc(100vh-350px)] pr-4" ref={scrollAreaRef}>
@@ -116,14 +113,14 @@ export function TeamChat() {
         </ScrollArea>
         <form className="flex gap-2" onSubmit={handleSendMessage}>
           <Input 
-            placeholder={t('inputPlaceholder')}
+            placeholder="Type a message..."
             className="flex-grow"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
           />
           <Button type="submit" size="icon">
             <Send className="h-4 w-4" />
-            <span className="sr-only">{t('sendButton')}</span>
+            <span className="sr-only">Send</span>
           </Button>
         </form>
       </CardContent>

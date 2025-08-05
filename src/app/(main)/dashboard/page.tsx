@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState, useRef } from 'react';
@@ -21,7 +20,6 @@ import type { GetEvangelismCoachingOutput } from '@/ai/flows/ai-evangelism-coach
 import { useToast } from "@/hooks/use-toast"
 import { useJsApiLoader, Autocomplete } from '@react-google-maps/api';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useTranslations } from 'next-intl';
 
 
 const missionPlannerSchema = z.object({
@@ -43,8 +41,6 @@ const libraries: ('places'|'drawing'|'geometry'|'localContext'|'visualization')[
 
 
 export default function MissionPlannerPage() {
-    const t = useTranslations('Dashboard');
-    const t_general = useTranslations('General');
     const { toast } = useToast();
     const [isPlanning, setIsPlanning] = useState(false);
     const [isCoaching, setIsCoaching] = useState(false);
@@ -78,8 +74,8 @@ export default function MissionPlannerPage() {
         } catch (error) {
             console.error('Error planning mission:', error);
             toast({
-                title: t_general('error'),
-                description: t('planner.error'),
+                title: 'Error',
+                description: 'Failed to generate mission plan. Please try again.',
                 variant: "destructive",
             });
         } finally {
@@ -96,8 +92,8 @@ export default function MissionPlannerPage() {
         } catch (error) {
             console.error('Error getting coaching:', error);
             toast({
-                title: t_general('error'),
-                description: t('coaching.error'),
+                title: 'Error',
+                description: 'Failed to generate coaching tips. Please try again.',
                 variant: "destructive",
             });
         } finally {
@@ -115,41 +111,41 @@ export default function MissionPlannerPage() {
     };
   
     if (loadError) {
-        return <div>{t('mapsError')}</div>;
+        return <div>Error loading maps. Please ensure your API key is correct.</div>;
     }
 
     return (
         <div className="space-y-8">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="font-headline text-3xl font-bold">{t('title')}</h1>
-                    <p className="text-muted-foreground">{t('description')}</p>
+                    <h1 className="font-headline text-3xl font-bold">AI Assistant</h1>
+                    <p className="text-muted-foreground">Plan your missions and get coaching tips.</p>
                 </div>
             </div>
 
             <Tabs defaultValue="planner">
                 <TabsList className="grid w-full grid-cols-2 md:w-[400px]">
-                    <TabsTrigger value="planner">{t('planner.tab')}</TabsTrigger>
-                    <TabsTrigger value="coaching">{t('coaching.tab')}</TabsTrigger>
+                    <TabsTrigger value="planner">Mission Planner</TabsTrigger>
+                    <TabsTrigger value="coaching">Evangelism Coaching</TabsTrigger>
                 </TabsList>
                 <TabsContent value="planner">
                     <Card>
                         <CardHeader>
-                            <CardTitle>{t('planner.title')}</CardTitle>
-                            <CardDescription>{t('planner.description')}</CardDescription>
+                            <CardTitle>AI Mission Planner</CardTitle>
+                            <CardDescription>Get AI-powered suggestions for optimal mission locations and times.</CardDescription>
                         </CardHeader>
                         <Form {...plannerForm}>
                             <form onSubmit={plannerForm.handleSubmit(onPlannerSubmit)}>
                                 <CardContent className="space-y-4">
                                     {!isLoaded ? (
                                         <div className="space-y-2">
-                                            <Label>{t('planner.locationLabel')}</Label>
+                                            <Label>General Location</Label>
                                             <Skeleton className="h-10 w-full" />
                                         </div>
                                     ) : (
                                         <FormField control={plannerForm.control} name="location" render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>{t('planner.locationLabel')}</FormLabel>
+                                                <FormLabel>General Location</FormLabel>
                                                 <FormControl>
                                                     <Autocomplete
                                                         onLoad={(ref) => autocompleteRef.current = ref}
@@ -159,7 +155,7 @@ export default function MissionPlannerPage() {
                                                           componentRestrictions: { country: "us" },
                                                         }}
                                                     >
-                                                        <Input placeholder={t('planner.locationPlaceholder')} {...field} />
+                                                        <Input placeholder="e.g., Downtown, San Francisco" {...field} />
                                                     </Autocomplete>
                                                 </FormControl>
                                                 <FormMessage />
@@ -168,16 +164,16 @@ export default function MissionPlannerPage() {
                                     )}
                                     <FormField control={plannerForm.control} name="topic" render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>{t('planner.topicLabel')}</FormLabel>
-                                            <FormControl><Input placeholder={t('planner.topicPlaceholder')} {...field} /></FormControl>
+                                            <FormLabel>Mission Topic/Theme</FormLabel>
+                                            <FormControl><Input placeholder="e.g., Handing out tracts, Street preaching" {...field} /></FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )} />
                                     <FormField control={plannerForm.control} name="preferences" render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>{t('planner.preferencesLabel')}</FormLabel>
-                                            <FormControl><Textarea placeholder={t('planner.preferencesPlaceholder')} {...field} /></FormControl>
-                                            <FormDescription>{t('planner.preferencesDescription')}</FormDescription>
+                                            <FormLabel>Preferences (Optional)</FormLabel>
+                                            <FormControl><Textarea placeholder="e.g., Weekday afternoons, near a park" {...field} /></FormControl>
+                                            <FormDescription>Any specific preferences for time, venue, etc.</FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )} />
@@ -185,7 +181,7 @@ export default function MissionPlannerPage() {
                                 <CardFooter>
                                     <Button type="submit" disabled={isPlanning}>
                                         {isPlanning && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                        {t('planner.submitButton')}
+                                        Generate Plan
                                     </Button>
                                 </CardFooter>
                             </form>
@@ -195,30 +191,30 @@ export default function MissionPlannerPage() {
                 <TabsContent value="coaching">
                     <Card>
                         <CardHeader>
-                            <CardTitle>{t('coaching.title')}</CardTitle>
-                            <CardDescription>{t('coaching.description')}</CardDescription>
+                            <CardTitle>AI Evangelism Coaching</CardTitle>
+                            <CardDescription>Receive personalized coaching tips to improve your approach.</CardDescription>
                         </CardHeader>
                         <Form {...coachingForm}>
                             <form onSubmit={coachingForm.handleSubmit(onCoachingSubmit)}>
                                 <CardContent className="space-y-4">
                                     <FormField control={coachingForm.control} name="missionDescription" render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>{t('coaching.missionDescriptionLabel')}</FormLabel>
-                                            <FormControl><Textarea placeholder={t('coaching.missionDescriptionPlaceholder')} {...field} /></FormControl>
+                                            <FormLabel>Mission Description</FormLabel>
+                                            <FormControl><Textarea placeholder="Describe the evangelism mission you have planned." {...field} /></FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )} />
                                     <FormField control={coachingForm.control} name="userExperience" render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>{t('coaching.experienceLabel')}</FormLabel>
-                                            <FormControl><Input placeholder={t('coaching.experiencePlaceholder')} {...field} /></FormControl>
+                                            <FormLabel>Your Experience Level</FormLabel>
+                                            <FormControl><Input placeholder="e.g., Beginner, Intermediate, Experienced" {...field} /></FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )} />
                                     <FormField control={coachingForm.control} name="targetAudience" render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>{t('coaching.audienceLabel')}</FormLabel>
-                                            <FormControl><Input placeholder={t('coaching.audiencePlaceholder')} {...field} /></FormControl>
+                                            <FormLabel>Target Audience</FormLabel>
+                                            <FormControl><Input placeholder="e.g., College students, Commuters, Families" {...field} /></FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )} />
@@ -226,7 +222,7 @@ export default function MissionPlannerPage() {
                                 <CardFooter>
                                     <Button type="submit" disabled={isCoaching}>
                                         {isCoaching && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                        {t('coaching.submitButton')}
+                                        Get Coaching
                                     </Button>
                                 </CardFooter>
                             </form>
@@ -239,24 +235,24 @@ export default function MissionPlannerPage() {
             {missionPlan && (
                 <Card className="mt-8">
                     <CardHeader>
-                        <CardTitle>{t('planner.results.title')}</CardTitle>
-                        <CardDescription>{t('planner.results.description')}</CardDescription>
+                        <CardTitle>Your Mission Plan</CardTitle>
+                        <CardDescription>Here are the AI-generated suggestions for your mission.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div>
-                            <h3 className="font-semibold flex items-center mb-2"><MapPin className="mr-2 h-5 w-5 text-primary" />{t('planner.results.locations')}</h3>
+                            <h3 className="font-semibold flex items-center mb-2"><MapPin className="mr-2 h-5 w-5 text-primary" />Suggested Locations</h3>
                             <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
                                 {missionPlan.suggestedLocations.map((loc, i) => <li key={i}>{loc}</li>)}
                             </ul>
                         </div>
                         <div>
-                            <h3 className="font-semibold flex items-center mb-2"><Clock className="mr-2 h-5 w-5 text-primary" />{t('planner.results.times')}</h3>
+                            <h3 className="font-semibold flex items-center mb-2"><Clock className="mr-2 h-5 w-5 text-primary" />Suggested Times</h3>
                              <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
                                 {missionPlan.suggestedTimes.map((time, i) => <li key={i}>{time}</li>)}
                             </ul>
                         </div>
                         <div>
-                            <h3 className="font-semibold flex items-center mb-2"><Lightbulb className="mr-2 h-5 w-5 text-primary" />{t('planner.results.reasoning')}</h3>
+                            <h3 className="font-semibold flex items-center mb-2"><Lightbulb className="mr-2 h-5 w-5 text-primary" />Reasoning</h3>
                             <p className="text-muted-foreground">{missionPlan.reasoning}</p>
                         </div>
                     </CardContent>
@@ -267,8 +263,8 @@ export default function MissionPlannerPage() {
             {coachingTips && (
                 <Card className="mt-8">
                     <CardHeader>
-                        <CardTitle>{t('coaching.results.title')}</CardTitle>
-                        <CardDescription>{t('coaching.results.description')}</CardDescription>
+                        <CardTitle>Your Coaching Tips</CardTitle>
+                        <CardDescription>Here are some tips to enhance your evangelism.</CardDescription>
                     </CardHeader>
                     <CardContent>
                          <ul className="space-y-4">

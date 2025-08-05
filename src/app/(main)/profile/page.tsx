@@ -1,5 +1,4 @@
 
-
 'use client'
 
 import { useState, useEffect } from 'react';
@@ -11,10 +10,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { getAuth, User } from 'firebase/auth';
 import { app } from '@/lib/firebase';
-import { useTranslations } from 'next-intl';
 
 export default function ProfilePage() {
-  const t = useTranslations('Profile');
   const auth = getAuth(app);
   const [user, setUser] = useState<User | null>(null);
 
@@ -26,8 +23,8 @@ export default function ProfilePage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-headline text-3xl font-bold">{t('title')}</h1>
-        <p className="text-muted-foreground">{t('description')}</p>
+        <h1 className="font-headline text-3xl font-bold">User Profile</h1>
+        <p className="text-muted-foreground">View and edit your personal information.</p>
       </div>
 
       <div className="grid gap-8 md:grid-cols-3">
@@ -35,14 +32,14 @@ export default function ProfilePage() {
           <Card>
             <CardContent className="pt-6 flex flex-col items-center text-center space-y-4">
               <Avatar className="h-24 w-24">
-                <AvatarImage src={user?.photoURL || "https://placehold.co/100x100.png"} alt={t('userAvatarAlt')} data-ai-hint="man portrait"/>
+                <AvatarImage src={user?.photoURL || "https://placehold.co/100x100.png"} alt="User Avatar" data-ai-hint="man portrait"/>
                 <AvatarFallback>{user?.email?.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="text-xl font-semibold">{user?.displayName || t('userName')}</h2>
+                <h2 className="text-xl font-semibold">{user?.displayName || "User Name"}</h2>
                 <p className="text-muted-foreground">{user?.email}</p>
               </div>
-              <Button variant="outline">{t('changeAvatarButton')}</Button>
+              <Button variant="outline">Change Avatar</Button>
             </CardContent>
           </Card>
         </div>
@@ -50,23 +47,23 @@ export default function ProfilePage() {
         <div className="md:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>{t('details.title')}</CardTitle>
-              <CardDescription>{t('details.description')}</CardDescription>
+              <CardTitle>Profile Details</CardTitle>
+              <CardDescription>Update your bio and favorite verse.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="username">{t('details.usernameLabel')}</Label>
-                <Input id="username" defaultValue={user?.displayName || t('userName')} />
+                <Label htmlFor="username">Username</Label>
+                <Input id="username" defaultValue={user?.displayName || "User Name"} />
               </div>
                <div className="space-y-2">
-                <Label htmlFor="bio">{t('details.bioLabel')}</Label>
-                <Textarea id="bio" placeholder={t('details.bioPlaceholder')} defaultValue={t('details.bioDefaultValue')} />
+                <Label htmlFor="bio">Bio</Label>
+                <Textarea id="bio" placeholder="Tell us a little about yourself." defaultValue="Passionate about sharing the Gospel and serving the community." />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="verse">{t('details.verseLabel')}</Label>
-                <Input id="verse" placeholder={t('details.versePlaceholder')} defaultValue="John 3:16" />
+                <Label htmlFor="verse">Favorite Bible Verse</Label>
+                <Input id="verse" placeholder="e.g., John 3:16" defaultValue="John 3:16" />
               </div>
-              <Button>{t('details.saveButton')}</Button>
+              <Button>Save Changes</Button>
             </CardContent>
           </Card>
         </div>

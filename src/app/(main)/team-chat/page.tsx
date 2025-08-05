@@ -1,15 +1,13 @@
 
 
 import { TeamChat } from '@/components/team-chat';
-import { useTranslations } from 'next-intl';
 
 export default function TeamChatPage() {
-  const t = useTranslations('TeamChat');
   return (
     <div className="h-full flex flex-col">
         <div className="mb-6">
-          <h1 className="font-headline text-3xl font-bold">{t('title')}</h1>
-          <p className="text-muted-foreground">{t('description')}</p>
+          <h1 className="font-headline text-3xl font-bold">Team Chat</h1>
+          <p className="text-muted-foreground">Coordinate with your team in real-time.</p>
         </div>
         <div className="flex-grow">
             <TeamChat />
