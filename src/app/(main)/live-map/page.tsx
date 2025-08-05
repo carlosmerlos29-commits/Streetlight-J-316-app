@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { ListFilter, RadioTower, LocateFixed, Loader2, PlusCircle, Calendar as CalendarIcon } from 'lucide-react';
+import { ListFilter, RadioTower, LocateFixed, Loader2, PlusCircle, Calendar as CalendarIcon, Flame, CalendarDays } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -29,6 +29,26 @@ interface Location {
   lat: number;
   lng: number;
 }
+
+export interface EventLocation extends Location {
+    id: string;
+    title: string;
+    isLive: boolean;
+}
+
+// Mock geocoded locations for demo purposes
+const eventCoordinates: { [key: string]: Location } = {
+    'City Center Plaza': { lat: 38.8305, lng: -77.3060 },
+    '123 Main St, Community Church': { lat: 38.8330, lng: -77.3090 },
+    'Online via Zoom': { lat: 38.829, lng: -77.304 },
+};
+
+
+const initialEvents = [
+    { id: '1', date: new Date(new Date().getTime() - 2 * 60 * 60 * 1000), title: 'City-Wide Outreach', description: 'Join us for a large-scale evangelism event at the city center.', type: 'Outreach', time: '12:00 PM', address: 'City Center Plaza' },
+    { id: '2', date: new Date(new Date().getTime() + 24 * 60 * 60 * 1000), title: 'Prayer & Worship Night', description: 'A night dedicated to prayer for our city and worship.', type: 'Worship', time: '7:00 PM', address: '123 Main St, Community Church' },
+    { id: '3', date: new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000), title: 'Evangelism Training Workshop', description: 'Learn practical skills for sharing your faith.', type: 'Training', time: '10:00 AM', address: 'Online via Zoom' },
+];
 
 const eventSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
@@ -49,18 +69,67 @@ export default function LiveMapPage() {
     const [isGettingLocation, setIsGettingLocation] = useState(false);
     const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [events, setEvents] = useState(initialEvents);
+    const [eventLocations, setEventLocations] = useState<EventLocation[]>([]);
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(setUser);
         return () => unsubscribe();
     }, [auth]);
 
+    useEffect(() => {
+        const now = new Date();
+        const locations = events.map(event => {
+            const eventDateTime = new Date(event.date);
+            const [hours, minutes] = event.time.split(/:| /);
+            eventDateTime.setHours(parseInt(hours, 10) + (event.time.includes('PM') && hours !== '12' ? 12 : 0));
+            eventDateTime.setMinutes(parseInt(minutes, 10));
+
+            const isLive = now >= eventDateTime;
+
+            const coords = eventCoordinates[event.address];
+
+            if (coords) {
+                return {
+                    id: event.id,
+                    title: event.title,
+                    isLive: isLive,
+                    ...coords
+                };
+            }
+            return null;
+        }).filter((l): l is EventLocation => l !== null);
+
+        setEventLocations(locations);
+        
+        const interval = setInterval(() => {
+            // Re-check every minute to see if events went live
+             const now = new Date();
+             setEventLocations(prevLocations => prevLocations.map(loc => {
+                const event = events.find(e => e.id === loc.id);
+                if (!event) return loc;
+                
+                const eventDateTime = new Date(event.date);
+                const [hours, minutes] = event.time.split(/:| /);
+                eventDateTime.setHours(parseInt(hours, 10) + (event.time.includes('PM') && hours !== '12' ? 12 : 0));
+                eventDateTime.setMinutes(parseInt(minutes, 10));
+
+                return {...loc, isLive: now >= eventDateTime };
+             }));
+        }, 60000);
+
+        return () => clearInterval(interval);
+
+    }, [events]);
+
+
     const form = useForm<EventFormValues>({
         resolver: zodResolver(eventSchema),
     });
 
     function onEventSubmit(data: EventFormValues) {
-        console.log("New Event Created:", data);
+        const newEvent = { ...data, id: (events.length + 1).toString() };
+        setEvents(prev => [...prev, newEvent]);
         toast({
           title: 'Event Created!',
           description: `The event "${data.title}" has been successfully added.`,
@@ -117,6 +186,7 @@ export default function LiveMapPage() {
                 userLocation={currentLocation}
                 userAvatar={user?.photoURL || undefined}
                 userName={user?.displayName || "You"}
+                events={eventLocations}
               />
               <div className="absolute top-4 right-4 z-10">
                   <Card className="max-w-xs">
