@@ -1,5 +1,10 @@
 
-import type { Metadata } from 'next';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
+import { app } from '@/lib/firebase';
 import Link from 'next/link';
 import {
   SidebarProvider,
@@ -24,15 +29,42 @@ import {
   LogOut,
   MessageSquare,
   Users,
+  Loader2,
 } from 'lucide-react';
 import { UpcomingMissions } from '@/components/upcoming-missions';
 
-export const metadata: Metadata = {
-  title: 'Streetlight J-316 Dashboard',
-  description: 'Your dashboard for mission planning and execution.',
-};
-
 export default function MainLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const auth = getAuth(app);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+      } else {
+        router.push('/');
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [auth, router]);
+
+  const handleLogout = async () => {
+    await auth.signOut();
+    router.push('/');
+  };
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-16 w-16 animate-spin text-primary" />
+      </div>
+    );
+  }
+  
   return (
     <SidebarProvider>
       <Sidebar>
@@ -100,21 +132,19 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <Link href="/profile" passHref className="w-full">
               <Button variant="ghost" className="w-full justify-start gap-2 px-2">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="https://placehold.co/40x40.png" alt="User Avatar" data-ai-hint="man portrait"/>
-                  <AvatarFallback>U</AvatarFallback>
+                  <AvatarImage src={user?.photoURL || "https://placehold.co/40x40.png"} alt="User Avatar" data-ai-hint="man portrait"/>
+                  <AvatarFallback>{user?.email?.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="text-left">
-                  <p className="font-semibold">User</p>
-                  <p className="text-xs text-muted-foreground">user@email.com</p>
+                  <p className="font-semibold">{user?.displayName || "User"}</p>
+                  <p className="text-xs text-muted-foreground">{user?.email}</p>
                 </div>
               </Button>
             </Link>
-            <Link href="/" passHref className="w-full">
-                <Button variant="ghost" className="w-full justify-start gap-2 px-2">
-                  <LogOut className="h-4 w-4" />
-                  <span>Logout</span>
-                </Button>
-            </Link>
+            <Button variant="ghost" className="w-full justify-start gap-2 px-2" onClick={handleLogout}>
+              <LogOut className="h-4 w-4" />
+              <span>Logout</span>
+            </Button>
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>

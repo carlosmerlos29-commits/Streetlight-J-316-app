@@ -7,34 +7,44 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Chrome, Apple, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { Separator } from '@/components/ui/separator';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { app } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 
-
-export default function LoginPage() {
+export default function SignupPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const auth = getAuth(app);
 
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      toast({
+        title: "Passwords do not match",
+        description: "Please make sure your passwords match.",
+        variant: "destructive",
+      });
+      return;
+    }
     setIsLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      router.push('/dashboard');
-    } catch (error: any) {
-      console.error('Login Error:', error);
+      await createUserWithEmailAndPassword(auth, email, password);
       toast({
-        title: "Login Failed",
-        description: error.message || "Invalid email or password. Please try again.",
+        title: "Account Created",
+        description: "Your account has been successfully created. Please log in.",
+      });
+      router.push('/'); // Redirect to login page after signup
+    } catch (error: any) {
+      console.error('Signup Error:', error);
+      toast({
+        title: "Signup Failed",
+        description: error.message || "Could not create an account. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -46,11 +56,11 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center">
-          <h1 className="font-headline text-4xl font-bold text-primary">Streetlight J-316</h1>
-          <CardDescription>Lighting the way for modern evangelism.</CardDescription>
+          <h1 className="font-headline text-4xl font-bold text-primary">Create Account</h1>
+          <CardDescription>Join Streetlight J-316 to start your mission.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleSignup} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" placeholder="john.doe@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -59,33 +69,21 @@ export default function LoginPage() {
               <Label htmlFor="password">Password</Label>
               <Input id="password" type="password" placeholder="••••••••" required value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirm-password">Confirm Password</Label>
+              <Input id="confirm-password" type="password" placeholder="••••••••" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+            </div>
             <Button type="submit" className="w-full font-bold" disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Login
+              Sign Up
             </Button>
           </form>
-          <div className="mt-4 text-center text-sm">
-            <Link href="#" className="underline">
-              Forgot your password?
-            </Link>
-          </div>
-
-          <Separator className="my-6" />
-
-          <div className="space-y-4">
-            <Button variant="outline" className="w-full">
-              <Chrome className="mr-2 h-4 w-4" /> Sign in with Google
-            </Button>
-            <Button variant="outline" className="w-full">
-              <Apple className="mr-2 h-4 w-4" /> Sign in with Apple
-            </Button>
-          </div>
         </CardContent>
         <CardFooter className="flex-col gap-4 text-center">
           <p className="text-xs text-muted-foreground">
-            Don't have an account?{' '}
-            <Link href="/signup" className="underline font-medium text-primary">
-              Sign up
+            Already have an account?{' '}
+            <Link href="/" className="underline font-medium text-primary">
+              Login
             </Link>
           </p>
         </CardFooter>

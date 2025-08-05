@@ -1,13 +1,25 @@
+
 'use client'
 
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { getAuth, User } from 'firebase/auth';
+import { app } from '@/lib/firebase';
 
 export default function ProfilePage() {
+  const auth = getAuth(app);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(setUser);
+    return () => unsubscribe();
+  }, [auth]);
+
   return (
     <div className="space-y-8">
       <div>
@@ -20,12 +32,12 @@ export default function ProfilePage() {
           <Card>
             <CardContent className="pt-6 flex flex-col items-center text-center space-y-4">
               <Avatar className="h-24 w-24">
-                <AvatarImage src="https://placehold.co/100x100.png" alt="User Avatar" data-ai-hint="man portrait"/>
-                <AvatarFallback>U</AvatarFallback>
+                <AvatarImage src={user?.photoURL || "https://placehold.co/100x100.png"} alt="User Avatar" data-ai-hint="man portrait"/>
+                <AvatarFallback>{user?.email?.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="text-xl font-semibold">User Name</h2>
-                <p className="text-muted-foreground">user@email.com</p>
+                <h2 className="text-xl font-semibold">{user?.displayName || "User Name"}</h2>
+                <p className="text-muted-foreground">{user?.email}</p>
               </div>
               <Button variant="outline">Change Avatar</Button>
             </CardContent>
@@ -41,7 +53,7 @@ export default function ProfilePage() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="username">Username</Label>
-                <Input id="username" defaultValue="User Name" />
+                <Input id="username" defaultValue={user?.displayName || "User Name"} />
               </div>
                <div className="space-y-2">
                 <Label htmlFor="bio">Bio</Label>
