@@ -5,7 +5,7 @@ import { useMemo, useEffect, useRef } from 'react';
 import { GoogleMap, useJsApiLoader, MarkerF } from '@react-google-maps/api';
 import { Skeleton } from './ui/skeleton';
 
-const libraries: ('places' | 'drawing' | 'geometry' | 'localContext' | 'visualization')[] = ['places'];
+const libraries: ('places')[] = ['places'];
 
 interface Location {
   lat: number;
@@ -26,7 +26,7 @@ export function InteractiveMap({ userLocation, userAvatar }: InteractiveMapProps
 
   const mapRef = useRef<google.maps.Map | null>(null);
 
-  const defaultCenter = useMemo(() => ({ lat: 38.6582, lng: -77.2497 }), []);
+  const defaultCenter = useMemo(() => ({ lat: 40.7128, lng: -74.0060 }), []);
 
   useEffect(() => {
     if (userLocation && mapRef.current) {
