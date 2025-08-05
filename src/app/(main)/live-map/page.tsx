@@ -61,6 +61,7 @@ export default function LiveMapPage() {
             );
         } else {
             setCurrentLocation(null);
+            setIsGettingLocation(false);
         }
     };
 
@@ -74,7 +75,7 @@ export default function LiveMapPage() {
           <CardContent className="h-full p-2">
             <div className="relative h-full w-full rounded-lg overflow-hidden border bg-muted">
               <InteractiveMap
-                userLocation={isSharingLocation ? currentLocation : null}
+                userLocation={currentLocation}
                 userAvatar={user?.photoURL || undefined}
                 userName={user?.displayName || "You"}
               />
