@@ -55,14 +55,14 @@ export default function LiveMapPage() {
     const eventLocations = useMemo<EventLocation[]>(() => {
         return events
             .map(event => {
-                const location = eventCoordinates[event.address];
-                if (location) {
-                    return { ...location, id: event.id };
+                let location = eventCoordinates[event.address];
+                if (!location) {
+                    // Add a mock location for new events if address isn't in our list
+                    const newLocation = { lat: 38.8315 + (Math.random() - 0.5) * 0.05, lng: -77.3061 + (Math.random() - 0.5) * 0.05 };
+                    eventCoordinates[event.address] = newLocation;
+                    location = newLocation;
                 }
-                // Add a mock location for new events if address isn't in our list
-                const newLocation = { lat: 38.8315 + (Math.random() - 0.5) * 0.05, lng: -77.3061 + (Math.random() - 0.5) * 0.05 };
-                eventCoordinates[event.address] = newLocation;
-                return { ...newLocation, id: event.id };
+                return { ...location, id: event.id };
             })
             .filter((l): l is EventLocation => l !== null);
     }, [events]);

@@ -11,6 +11,8 @@ import { useMemo } from 'react';
 function getEventStatus(event: AppEvent) {
     const now = new Date();
     const eventDateTime = new Date(event.date);
+    if (!event.time) return 'upcoming';
+
     const [hours, minutes] = event.time.split(':').map(Number);
     eventDateTime.setHours(hours);
     eventDateTime.setMinutes(minutes);
@@ -29,6 +31,8 @@ function formatTime(event: AppEvent) {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const eventDate = new Date(event.date.getFullYear(), event.date.getMonth(), event.date.getDate());
+
+    if (!event.time) return event.date.toLocaleDateString();
 
     const [hours, minutes] = event.time.split(':').map(Number);
     const ampm = hours >= 12 ? 'PM' : 'AM';
@@ -65,12 +69,16 @@ export function UpcomingMissions() {
       displayTime: formatTime(event),
     })).sort((a, b) => {
         const aDate = new Date(a.date);
-        const [aHours, aMinutes] = a.time.split(':').map(Number);
-        aDate.setHours(aHours, aMinutes);
+        if (a.time) {
+          const [aHours, aMinutes] = a.time.split(':').map(Number);
+          aDate.setHours(aHours, aMinutes);
+        }
 
         const bDate = new Date(b.date);
-        const [bHours, bMinutes] = b.time.split(':').map(Number);
-        bDate.setHours(bHours, bMinutes);
+        if (b.time) {
+          const [bHours, bMinutes] = b.time.split(':').map(Number);
+          bDate.setHours(bHours, bMinutes);
+        }
         
         // Sort recent/active events to be descending (most recent first)
         if (a.status === 'recent' || a.status === 'active') {
