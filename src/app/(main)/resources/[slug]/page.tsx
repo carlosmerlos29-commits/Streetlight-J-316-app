@@ -31,7 +31,7 @@ const ResourcePageContent = ({ resource }: { resource: Resource }) => {
               </video>
             </div>
             <div className="mt-6 prose prose-stone dark:prose-invert max-w-none">
-              {resource.content}
+              <p>{resource.content}</p>
             </div>
           </CardContent>
         </Card>
@@ -53,7 +53,7 @@ const ResourcePageContent = ({ resource }: { resource: Resource }) => {
                 </Button>
              </div>
              <div className="mt-6 prose prose-stone dark:prose-invert max-w-none text-left">
-              {resource.content}
+              <p>{resource.content}</p>
             </div>
           </CardContent>
         </Card>
@@ -67,7 +67,7 @@ const ResourcePageContent = ({ resource }: { resource: Resource }) => {
           </CardHeader>
           <CardContent>
             <div className="prose prose-stone dark:prose-invert max-w-none">
-             {resource.content}
+             <p>{resource.content}</p>
             </div>
           </CardContent>
         </Card>

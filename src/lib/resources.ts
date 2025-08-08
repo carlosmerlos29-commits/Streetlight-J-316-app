@@ -1,1 +1,1 @@
-// This file's content has been moved to resources.tsx to allow for JSX syntax.
+// This file is intentionally left blank. The content has been moved to resources.tsx
