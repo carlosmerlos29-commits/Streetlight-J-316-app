@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, Wand2 } from 'lucide-react';
 import Link from 'next/link';
-import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, setPersistence, browserLocalPersistence } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, OAuthProvider, signInWithPopup, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { app } from '@/lib/firebase';
 import { useToast } from "@/hooks/use-toast"
 
@@ -21,6 +21,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isAppleLoading, setIsAppleLoading] = useState(false);
   const auth = getAuth(app);
   const googleProvider = new GoogleAuthProvider();
 
@@ -59,6 +60,26 @@ export default function LoginPage() {
       setIsGoogleLoading(false);
     }
   };
+  
+  const handleAppleSignIn = async () => {
+    setIsAppleLoading(true);
+    const appleProvider = new OAuthProvider('apple.com');
+    try {
+      await setPersistence(auth, browserLocalPersistence);
+      await signInWithPopup(auth, appleProvider);
+      router.push('/live-map');
+    } catch (error) {
+      console.error('Apple Sign-in Error:', error);
+       toast({
+        title: "Apple Sign-In Failed",
+        description: "Could not sign in with Apple. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsAppleLoading(false);
+    }
+  };
+
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
@@ -101,6 +122,14 @@ export default function LoginPage() {
                 </svg>
               }
               Sign in with Google
+            </Button>
+            <Button variant="outline" className="w-full" onClick={handleAppleSignIn} disabled={isAppleLoading}>
+              {isAppleLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> :
+                <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="apple" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                  <path fill="currentColor" d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C39.2 141.6 0 184.2 0 241.2c0 61.6 31.5 118.8 80.1 142.6 20.7 13.7 42.5 19.7 62.2 19.7 16.9 0 36.2-5.2 56.1-15.4 17.6-9.1 31.5-24.3 50.8-24.3 15.8 0 30.1 10.5 45.3 10.5 15.4 0 34.3-6.8 52.8-18.2 21.6-13.7 34.3-33.5 34.3-55.8-.1-2.4-.1-4.7-.2-7.1zM256 48C202.9 48 160 82.6 160 133.6c0 4.1 1.1 8.2 3.1 12.1C182.5 106 222.2 72 256 72c33.8 0 73.5 34 54.2 89.5-21.3-33.5-54.2-54.2-88.2-54.2z"></path>
+                </svg>
+              }
+              Sign in with Apple
             </Button>
           </div>
         </CardContent>
