@@ -19,6 +19,7 @@ interface InteractiveMapProps {
   isLoaded: boolean;
   loadError?: Error;
   eventLocations?: EventLocation[];
+  userLocation?: Location | null;
 }
 
 
@@ -26,12 +27,19 @@ export function InteractiveMap({
   isLoaded,
   loadError,
   eventLocations = [],
+  userLocation,
 }: InteractiveMapProps) {
   const mapRef = useRef<google.maps.Map|null>(null);
   const defaultCenter = useMemo<Location>(
     () => ({ lat: 38.8315, lng: -77.3061 }),
     []
   );
+
+  useEffect(() => {
+    if (userLocation && mapRef.current) {
+        mapRef.current.panTo(userLocation);
+    }
+  }, [userLocation]);
 
   if (loadError) return <div>Error loading maps.</div>;
   if (!isLoaded) return <Skeleton className="w-full h-full" />;
@@ -53,6 +61,19 @@ export function InteractiveMap({
       {eventLocations.map(location => (
         <MarkerF key={location.id} position={{ lat: location.lat, lng: location.lng }} />
       ))}
+      {userLocation && (
+         <MarkerF 
+            position={userLocation}
+            icon={{
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 8,
+                fillColor: "hsl(var(--primary))",
+                fillOpacity: 1,
+                strokeColor: "white",
+                strokeWeight: 2,
+            }}
+         />
+      )}
     </GoogleMap>
   );
 }
