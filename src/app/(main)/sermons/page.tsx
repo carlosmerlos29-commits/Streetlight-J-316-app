@@ -9,43 +9,43 @@ export default function SermonsPage() {
 
   const sermons = [
     { 
-      title: "The Sermon on the Mount: The Beatitudes", 
-      speaker: "Pastor John Doe", 
+      title: "El Sermón del Monte: Las Bienaventuranzas", 
+      speaker: "Pastor Juan Pérez", 
       date: "2024-07-21", 
       videoUrl: "#", 
       audioUrl: "#" 
     },
     { 
-      title: "The Parable of the Good Samaritan", 
-      speaker: "Pastor Jane Smith", 
+      title: "La Parábola del Buen Samaritano", 
+      speaker: "Pastora Ana Gómez", 
       date: "2024-07-14", 
       videoUrl: "#", 
       audioUrl: "#" 
     },
     { 
-      title: "The Parable of the Prodigal Son", 
-      speaker: "Pastor John Doe", 
+      title: "La Parábola del Hijo Pródigo", 
+      speaker: "Pastor Juan Pérez", 
       date: "2024-07-07", 
       videoUrl: "#", 
       audioUrl: "#" 
     },
     { 
-      title: "Understanding Grace", 
-      speaker: "Guest Speaker Michael Chen", 
+      title: "Comprendiendo la Gracia", 
+      speaker: "Orador Invitado Miguel Chen", 
       date: "2024-06-30", 
       videoUrl: null, 
       audioUrl: "#" 
     },
     { 
-      title: "Faith That Moves Mountains", 
-      speaker: "Pastor Jane Smith", 
+      title: "La Fe que Mueve Montañas", 
+      speaker: "Pastora Ana Gómez", 
       date: "2024-06-23", 
       videoUrl: "#", 
       audioUrl: null
     },
      { 
-      title: "Living a Life of Purpose", 
-      speaker: "Pastor John Doe", 
+      title: "Viviendo una Vida con Propósito", 
+      speaker: "Pastor Juan Pérez", 
       date: "2024-06-16", 
       videoUrl: "#", 
       audioUrl: "#" 
@@ -55,8 +55,8 @@ export default function SermonsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-headline text-3xl font-bold">Sermons</h1>
-        <p className="text-muted-foreground">Watch and listen to recent messages from our team.</p>
+        <h1 className="font-headline text-3xl font-bold">Sermones</h1>
+        <p className="text-muted-foreground">Mira y escucha los mensajes recientes de nuestro equipo.</p>
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {sermons.map((sermon, index) => (
@@ -68,25 +68,25 @@ export default function SermonsPage() {
                     <span className="text-xs">{sermon.speaker}</span>
                     <span className="flex items-center gap-1.5 text-xs">
                       <CalendarDays className="h-3 w-3" />
-                      {new Date(sermon.date).toLocaleDateString()}
+                      {new Date(sermon.date).toLocaleDateString('es-ES')}
                     </span>
                   </div>
                 </CardDescription>
             </CardHeader>
             <CardContent className="flex-grow">
               <p className="text-muted-foreground text-sm">
-                Join us as we explore deep truths from the scriptures and learn how to apply them to our daily lives.
+                Únete a nosotros mientras exploramos verdades profundas de las escrituras y aprendemos a aplicarlas a nuestras vidas diarias.
               </p>
             </CardContent>
             <CardFooter className="flex gap-2">
                 {sermon.videoUrl && (
                     <Button className="w-full">
-                        <PlayCircle className="mr-2 h-4 w-4" /> Watch
+                        <PlayCircle className="mr-2 h-4 w-4" /> Ver
                     </Button>
                 )}
                 {sermon.audioUrl && (
                     <Button variant="outline" className="w-full">
-                        <Mic className="mr-2 h-4 w-4" /> Listen
+                        <Mic className="mr-2 h-4 w-4" /> Escuchar
                     </Button>
                 )}
             </CardFooter>

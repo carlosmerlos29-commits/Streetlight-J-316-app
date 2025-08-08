@@ -1,0 +1,21 @@
+
+{
+  "Signup": {
+    "title": "Crear Cuenta",
+    "description": "Únete a Streetlight J-316 para comenzar tu misión.",
+    "emailLabel": "Correo electrónico",
+    "passwordLabel": "Contraseña",
+    "confirmPasswordLabel": "Confirmar Contraseña",
+    "signupButton": "Registrarse",
+    "loginPrompt": "¿Ya tienes una cuenta?",
+    "loginLink": "Iniciar sesión",
+    "toast": {
+      "passwordMismatchTitle": "Las contraseñas no coinciden",
+      "passwordMismatchDescription": "Por favor, asegúrate de que tus contraseñas coincidan.",
+      "successTitle": "Cuenta Creada",
+      "successDescription": "Tu cuenta ha sido creada exitosamente. Por favor, inicia sesión.",
+      "signupFailedTitle": "Falló el registro",
+      "signupFailedDescription": "No se pudo crear una cuenta. Por favor, intenta de nuevo."
+    }
+  }
+}

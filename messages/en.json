@@ -1,0 +1,21 @@
+
+{
+  "Signup": {
+    "title": "Create Account",
+    "description": "Join Streetlight J-316 to start your mission.",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "confirmPasswordLabel": "Confirm Password",
+    "signupButton": "Sign Up",
+    "loginPrompt": "Already have an account?",
+    "loginLink": "Login",
+    "toast": {
+      "passwordMismatchTitle": "Passwords do not match",
+      "passwordMismatchDescription": "Please make sure your passwords match.",
+      "successTitle": "Account Created",
+      "successDescription": "Your account has been successfully created. Please log in.",
+      "signupFailedTitle": "Signup Failed",
+      "signupFailedDescription": "Could not create an account. Please try again."
+    }
+  }
+}

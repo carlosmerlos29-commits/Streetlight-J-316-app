@@ -13,46 +13,46 @@ export default function SupportPage() {
   return (
     <div className="space-y-8 max-w-2xl mx-auto">
       <div className="text-center">
-        <h1 className="font-headline text-3xl font-bold">Support Center</h1>
-        <p className="text-muted-foreground">Get help or provide feedback. We're here for you!</p>
+        <h1 className="font-headline text-3xl font-bold">Centro de Soporte</h1>
+        <p className="text-muted-foreground">Obtén ayuda o proporciona comentarios. ¡Estamos aquí para ti!</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Contact Us</CardTitle>
-          <CardDescription>Please fill out the form below and we will get back to you as soon as possible.</CardDescription>
+          <CardTitle>Contáctanos</CardTitle>
+          <CardDescription>Por favor, completa el formulario a continuación y nos pondremos en contacto contigo lo antes posible.</CardDescription>
         </CardHeader>
         <CardContent>
           <form className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
-                    <Input id="name" placeholder="Your Name" />
+                    <Label htmlFor="name">Nombre</Label>
+                    <Input id="name" placeholder="Tu Nombre" />
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="your@email.com" />
+                    <Label htmlFor="email">Correo electrónico</Label>
+                    <Input id="email" type="email" placeholder="tu@email.com" />
                 </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="subject">Subject</Label>
+              <Label htmlFor="subject">Asunto</Label>
               <Select>
                 <SelectTrigger id="subject">
-                  <SelectValue placeholder="Select a subject" />
+                  <SelectValue placeholder="Selecciona un asunto" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="bug">Bug Report</SelectItem>
-                  <SelectItem value="feature">Feature Request</SelectItem>
-                  <SelectItem value="question">General Question</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="bug">Reporte de Error</SelectItem>
+                  <SelectItem value="feature">Solicitud de Característica</SelectItem>
+                  <SelectItem value="question">Pregunta General</SelectItem>
+                  <SelectItem value="other">Otro</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="message">Message</Label>
-              <Textarea id="message" placeholder="Describe your issue or request..." className="min-h-[120px]" />
+              <Label htmlFor="message">Mensaje</Label>
+              <Textarea id="message" placeholder="Describe tu problema o solicitud..." className="min-h-[120px]" />
             </div>
-            <Button type="submit" className="w-full">Submit Ticket</Button>
+            <Button type="submit" className="w-full">Enviar Ticket</Button>
           </form>
         </CardContent>
       </Card>

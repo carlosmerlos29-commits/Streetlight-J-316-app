@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview An AI-powered evangelism coaching agent.
@@ -13,18 +14,18 @@ import {z} from 'genkit';
 const GetEvangelismCoachingInputSchema = z.object({
   missionDescription: z
     .string()
-    .describe('A description of the planned evangelism mission.'),
+    .describe('Una descripción de la misión de evangelismo planeada.'),
   userExperience: z
     .string()
-    .describe('The user’s prior experience with evangelism.'),
+    .describe('La experiencia previa del usuario con el evangelismo.'),
   targetAudience: z
     .string()
-    .describe('Description of the target audience for the mission.'),
+    .describe('Descripción del público objetivo para la misión.'),
 });
 export type GetEvangelismCoachingInput = z.infer<typeof GetEvangelismCoachingInputSchema>;
 
 const GetEvangelismCoachingOutputSchema = z.object({
-  coachingTips: z.array(z.string()).describe('A list of coaching tips for the evangelism mission.'),
+  coachingTips: z.array(z.string()).describe('Una lista de consejos de coaching para la misión de evangelismo.'),
 });
 export type GetEvangelismCoachingOutput = z.infer<typeof GetEvangelismCoachingOutputSchema>;
 
@@ -36,13 +37,13 @@ const prompt = ai.definePrompt({
   name: 'evangelismCoachingPrompt',
   input: {schema: GetEvangelismCoachingInputSchema},
   output: {schema: GetEvangelismCoachingOutputSchema},
-  prompt: `You are an AI-powered evangelism coach. Provide coaching tips for the user’s evangelism mission based on the following information:
+  prompt: `Eres un coach de evangelismo impulsado por IA. Proporciona consejos de coaching para la misión de evangelismo del usuario basándote en la siguiente información:
 
-Mission Description: {{{missionDescription}}}
-User Experience: {{{userExperience}}}
-Target Audience: {{{targetAudience}}}
+Descripción de la Misión: {{{missionDescription}}}
+Experiencia del Usuario: {{{userExperience}}}
+Público Objetivo: {{{targetAudience}}}
 
-Provide at least three coaching tips to improve their approach.`,
+Proporciona al menos tres consejos de coaching para mejorar su enfoque.`,
 });
 
 const evangelismCoachingFlow = ai.defineFlow(
