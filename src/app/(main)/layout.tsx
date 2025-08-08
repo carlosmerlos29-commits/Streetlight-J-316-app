@@ -118,7 +118,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <SidebarProvider>
         <Sidebar>
           <SidebarHeader>
-            <Link href="/dashboard" className="flex items-center gap-2">
+            <Link href="/live-map" className="flex items-center gap-2">
               <div className="p-1.5 rounded-lg bg-primary">
                 <Wand2 className="h-6 w-6 text-primary-foreground" />
               </div>

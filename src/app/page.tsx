@@ -29,7 +29,7 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push('/dashboard');
+      router.push('/live-map');
     } catch (error) {
       console.error('Login Error:', error);
       toast({
@@ -47,7 +47,7 @@ export default function LoginPage() {
     try {
       await setPersistence(auth, browserLocalPersistence);
       await signInWithPopup(auth, googleProvider);
-      router.push('/dashboard');
+      router.push('/live-map');
     } catch (error) {
       console.error('Google Sign-in Error:', error);
        toast({
