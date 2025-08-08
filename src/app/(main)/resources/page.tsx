@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import { resources } from '@/lib/resources';
+import { resources } from '@/lib/resources.tsx';
 import Link from 'next/link';
 
 export default function ResourcesPage() {
