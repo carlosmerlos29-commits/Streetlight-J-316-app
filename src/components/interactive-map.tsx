@@ -5,20 +5,27 @@
 import { useEffect, useRef, useMemo } from 'react';
 import {
   GoogleMap,
+  MarkerF,
 } from '@react-google-maps/api';
 import { Skeleton } from './ui/skeleton';
 
 interface Location { lat: number; lng: number; }
 
+export interface EventLocation extends Location {
+  id: string;
+}
+
 interface InteractiveMapProps {
   isLoaded: boolean;
   loadError?: Error;
+  eventLocations?: EventLocation[];
 }
 
 
 export function InteractiveMap({
   isLoaded,
   loadError,
+  eventLocations = [],
 }: InteractiveMapProps) {
   const mapRef = useRef<google.maps.Map|null>(null);
   const defaultCenter = useMemo<Location>(
@@ -43,6 +50,9 @@ export function InteractiveMap({
         mapId: 'fa151a7458f4a180',
       }}
     >
+      {eventLocations.map(location => (
+        <MarkerF key={location.id} position={{ lat: location.lat, lng: location.lng }} />
+      ))}
     </GoogleMap>
   );
 }

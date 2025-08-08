@@ -1,43 +1,26 @@
 
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { getAuth, User } from 'firebase/auth';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { format } from 'date-fns';
-import { useJsApiLoader, Autocomplete } from '@react-google-maps/api';
+import { useJsApiLoader } from '@react-google-maps/api';
 
 import { app } from '@/lib/firebase';
-import { InteractiveMap } from '@/components/interactive-map';
+import { InteractiveMap, EventLocation } from '@/components/interactive-map';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { ListFilter, RadioTower, LocateFixed, Loader2, PlusCircle, Calendar as CalendarIcon, Flame, CalendarDays, Clock } from 'lucide-react';
+import { ListFilter, RadioTower, LocateFixed, Loader2, PlusCircle, Flame } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
 import { useEvents } from '@/app/(main)/layout';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import Link from 'next/link';
 
 
 interface Location {
   lat: number;
   lng: number;
-}
-
-export interface EventLocation extends Location {
-    id: string;
-    title: string;
-    isLive: boolean;
 }
 
 // Mock geocoded locations for demo purposes
@@ -47,30 +30,16 @@ const eventCoordinates: { [key: string]: Location } = {
     '7315 Ox Rd, Fairfax Station, VA 22039': { lat: 38.7997, lng: -77.2917 },
 };
 
-const eventTypes = ['Outreach', 'Worship', 'Training', 'Community'] as const;
-
-const eventSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters.'),
-  description: z.string().min(10, 'Description must be at least 10 characters.'),
-  date: z.date({ required_error: 'A date is required.' }),
-  time: z.string().nonempty('A time is required.'),
-  address: z.string().min(5, 'An address is required.'),
-  type: z.enum(eventTypes),
-});
-
-type EventFormValues = z.infer<typeof eventSchema>;
 const libraries: ('places'|'drawing'|'geometry'|'localContext'|'visualization')[] = ['places'];
 
 export default function LiveMapPage() {
     const { toast } = useToast();
     const auth = getAuth(app);
-    const { events, addEvent } = useEvents();
+    const { events } = useEvents();
     const [user, setUser] = useState<User | null>(null);
     const [isSharingLocation, setIsSharingLocation] = useState(false);
     const [isGettingLocation, setIsGettingLocation] = useState(false);
-    const [isFormOpen, setIsFormOpen] = useState(false);
     
-    const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
     const { isLoaded, loadError } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
@@ -82,38 +51,22 @@ export default function LiveMapPage() {
         const unsubscribe = auth.onAuthStateChanged(setUser);
         return () => unsubscribe();
     }, [auth]);
+    
+    const eventLocations = useMemo<EventLocation[]>(() => {
+        return events
+            .map(event => {
+                const location = eventCoordinates[event.address];
+                if (location) {
+                    return { ...location, id: event.id };
+                }
+                // Add a mock location for new events if address isn't in our list
+                const newLocation = { lat: 38.8315 + (Math.random() - 0.5) * 0.05, lng: -77.3061 + (Math.random() - 0.5) * 0.05 };
+                eventCoordinates[event.address] = newLocation;
+                return { ...newLocation, id: event.id };
+            })
+            .filter((l): l is EventLocation => l !== null);
+    }, [events]);
 
-    const form = useForm<EventFormValues>({
-        resolver: zodResolver(eventSchema),
-        defaultValues: {
-            title: '',
-            description: '',
-            date: undefined,
-            time: '',
-            address: '',
-        }
-    });
-
-    function onEventSubmit(data: EventFormValues) {
-        const newEventId = (events.length + 1).toString();
-        // Add a mock location for the new event if its address isn't in our list
-        if (!eventCoordinates[data.address]) {
-            eventCoordinates[data.address] = { lat: 38.8315 + (Math.random() - 0.5) * 0.05, lng: -77.3061 + (Math.random() - 0.5) * 0.05 };
-        }
-        addEvent({ ...data, id: newEventId });
-        toast({
-          title: "Event Created!",
-          description: `The event "${data.title}" has been successfully added.`,
-        });
-        form.reset({
-            title: '',
-            description: '',
-            date: undefined,
-            time: '',
-            address: '',
-        });
-        setIsFormOpen(false);
-    }
 
     const handleLocationSharing = (checked: boolean) => {
         setIsSharingLocation(checked);
@@ -148,14 +101,6 @@ export default function LiveMapPage() {
         }
     };
     
-    const handlePlaceChanged = () => {
-        if (autocompleteRef.current) {
-            const place = autocompleteRef.current.getPlace();
-            if (place && place.formatted_address) {
-                form.setValue('address', place.formatted_address);
-            }
-        }
-    };
 
   return (
     <div className="h-full flex flex-col">
@@ -169,10 +114,10 @@ export default function LiveMapPage() {
               <InteractiveMap
                 isLoaded={isLoaded}
                 loadError={loadError}
+                eventLocations={eventLocations}
               />
               <div className="absolute top-4 right-4 z-10">
                   <Card className="max-w-xs">
-                    <Collapsible open={isFormOpen} onOpenChange={setIsFormOpen}>
                       <CardHeader>
                           <CardTitle>Real-Time Controls</CardTitle>
                           <CardDescription>Manage your live presence.</CardDescription>
@@ -197,158 +142,13 @@ export default function LiveMapPage() {
                               />
                           </div>
                            <Button variant="outline" className="w-full"><ListFilter className="mr-2 h-4 w-4" /> Filter Missions</Button>
-                           <CollapsibleTrigger asChild>
-                             <Button className="w-full">
+                           <Link href="/events" passHref className='w-full'>
+                            <Button className="w-full">
                                <PlusCircle className="mr-2 h-4 w-4" />
-                               {isFormOpen ? 'Close' : 'Create Event'}
+                               Create Event
                              </Button>
-                           </CollapsibleTrigger>
+                           </Link>
                       </CardContent>
-                      <CollapsibleContent>
-                            <Form {...form}>
-                              <form onSubmit={form.handleSubmit(onEventSubmit)}>
-                               <CardContent className="space-y-4 pt-4">
-                                <FormField
-                                  control={form.control}
-                                  name="title"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>Event Title</FormLabel>
-                                      <FormControl>
-                                        <Input placeholder="e.g., Summer Outreach" {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={form.control}
-                                  name="description"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>Description</FormLabel>
-                                      <FormControl>
-                                        <Textarea placeholder="Tell us about the event..." {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <div className="grid grid-cols-2 gap-4">
-                                    <FormField
-                                      control={form.control}
-                                      name="date"
-                                      render={({ field }) => (
-                                        <FormItem className="flex flex-col">
-                                          <FormLabel>Event Date</FormLabel>
-                                          <Popover>
-                                            <PopoverTrigger asChild>
-                                              <FormControl>
-                                                <Button
-                                                  variant={"outline"}
-                                                  className={cn(
-                                                    "w-full pl-3 text-left font-normal",
-                                                    !field.value && "text-muted-foreground"
-                                                  )}
-                                                >
-                                                  {field.value ? (
-                                                    format(field.value, "PPP")
-                                                  ) : (
-                                                    <span>Pick a date</span>
-                                                  )}
-                                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                </Button>
-                                              </FormControl>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-auto p-0" align="start">
-                                              <Calendar
-                                                mode="single"
-                                                selected={field.value}
-                                                onSelect={field.onChange}
-                                                disabled={(date) =>
-                                                  date < new Date(new Date().setHours(0,0,0,0))
-                                                }
-                                                initialFocus
-                                              />
-                                            </PopoverContent>
-                                          </Popover>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
-                                    <FormField
-                                      control={form.control}
-                                      name="time"
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel>Event Time</FormLabel>
-                                          <FormControl>
-                                            <Input type="time" placeholder="e.g., 6:00 PM" {...field} />
-                                          </FormControl>
-                                          <FormMessage />
-                                        </FormItem>
-                                      )}
-                                    />
-                                </div>
-                                {!isLoaded ? (
-                                    <div className="space-y-2">
-                                        <Label>Address / Location</Label>
-                                        <Skeleton className="h-10 w-full" />
-                                    </div>
-                                ) : (
-                                <FormField
-                                  control={form.control}
-                                  name="address"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>Address / Location</FormLabel>
-                                      <FormControl>
-                                        <Autocomplete
-                                            onLoad={(ref) => autocompleteRef.current = ref}
-                                            onPlaceChanged={handlePlaceChanged}
-                                            options={{
-                                              types: ["geocode"],
-                                              componentRestrictions: { country: "us" },
-                                            }}
-                                        >
-                                            <Input placeholder="e.g., 123 Main St, Anytown" {...field} />
-                                        </Autocomplete>
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                )}
-                                <FormField
-                                  control={form.control}
-                                  name="type"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>Event Type</FormLabel>
-                                       <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                          <SelectTrigger>
-                                            <SelectValue placeholder="Select an event type" />
-                                          </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                          {eventTypes.map(type => (
-                                            <SelectItem key={type} value={type}>{type}</SelectItem>
-                                          ))}
-                                        </SelectContent>
-                                      </Select>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                               </CardContent>
-                                <CardFooter>
-                                  <Button type="submit" className="w-full">Create Event</Button>
-                                </CardFooter>
-                              </form>
-                            </Form>
-                      </CollapsibleContent>
-                    </Collapsible>
                   </Card>
               </div>
             </div>
