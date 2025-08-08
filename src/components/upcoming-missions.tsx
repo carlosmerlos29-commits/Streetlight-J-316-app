@@ -16,9 +16,7 @@ function getEventStatus(event: AppEvent) {
     eventDateTime.setMinutes(minutes);
 
     if (now < eventDateTime) {
-      const diffHours = (eventDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
-      if (diffHours <= 24) return 'upcoming';
-      return 'future';
+        return 'upcoming';
     }
 
     const diffHours = (now.getTime() - eventDateTime.getTime()) / (1000 * 60 * 60);
@@ -65,7 +63,22 @@ export function UpcomingMissions() {
       ...event,
       status: getEventStatus(event),
       displayTime: formatTime(event),
-    }));
+    })).sort((a, b) => {
+        const aDate = new Date(a.date);
+        const [aHours, aMinutes] = a.time.split(':').map(Number);
+        aDate.setHours(aHours, aMinutes);
+
+        const bDate = new Date(b.date);
+        const [bHours, bMinutes] = b.time.split(':').map(Number);
+        bDate.setHours(bHours, bMinutes);
+        
+        // Sort recent/active events to be descending (most recent first)
+        if (a.status === 'recent' || a.status === 'active') {
+            return bDate.getTime() - aDate.getTime();
+        }
+        // Sort upcoming events to be ascending (closest first)
+        return aDate.getTime() - bDate.getTime();
+    });
   }, [events]);
 
   const activeMissions = missions.filter(m => m.status === 'active');
