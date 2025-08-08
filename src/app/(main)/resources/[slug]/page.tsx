@@ -64,7 +64,7 @@ const ResourcePageContent = ({ resource }: { resource: Resource }) => {
           <CardHeader>
             <CardTitle>{resource.pageTitle}</CardTitle>
             <CardDescription>{resource.description}</CardDescription>
-          </CardHeader>
+          </Header>
           <CardContent>
             <div className="prose prose-stone dark:prose-invert max-w-none">
              {resource.content}
