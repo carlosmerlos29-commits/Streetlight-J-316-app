@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon, PlusCircle, Clock, MapPin, Trash2 } from 'lucide-react';
+import { Calendar as CalendarIcon, PlusCircle, Clock, MapPin, Trash2, Loader2 } from 'lucide-react';
 import { useJsApiLoader, Autocomplete } from '@react-google-maps/api';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
@@ -35,6 +35,8 @@ import {
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useEvents } from '@/app/(main)/layout';
+import { geocodeAddress } from '@/ai/flows/geocoding';
+
 
 const eventTypes = ['Outreach', 'Worship', 'Training', 'Community'] as const;
 
@@ -56,6 +58,8 @@ export default function EventsPage() {
   const { events, addEvent, deleteEvent } = useEvents();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isCreatingEvent, setIsCreatingEvent] = useState(false);
+
 
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
@@ -76,14 +80,27 @@ export default function EventsPage() {
     }
   });
 
-  function onSubmit(data: EventFormValues) {
-    addEvent({ ...data, id: (events.length + 1).toString() });
-    toast({
-      title: "Event Created!",
-      description: `The event "${data.title}" has been successfully added.`,
-    });
-    form.reset();
-    setIsFormOpen(false);
+  async function onSubmit(data: EventFormValues) {
+    setIsCreatingEvent(true);
+    try {
+      const coords = await geocodeAddress(data.address);
+      addEvent({ ...data, id: Date.now().toString(), ...coords });
+      toast({
+        title: "Event Created!",
+        description: `The event "${data.title}" has been successfully added.`,
+      });
+      form.reset();
+      setIsFormOpen(false);
+    } catch (error) {
+       console.error('Error creating event:', error);
+       toast({
+        title: "Error",
+        description: "Failed to create event. Could not get coordinates for the address.",
+        variant: "destructive"
+      });
+    } finally {
+        setIsCreatingEvent(false);
+    }
   }
 
   function handleCancelEvent(eventId: string, eventTitle: string) {
@@ -286,7 +303,10 @@ export default function EventsPage() {
                             />
                         </CardContent>
                         <CardFooter>
-                          <Button type="submit">Create Event</Button>
+                          <Button type="submit" disabled={isCreatingEvent}>
+                            {isCreatingEvent && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Create Event
+                          </Button>
                         </CardFooter>
                       </form>
                     </Form>

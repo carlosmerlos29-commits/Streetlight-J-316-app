@@ -7,28 +7,15 @@ import { useJsApiLoader } from '@react-google-maps/api';
 
 import { app } from '@/lib/firebase';
 import { InteractiveMap, EventLocation } from '@/components/interactive-map';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { ListFilter, RadioTower, LocateFixed, Loader2, PlusCircle, Flame } from 'lucide-react';
+import { ListFilter, RadioTower, LocateFixed, Loader2, PlusCircle } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast"
 import { useEvents } from '@/app/(main)/layout';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import Link from 'next/link';
 
-
-interface Location {
-  lat: number;
-  lng: number;
-}
-
-// Mock geocoded locations for demo purposes
-const eventCoordinates: { [key: string]: Location } = {
-    '4110 Chain Bridge Rd, Fairfax, VA 22030': { lat: 38.8463, lng: -77.3065 },
-    '4400 University Dr, Fairfax, VA 22030': { lat: 38.8315, lng: -77.3061 },
-    '7315 Ox Rd, Fairfax Station, VA 22039': { lat: 38.7997, lng: -77.2917 },
-};
 
 const libraries: ('places'|'drawing'|'geometry'|'localContext'|'visualization')[] = ['places'];
 
@@ -55,14 +42,10 @@ export default function LiveMapPage() {
     const eventLocations = useMemo<EventLocation[]>(() => {
         return events
             .map(event => {
-                let location = eventCoordinates[event.address];
-                if (!location) {
-                    // Add a mock location for new events if address isn't in our list
-                    const newLocation = { lat: 38.8315 + (Math.random() - 0.5) * 0.05, lng: -77.3061 + (Math.random() - 0.5) * 0.05 };
-                    eventCoordinates[event.address] = newLocation;
-                    location = newLocation;
+                if (event.lat && event.lng) {
+                    return { lat: event.lat, lng: event.lng, id: event.id };
                 }
-                return { ...location, id: event.id };
+                return null;
             })
             .filter((l): l is EventLocation => l !== null);
     }, [events]);

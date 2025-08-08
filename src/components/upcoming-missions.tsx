@@ -11,12 +11,17 @@ import { useMemo } from 'react';
 function getEventStatus(event: AppEvent) {
     const now = new Date();
     const eventDateTime = new Date(event.date);
-    if (!event.time) return 'upcoming';
+    if (!event.time) { // if no time, it's an all-day event
+        if (eventDateOnly.toDateString() === now.toDateString()) return 'active';
+        if (eventDateOnly < now) return 'recent';
+        return 'upcoming';
+    };
 
+    const eventDateOnly = new Date(event.date.getFullYear(), event.date.getMonth(), event.date.getDate());
     const [hours, minutes] = event.time.split(':').map(Number);
     eventDateTime.setHours(hours);
     eventDateTime.setMinutes(minutes);
-
+    
     if (now < eventDateTime) {
         return 'upcoming';
     }
@@ -80,12 +85,18 @@ export function UpcomingMissions() {
           bDate.setHours(bHours, bMinutes);
         }
         
-        // Sort recent/active events to be descending (most recent first)
-        if (a.status === 'recent' || a.status === 'active') {
-            return bDate.getTime() - aDate.getTime();
+        const now = new Date().getTime();
+        const aDiff = Math.abs(aDate.getTime() - now);
+        const bDiff = Math.abs(bDate.getTime() - now);
+
+        if (a.status === 'upcoming' && b.status === 'upcoming') {
+            return aDate.getTime() - bDate.getTime(); // Sort upcoming events ascending
         }
-        // Sort upcoming events to be ascending (closest first)
-        return aDate.getTime() - bDate.getTime();
+        if (a.status !== 'upcoming' && b.status !== 'upcoming') {
+            return bDate.getTime() - aDate.getTime(); // Sort active/recent events descending
+        }
+        if(a.status === 'upcoming') return -1; // Keep upcoming events at the top
+        return 1;
     });
   }, [events]);
 
