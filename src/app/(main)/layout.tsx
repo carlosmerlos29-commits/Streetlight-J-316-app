@@ -54,6 +54,7 @@ const initialEvents: AppEvent[] = [
 interface EventsContextType {
   events: AppEvent[];
   addEvent: (event: AppEvent) => void;
+  deleteEvent: (eventId: string) => void;
 }
 
 const EventsContext = createContext<EventsContextType | undefined>(undefined);
@@ -73,8 +74,12 @@ export const EventsProvider = ({ children }: { children: ReactNode }) => {
     setEvents(prevEvents => [...prevEvents, event].sort((a,b) => a.date.getTime() - b.date.getTime()));
   };
 
+  const deleteEvent = (eventId: string) => {
+    setEvents(prevEvents => prevEvents.filter(event => event.id !== eventId));
+  };
+
   return (
-    <EventsContext.Provider value={{ events, addEvent }}>
+    <EventsContext.Provider value={{ events, addEvent, deleteEvent }}>
       {children}
     </EventsContext.Provider>
   );

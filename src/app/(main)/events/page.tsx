@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon, PlusCircle, Clock, MapPin } from 'lucide-react';
+import { Calendar as CalendarIcon, PlusCircle, Clock, MapPin, Trash2 } from 'lucide-react';
 import { useJsApiLoader, Autocomplete } from '@react-google-maps/api';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
@@ -21,6 +21,17 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Skeleton } from '@/components/ui/skeleton';
 import { Label } from '@/components/ui/label';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useEvents } from '@/app/(main)/layout';
@@ -42,7 +53,7 @@ const libraries: ('places'|'drawing'|'geometry'|'localContext'|'visualization')[
 
 export default function EventsPage() {
   const { toast } = useToast();
-  const { events, addEvent } = useEvents();
+  const { events, addEvent, deleteEvent } = useEvents();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [isFormOpen, setIsFormOpen] = useState(false);
 
@@ -73,6 +84,15 @@ export default function EventsPage() {
     });
     form.reset();
     setIsFormOpen(false);
+  }
+
+  function handleCancelEvent(eventId: string, eventTitle: string) {
+    deleteEvent(eventId);
+    toast({
+      title: "Event Cancelled",
+      description: `The event "${eventTitle}" has been cancelled.`,
+      variant: "destructive"
+    });
   }
   
   const handlePlaceChanged = () => {
@@ -293,8 +313,33 @@ export default function EventsPage() {
                         <CardContent>
                             <p className="text-muted-foreground">{event.description}</p>
                             <p className="text-sm text-muted-foreground mt-2 flex items-center gap-1.5"><MapPin className="h-4 w-4"/>{event.address}</p>
-                            <Button className="mt-4">View Details</Button>
                         </CardContent>
+                        <CardFooter className="justify-between">
+                            <Button>View Details</Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="destructive">
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Cancel Event
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently cancel the event
+                                    and remove its data from our servers.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Go Back</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => handleCancelEvent(event.id, event.title)}>
+                                    Yes, Cancel Event
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                        </CardFooter>
                     </Card>
                 ))
             ) : (
