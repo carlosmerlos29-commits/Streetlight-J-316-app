@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import { Calendar as CalendarIcon, PlusCircle, Clock, MapPin, Trash2, Loader2 } from 'lucide-react';
 import { useJsApiLoader, Autocomplete } from '@react-google-maps/api';
 
@@ -35,23 +34,17 @@ import {
 } from "@/components/ui/alert-dialog"
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
-import { useEvents } from '@/app/[locale]/(main)/layout';
+import { useEvents } from '@/app/(main)/layout';
 
 
 const eventTypes = ['Outreach', 'Worship', 'Training', 'Community'] as const;
-const translatedEventTypes = {
-  'Outreach': 'Alcance',
-  'Worship': 'Adoración',
-  'Training': 'Capacitación',
-  'Community': 'Comunitario',
-};
 
 const eventSchema = z.object({
-  title: z.string().min(3, 'El título debe tener al menos 3 caracteres.'),
-  description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres.'),
-  date: z.date({ required_error: 'Se requiere una fecha.' }),
-  time: z.string().nonempty('Se requiere una hora.'),
-  address: z.string().min(5, 'Se requiere una dirección.'),
+  title: z.string().min(3, 'Title must be at least 3 characters.'),
+  description: z.string().min(10, 'Description must be at least 10 characters.'),
+  date: z.date({ required_error: 'A date is required.' }),
+  time: z.string().nonempty('A time is required.'),
+  address: z.string().min(5, 'An address is required.'),
   type: z.enum(eventTypes),
 });
 
@@ -99,16 +92,16 @@ export default function EventsPage() {
 
       addEvent({ ...data, id: Date.now().toString(), ...coords });
       toast({
-        title: "¡Evento Creado!",
-        description: `El evento "${data.title}" ha sido añadido exitosamente.`,
+        title: "Event Created!",
+        description: `The "${data.title}" event has been successfully added.`,
       });
       form.reset();
       setIsFormOpen(false);
     } catch (error) {
-       console.error('Error creando evento:', error);
+       console.error('Error creating event:', error);
        toast({
         title: "Error",
-        description: "No se pudo crear el evento. No se pudieron obtener las coordenadas para la dirección.",
+        description: "Could not create event. Failed to get coordinates for the address.",
         variant: "destructive"
       });
     } finally {
@@ -119,8 +112,8 @@ export default function EventsPage() {
   function handleCancelEvent(eventId: string, eventTitle: string) {
     deleteEvent(eventId);
     toast({
-      title: "Evento Cancelado",
-      description: `El evento "${eventTitle}" ha sido cancelado.`,
+      title: "Event Cancelled",
+      description: `The "${eventTitle}" event has been cancelled.`,
       variant: "destructive"
     });
   }
@@ -145,8 +138,8 @@ export default function EventsPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-            <h1 className="font-headline text-3xl font-bold">Eventos Comunitarios</h1>
-            <p className="text-muted-foreground">Encuentra y únete a los próximos eventos del ministerio.</p>
+            <h1 className="font-headline text-3xl font-bold">Community Events</h1>
+            <p className="text-muted-foreground">Find and join upcoming ministry events.</p>
         </div>
       </div>
       <div className="grid gap-8 md:grid-cols-3">
@@ -158,7 +151,6 @@ export default function EventsPage() {
                     selected={selectedDate}
                     onSelect={setSelectedDate}
                     className="rounded-md"
-                    locale={es}
                 />
             </CardContent>
           </Card>
@@ -168,13 +160,13 @@ export default function EventsPage() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <div>
-                    <CardTitle>Crear Nuevo Evento</CardTitle>
-                    <CardDescription>Completa los detalles a continuación para añadir un nuevo evento.</CardDescription>
+                    <CardTitle>Create New Event</CardTitle>
+                    <CardDescription>Fill in the details below to add a new event.</CardDescription>
                   </div>
                   <CollapsibleTrigger asChild>
                     <Button variant="ghost" size="sm">
                       <PlusCircle className="mr-2 h-4 w-4" />
-                      {isFormOpen ? 'Cerrar' : 'Crear Evento'}
+                      {isFormOpen ? 'Close' : 'Create Event'}
                     </Button>
                   </CollapsibleTrigger>
                 </CardHeader>
@@ -187,9 +179,9 @@ export default function EventsPage() {
                               name="title"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Título del Evento</FormLabel>
+                                  <FormLabel>Event Title</FormLabel>
                                   <FormControl>
-                                    <Input placeholder="ej., Alcance de Verano" {...field} />
+                                    <Input placeholder="e.g., Summer Outreach" {...field} />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -200,9 +192,9 @@ export default function EventsPage() {
                               name="description"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Descripción</FormLabel>
+                                  <FormLabel>Description</FormLabel>
                                   <FormControl>
-                                    <Textarea placeholder="Cuéntanos sobre el evento..." {...field} />
+                                    <Textarea placeholder="Tell us about the event..." {...field} />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -214,7 +206,7 @@ export default function EventsPage() {
                                   name="date"
                                   render={({ field }) => (
                                     <FormItem className="flex flex-col">
-                                      <FormLabel>Fecha del Evento</FormLabel>
+                                      <FormLabel>Event Date</FormLabel>
                                       <Popover>
                                         <PopoverTrigger asChild>
                                           <FormControl>
@@ -226,9 +218,9 @@ export default function EventsPage() {
                                               )}
                                             >
                                               {field.value ? (
-                                                format(field.value, "PPP", { locale: es })
+                                                format(field.value, "PPP")
                                               ) : (
-                                                <span>Elige una fecha</span>
+                                                <span>Pick a date</span>
                                               )}
                                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                             </Button>
@@ -243,7 +235,6 @@ export default function EventsPage() {
                                               date < new Date(new Date().setHours(0,0,0,0))
                                             }
                                             initialFocus
-                                            locale={es}
                                           />
                                         </PopoverContent>
                                       </Popover>
@@ -256,9 +247,9 @@ export default function EventsPage() {
                                   name="time"
                                   render={({ field }) => (
                                     <FormItem>
-                                      <FormLabel>Hora del Evento</FormLabel>
+                                      <FormLabel>Event Time</FormLabel>
                                       <FormControl>
-                                        <Input type="time" placeholder="ej., 6:00 PM" {...field} />
+                                        <Input type="time" placeholder="e.g., 6:00 PM" {...field} />
                                       </FormControl>
                                       <FormMessage />
                                     </FormItem>
@@ -267,7 +258,7 @@ export default function EventsPage() {
                             </div>
                              {!isLoaded ? (
                                 <div className="space-y-2">
-                                    <Label>Dirección / Ubicación</Label>
+                                    <Label>Address / Location</Label>
                                     <Skeleton className="h-10 w-full" />
                                 </div>
                               ) : (
@@ -276,7 +267,7 @@ export default function EventsPage() {
                                     name="address"
                                     render={({ field }) => (
                                       <FormItem>
-                                        <FormLabel>Dirección / Ubicación</FormLabel>
+                                        <FormLabel>Address / Location</FormLabel>
                                         <FormControl>
                                            <Autocomplete
                                               onLoad={(ref) => autocompleteRef.current = ref}
@@ -286,7 +277,7 @@ export default function EventsPage() {
                                                 componentRestrictions: { country: "us" },
                                               }}
                                           >
-                                              <Input placeholder="ej., 123 Calle Principal, Anytown" {...field} />
+                                              <Input placeholder="e.g., 123 Main St, Anytown" {...field} />
                                           </Autocomplete>
                                         </FormControl>
                                         <FormMessage />
@@ -299,16 +290,16 @@ export default function EventsPage() {
                               name="type"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Tipo de Evento</FormLabel>
+                                  <FormLabel>Event Type</FormLabel>
                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
                                       <SelectTrigger>
-                                        <SelectValue placeholder="Selecciona un tipo de evento" />
+                                        <SelectValue placeholder="Select an event type" />
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
                                       {eventTypes.map(type => (
-                                        <SelectItem key={type} value={type}>{translatedEventTypes[type]}</SelectItem>
+                                        <SelectItem key={type} value={type}>{type}</SelectItem>
                                       ))}
                                     </SelectContent>
                                   </Select>
@@ -320,7 +311,7 @@ export default function EventsPage() {
                         <CardFooter>
                           <Button type="submit" disabled={isCreatingEvent}>
                             {isCreatingEvent && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Crear Evento
+                            Create Event
                           </Button>
                         </CardFooter>
                       </form>
@@ -329,7 +320,7 @@ export default function EventsPage() {
               </Card>
             </Collapsible>
 
-            <h2 className="font-headline text-2xl font-semibold pt-4">Próximos Eventos</h2>
+            <h2 className="font-headline text-2xl font-semibold pt-4">Upcoming Events</h2>
             {events.length > 0 ? (
                 events.map((event, index) => (
                     <Card key={index}>
@@ -338,11 +329,11 @@ export default function EventsPage() {
                                 <div>
                                     <CardTitle>{event.title}</CardTitle>
                                     <div className="text-sm text-muted-foreground flex items-center gap-4 mt-1">
-                                      <span className="flex items-center gap-1.5"><CalendarIcon className="h-4 w-4" /> {event.date.toLocaleDateString('es-ES')}</span>
+                                      <span className="flex items-center gap-1.5"><CalendarIcon className="h-4 w-4" /> {event.date.toLocaleDateString()}</span>
                                       <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" /> {event.time}</span>
                                     </div>
                                 </div>
-                                <Badge variant={event.type === 'Outreach' ? 'default' : 'secondary'}>{translatedEventTypes[event.type]}</Badge>
+                                <Badge variant={event.type === 'Outreach' ? 'default' : 'secondary'}>{event.type}</Badge>
                             </div>
                         </CardHeader>
                         <CardContent>
@@ -350,26 +341,26 @@ export default function EventsPage() {
                             <p className="text-sm text-muted-foreground mt-2 flex items-center gap-1.5"><MapPin className="h-4 w-4"/>{event.address}</p>
                         </CardContent>
                         <CardFooter className="justify-between">
-                            <Button>Ver Detalles</Button>
+                            <Button>View Details</Button>
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
                                 <Button variant="destructive">
                                   <Trash2 className="mr-2 h-4 w-4" />
-                                  Cancelar Evento
+                                  Cancel Event
                                 </Button>
                               </AlertDialogTrigger>
                               <AlertDialogContent>
                                 <AlertDialogHeader>
-                                  <AlertDialogTitle>¿Estás absolutamente seguro?</AlertDialogTitle>
+                                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                   <AlertDialogDescription>
-                                    Esta acción no se puede deshacer. Esto cancelará permanentemente el evento
-                                    y eliminará sus datos de nuestros servidores.
+                                    This action cannot be undone. This will permanently cancel the event
+                                    and remove its data from our servers.
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
-                                  <AlertDialogCancel>Volver</AlertDialogCancel>
+                                  <AlertDialogCancel>Go Back</AlertDialogCancel>
                                   <AlertDialogAction onClick={() => handleCancelEvent(event.id, event.title)}>
-                                    Sí, Cancelar Evento
+                                    Yes, Cancel Event
                                   </AlertDialogAction>
                                 </AlertDialogFooter>
                               </AlertDialogContent>
@@ -379,8 +370,8 @@ export default function EventsPage() {
                 ))
             ) : (
                 <Card className="flex flex-col items-center justify-center p-8 border-dashed">
-                    <CardTitle>No Hay Próximos Eventos</CardTitle>
-                    <CardDescription className="mt-2">Vuelve más tarde o crea un nuevo evento.</CardDescription>
+                    <CardTitle>No Upcoming Events</CardTitle>
+                    <CardDescription className="mt-2">Check back later or create a new event.</CardDescription>
                 </Card>
             )}
         </div>

@@ -10,8 +10,8 @@ export default function ResourcesPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-headline text-3xl font-bold">Biblioteca de Recursos</h1>
-        <p className="text-muted-foreground">Herramientas y guías descargables para ayudar a tu ministerio.</p>
+        <h1 className="font-headline text-3xl font-bold">Resource Library</h1>
+        <p className="text-muted-foreground">Downloadable tools and guides to help your ministry.</p>
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {resources.map((resource) => (
@@ -29,7 +29,7 @@ export default function ResourcesPage() {
             <CardFooter>
               <Link href={`/resources/${resource.slug}`} className="w-full">
                 <Button className="w-full">
-                  Ver Recurso <ArrowRight className="ml-2 h-4 w-4" />
+                  View Resource <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
             </CardFooter>

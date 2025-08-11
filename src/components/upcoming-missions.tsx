@@ -46,30 +46,30 @@ function formatTime(event: AppEvent) {
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const eventDate = new Date(event.date.getFullYear(), event.date.getMonth(), event.date.getDate());
 
-    if (!event.time) return event.date.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    if (!event.time) return event.date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
     const [hours, minutes] = event.time.split(':').map(Number);
     const eventDateTime = new Date();
     eventDateTime.setHours(hours, minutes);
-    const timeString = eventDateTime.toLocaleTimeString('es-ES', { hour: 'numeric', minute: '2-digit', hour12: true });
+    const timeString = eventDateTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
 
     if (eventDate.getTime() === today.getTime()) {
-        return `Hoy a la(s) ${timeString}`;
+        return `Today at ${timeString}`;
     }
 
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
     if (eventDate.getTime() === tomorrow.getTime()) {
-        return `Mañana a la(s) ${timeString}`;
+        return `Tomorrow at ${timeString}`;
     }
     
     const yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1);
     if (eventDate.getTime() === yesterday.getTime()) {
-        return `Ayer a la(s) ${timeString}`;
+        return `Yesterday at ${timeString}`;
     }
     
-    return `${event.date.toLocaleDateString('es-ES')} a la(s) ${timeString}`;
+    return `${event.date.toLocaleDateString()} at ${timeString}`;
 }
 
 export function UpcomingMissions() {
@@ -116,13 +116,13 @@ export function UpcomingMissions() {
   return (
     <div className="h-full flex flex-col">
       <div className="p-4">
-        <h2 className="text-2xl font-bold font-headline">Misiones</h2>
-        <p className="text-sm text-muted-foreground">Activas, próximas y recientes.</p>
+        <h2 className="text-2xl font-bold font-headline">Missions</h2>
+        <p className="text-sm text-muted-foreground">Active, upcoming, and recent.</p>
       </div>
       <ScrollArea className="flex-grow">
         <div className="p-4 space-y-4">
           <div>
-            <h3 className="font-semibold mb-2 px-2">Activas</h3>
+            <h3 className="font-semibold mb-2 px-2">Active</h3>
             {activeMissions.length > 0 ? activeMissions.map((mission, index) => (
               <Card key={index} className="mb-2">
                 <CardContent className="p-3">
@@ -131,15 +131,15 @@ export function UpcomingMissions() {
                       <CardTitle className="text-base">{mission.title}</CardTitle>
                       <CardDescription>{mission.address}</CardDescription>
                     </div>
-                    <Badge variant="destructive">En Vivo</Badge>
+                    <Badge variant="destructive">Live</Badge>
                   </div>
-                  <Button variant="secondary" size="sm" className="mt-2 w-full">Unirse a la Misión</Button>
+                  <Button variant="secondary" size="sm" className="mt-2 w-full">Join Mission</Button>
                 </CardContent>
               </Card>
-            )) : <p className="text-xs text-muted-foreground px-2">No hay misiones activas.</p>}
+            )) : <p className="text-xs text-muted-foreground px-2">No active missions.</p>}
           </div>
           <div>
-            <h3 className="font-semibold mb-2 px-2">Próximas</h3>
+            <h3 className="font-semibold mb-2 px-2">Upcoming</h3>
             {upcomingMissions.length > 0 ? upcomingMissions.map((mission, index) => (
               <Card key={index} className="mb-2 bg-card/50">
                 <CardContent className="p-3">
@@ -147,10 +147,10 @@ export function UpcomingMissions() {
                     <CardDescription>{mission.displayTime}</CardDescription>
                 </CardContent>
               </Card>
-            )) : <p className="text-xs text-muted-foreground px-2">No hay misiones próximas.</p>}
+            )) : <p className="text-xs text-muted-foreground px-2">No upcoming missions.</p>}
           </div>
           <div>
-            <h3 className="font-semibold mb-2 px-2">Recientes</h3>
+            <h3 className="font-semibold mb-2 px-2">Recent</h3>
              {recentMissions.length > 0 ? recentMissions.map((mission, index) => (
               <Card key={index} className="mb-2 bg-card/30 border-dashed">
                 <CardContent className="p-3">
@@ -158,7 +158,7 @@ export function UpcomingMissions() {
                     <CardDescription>{mission.displayTime}</CardDescription>
                 </CardContent>
               </Card>
-            )) : <p className="text-xs text-muted-foreground px-2">No hay misiones recientes.</p>}
+            )) : <p className="text-xs text-muted-foreground px-2">No recent missions.</p>}
           </div>
         </div>
       </ScrollArea>

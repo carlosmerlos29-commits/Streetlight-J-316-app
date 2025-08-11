@@ -15,56 +15,56 @@ export interface Resource {
 export const resources: Resource[] = [
     { 
         slug: 'gospel-tract-pack',
-        title: 'Paquete de Folletos del Evangelio',
-        pageTitle: 'Folletos del Evangelio Descargables',
-        description: 'Una colección de folletos del evangelio imprimibles para diversas audiencias.', 
+        title: 'Gospel Tract Pack',
+        pageTitle: 'Downloadable Gospel Tracts',
+        description: 'A collection of printable gospel tracts for various audiences.', 
         icon: FileText, 
         type: 'PDF',
-        content: `Este paquete contiene una variedad de folletos del Evangelio diseñados profesionalmente que están listos para imprimir y distribuir. Cada folleto está diseñado para ser visualmente atractivo y teológicamente sólido, cubriendo diferentes temas y preguntas que las personas puedan tener sobre el cristianismo.`
+        content: `This package contains a variety of professionally designed Gospel tracts that are ready for you to print and distribute. Each tract is designed to be visually engaging and theologically sound, covering different topics and questions people may have about Christianity.`
     },
     { 
         slug: 'evangelism-101',
-        title: 'Evangelismo 101', 
-        pageTitle: 'Serie de Videos de Evangelismo 101',
-        description: 'Una serie de videos que cubre los conceptos básicos del evangelismo efectivo.', 
+        title: 'Evangelism 101', 
+        pageTitle: 'Evangelism 101 Video Series',
+        description: 'A video series covering the basics of effective evangelism.', 
         icon: Video, 
         type: 'Video',
-        content: `Ya sea que seas nuevo en compartir tu fe o busques un repaso, esta serie de videos proporciona capacitación práctica y con base bíblica. El pastor Juan Pérez te guía a través de los elementos esenciales del evangelismo en el siglo XXI.`
+        content: `Whether you're new to sharing your faith or looking for a refresher, this video series provides practical, biblically-grounded training. Pastor John Doe walks you through the essential elements of 21st-century evangelism.`
     },
     { 
         slug: 'street-preaching-guide',
-        title: 'Guía de Predicación Callejera', 
-        pageTitle: 'Una Guía Práctica para la Predicación Callejera',
-        description: 'Una guía detallada sobre el arte de la predicación al aire libre.', 
+        title: 'Street Preaching Guide', 
+        pageTitle: 'A Practical Guide to Street Preaching',
+        description: 'An in-depth guide to the art of open-air preaching.', 
         icon: BookOpen, 
         type: 'Guide',
-        content: `La predicación al aire libre tiene una larga y rica historia en la fe cristiana. Desde los profetas del Antiguo Testamento hasta los apóstoles en el libro de los Hechos, la proclamación pública ha sido un medio principal para difundir el Evangelio. Esta guía está diseñada para equiparte con la sabiduría práctica y el fundamento teológico necesarios para predicar eficazmente en la plaza pública.`
+        content: `Open-air preaching has a long and rich history in the Christian faith. From the Old Testament prophets to the apostles in the book of Acts, public proclamation has been a primary means of spreading the Gospel. This guide is designed to equip you with the practical wisdom and theological foundation needed to preach effectively in the public square.`
     },
     { 
         slug: 'bridge-illustration',
-        title: 'La Ilustración del Puente', 
-        pageTitle: 'La Ilustración del Puente a la Vida',
-        description: 'Ayuda visual para explicar el mensaje del evangelio con claridad.', 
+        title: 'The Bridge Illustration', 
+        pageTitle: 'The Bridge to Life Illustration',
+        description: 'A visual aid for explaining the gospel message with clarity.', 
         icon: FileText, 
         type: 'PDF',
-        content: `La Ilustración del Puente es una herramienta visual clásica, poderosa y simple para explicar el Evangelio. Ayuda a las personas a comprender la separación causada por el pecado y cómo Jesucristo es el único camino para cerrar esa brecha y restaurar nuestra relación con Dios.`
+        content: `The Bridge Illustration is a classic, powerful, and simple visual tool for explaining the Gospel. It helps people understand the separation caused by sin and how Jesus Christ is the only way to bridge that gap and restore our relationship with God.`
     },
     { 
         slug: 'follow-up-strategies',
-        title: 'Estrategias de Seguimiento', 
-        pageTitle: 'Seguimiento y Discipulado Efectivos',
-        description: 'Aprende a discipular a los nuevos creyentes de manera efectiva.', 
+        title: 'Follow-up Strategies', 
+        pageTitle: 'Effective Follow-Up and Discipleship',
+        description: 'Learn how to effectively disciple new believers.', 
         icon: BookOpen, 
         type: 'Guide',
-        content: `El evangelismo no termina cuando alguien profesa fe en Cristo; comienza un nuevo capítulo llamado discipulado. La Gran Comisión (Mateo 28:18-20) no se trata solo de hacer conversos, sino de hacer discípulos. El seguimiento efectivo es crucial para ayudar a los nuevos creyentes a arraigarse en su fe y conectarse con la iglesia local.`
+        content: `Evangelism doesn't end when someone professes faith in Christ; it begins a new chapter called discipleship. The Great Commission (Matthew 28:18-20) is not just about making converts, but about making disciples. Effective follow-up is crucial in helping new believers get rooted in their faith and connected to the local church.`
     },
     { 
         slug: 'testimony-workshop',
-        title: 'Taller para Compartir Testimonios', 
-        pageTitle: 'Taller: Compartiendo Tu Testimonio Personal',
-        description: 'Un taller en video sobre cómo elaborar y compartir tu testimonio personal.', 
+        title: 'Testimony Sharing Workshop', 
+        pageTitle: 'Workshop: Sharing Your Personal Testimony',
+        description: 'A video workshop on how to craft and share your personal testimony.', 
         icon: Video, 
         type: 'Video',
-        content: `Tu testimonio personal es una de las herramientas evangelísticas más poderosas que tienes. Este taller en video te guía a través del proceso de estructurar tu historia de una manera clara, concisa y centrada en Cristo.`
+        content: `Your personal testimony is one of the most powerful evangelistic tools you have. This video workshop walks you through the process of structuring your story in a way that is clear, concise, and Christ-centered.`
     },
 ];

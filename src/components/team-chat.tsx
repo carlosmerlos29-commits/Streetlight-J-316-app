@@ -40,7 +40,7 @@ export function TeamChat() {
           avatar: data.avatar,
           message: data.message,
           timestamp: data.timestamp,
-          isSelf: data.user === 'Tú', // Simple check for demo purposes
+          isSelf: data.user === 'You', // Simple check for demo purposes
         });
       });
       setMessages(msgs);
@@ -64,7 +64,7 @@ export function TeamChat() {
     if (newMessage.trim() === '') return;
 
     await addDoc(messagesCollection, {
-      user: 'Tú', // Hardcoded for now, should be dynamic in a real app
+      user: 'You', // Hardcoded for now, should be dynamic in a real app
       avatar: 'https://placehold.co/40x40.png',
       message: newMessage,
       timestamp: serverTimestamp(),
@@ -74,7 +74,7 @@ export function TeamChat() {
   };
 
   const formatTimestamp = (timestamp: Timestamp | null) => {
-    if (!timestamp) return 'Enviando...';
+    if (!timestamp) return 'Sending...';
     return new Date(timestamp.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
@@ -82,8 +82,8 @@ export function TeamChat() {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
-        <CardTitle>Chat de Equipo</CardTitle>
-        <CardDescription>Coordina con tu equipo en tiempo real.</CardDescription>
+        <CardTitle>Team Chat</CardTitle>
+        <CardDescription>Coordinate with your team in real-time.</CardDescription>
       </CardHeader>
       <CardContent className="flex-grow flex flex-col gap-4">
         <ScrollArea className="flex-grow h-[calc(100vh-350px)] pr-4" ref={scrollAreaRef}>
@@ -104,7 +104,7 @@ export function TeamChat() {
                  {msg.isSelf && (
                   <Avatar className="h-8 w-8 border">
                     <AvatarImage src={msg.avatar} alt={msg.user} data-ai-hint="man portrait"/>
-                    <AvatarFallback>T</AvatarFallback>
+                    <AvatarFallback>Y</AvatarFallback>
                   </Avatar>
                 )}
               </div>
@@ -113,14 +113,14 @@ export function TeamChat() {
         </ScrollArea>
         <form className="flex gap-2" onSubmit={handleSendMessage}>
           <Input 
-            placeholder="Escribe un mensaje..."
+            placeholder="Type a message..."
             className="flex-grow"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
           />
           <Button type="submit" size="icon">
             <Send className="h-4 w-4" />
-            <span className="sr-only">Enviar</span>
+            <span className="sr-only">Send</span>
           </Button>
         </form>
       </CardContent>

@@ -21,15 +21,15 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 
 const missionPlannerSchema = z.object({
-  location: z.string().min(3, 'La ubicación debe tener al menos 3 caracteres.'),
-  topic: z.string().min(5, 'El tema debe tener al menos 5 caracteres.'),
+  location: z.string().min(3, 'Location must be at least 3 characters.'),
+  topic: z.string().min(5, 'Topic must be at least 5 characters.'),
   preferences: z.string().optional(),
 });
 
 const coachingSchema = z.object({
-    missionDescription: z.string().min(10, 'La descripción debe tener al menos 10 caracteres.'),
-    userExperience: z.string().min(3, 'El nivel de experiencia es requerido.'),
-    targetAudience: z.string().min(5, 'El público objetivo debe tener al menos 5 caracteres.'),
+    missionDescription: z.string().min(10, 'Description must be at least 10 characters.'),
+    userExperience: z.string().min(3, 'Experience level is required.'),
+    targetAudience: z.string().min(5, 'Target audience must be at least 5 characters.'),
 });
 
 type MissionPlan = AiMissionPlanningOutput;
@@ -76,10 +76,10 @@ export default function MissionPlannerPage() {
             const result: MissionPlan = await res.json();
             setMissionPlan(result);
         } catch (error) {
-            console.error('Error al planificar la misión:', error);
+            console.error('Error planning mission:', error);
             toast({
                 title: 'Error',
-                description: 'No se pudo generar el plan de misión. Por favor, intenta de nuevo.',
+                description: 'Could not generate mission plan. Please try again.',
                 variant: "destructive",
             });
         } finally {
@@ -100,10 +100,10 @@ export default function MissionPlannerPage() {
             const result: CoachingTips = await res.json();
             setCoachingTips(result);
         } catch (error) {
-            console.error('Error al obtener coaching:', error);
+            console.error('Error getting coaching:', error);
             toast({
                 title: 'Error',
-                description: 'No se pudieron generar los consejos de coaching. Por favor, intenta de nuevo.',
+                description: 'Could not generate coaching tips. Please try again.',
                 variant: "destructive",
             });
         } finally {
@@ -121,41 +121,41 @@ export default function MissionPlannerPage() {
     };
   
     if (loadError) {
-        return <div>Error al cargar los mapas. Por favor, asegúrate de que tu clave de API sea correcta.</div>;
+        return <div>Error loading maps. Please ensure your API key is correct.</div>;
     }
 
     return (
         <div className="space-y-8">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="font-headline text-3xl font-bold">Asistente de IA</h1>
-                    <p className="text-muted-foreground">Planifica tus misiones y obtén consejos de coaching.</p>
+                    <h1 className="font-headline text-3xl font-bold">AI Assistant</h1>
+                    <p className="text-muted-foreground">Plan your missions and get coaching tips.</p>
                 </div>
             </div>
 
             <Tabs defaultValue="planner">
                 <TabsList className="grid w-full grid-cols-2 md:w-[400px]">
-                    <TabsTrigger value="planner">Planificador de Misiones</TabsTrigger>
-                    <TabsTrigger value="coaching">Coaching de Evangelismo</TabsTrigger>
+                    <TabsTrigger value="planner">Mission Planner</TabsTrigger>
+                    <TabsTrigger value="coaching">Evangelism Coaching</TabsTrigger>
                 </TabsList>
                 <TabsContent value="planner">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Planificador de Misiones con IA</CardTitle>
-                            <CardDescription>Obtén sugerencias de la IA para ubicaciones y horarios óptimos de misiones.</CardDescription>
+                            <CardTitle>AI Mission Planner</CardTitle>
+                            <CardDescription>Get AI suggestions for optimal mission locations and times.</CardDescription>
                         </CardHeader>
                         <Form {...plannerForm}>
                             <form onSubmit={plannerForm.handleSubmit(onPlannerSubmit)}>
                                 <CardContent className="space-y-4">
                                     {!isLoaded ? (
                                         <div className="space-y-2">
-                                            <Label>Ubicación General</Label>
+                                            <Label>General Location</Label>
                                             <Skeleton className="h-10 w-full" />
                                         </div>
                                     ) : (
                                         <FormField control={plannerForm.control} name="location" render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Ubicación General</FormLabel>
+                                                <FormLabel>General Location</FormLabel>
                                                 <FormControl>
                                                     <Autocomplete
                                                         onLoad={(ref) => autocompleteRef.current = ref}
@@ -165,7 +165,7 @@ export default function MissionPlannerPage() {
                                                           componentRestrictions: { country: "us" },
                                                         }}
                                                     >
-                                                        <Input placeholder="ej., Centro, San Francisco" {...field} />
+                                                        <Input placeholder="e.g., Downtown, San Francisco" {...field} />
                                                     </Autocomplete>
                                                 </FormControl>
                                                 <FormMessage />
@@ -174,16 +174,16 @@ export default function MissionPlannerPage() {
                                     )}
                                     <FormField control={plannerForm.control} name="topic" render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Tema/Asunto de la Misión</FormLabel>
-                                            <FormControl><Input placeholder="ej., Repartir folletos, Predicación callejera" {...field} /></FormControl>
+                                            <FormLabel>Mission Topic/Subject</FormLabel>
+                                            <FormControl><Input placeholder="e.g., Handing out flyers, Street preaching" {...field} /></FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )} />
                                     <FormField control={plannerForm.control} name="preferences" render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Preferencias (Opcional)</FormLabel>
-                                            <FormControl><Textarea placeholder="ej., Tardes entre semana, cerca de un parque" {...field} /></FormControl>
-                                            <FormDescription>Cualquier preferencia específica de horario, lugar, etc.</FormDescription>
+                                            <FormLabel>Preferences (Optional)</FormLabel>
+                                            <FormControl><Textarea placeholder="e.g., Weekday afternoons, near a park" {...field} /></FormControl>
+                                            <FormDescription>Any specific time, venue, etc. preferences.</FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )} />
@@ -191,7 +191,7 @@ export default function MissionPlannerPage() {
                                 <CardFooter>
                                     <Button type="submit" disabled={isPlanning}>
                                         {isPlanning && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                        Generar Plan
+                                        Generate Plan
                                     </Button>
                                 </CardFooter>
                             </form>
@@ -201,30 +201,30 @@ export default function MissionPlannerPage() {
                 <TabsContent value="coaching">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Coaching de Evangelismo con IA</CardTitle>
-                            <CardDescription>Recibe consejos de coaching personalizados para mejorar tu enfoque.</CardDescription>
+                            <CardTitle>AI Evangelism Coaching</CardTitle>
+                            <CardDescription>Receive personalized coaching tips to improve your approach.</CardDescription>
                         </CardHeader>
                         <Form {...coachingForm}>
                             <form onSubmit={coachingForm.handleSubmit(onCoachingSubmit)}>
                                 <CardContent className="space-y-4">
                                     <FormField control={coachingForm.control} name="missionDescription" render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Descripción de la Misión</FormLabel>
-                                            <FormControl><Textarea placeholder="Describe la misión de evangelismo que has planeado." {...field} /></FormControl>
+                                            <FormLabel>Mission Description</FormLabel>
+                                            <FormControl><Textarea placeholder="Describe the evangelism mission you have planned." {...field} /></FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )} />
                                     <FormField control={coachingForm.control} name="userExperience" render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Tu Nivel de Experiencia</FormLabel>
-                                            <FormControl><Input placeholder="ej., Principiante, Intermedio, Experimentado" {...field} /></FormControl>
+                                            <FormLabel>Your Experience Level</FormLabel>
+                                            <FormControl><Input placeholder="e.g., Beginner, Intermediate, Experienced" {...field} /></FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )} />
                                     <FormField control={coachingForm.control} name="targetAudience" render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Público Objetivo</FormLabel>
-                                            <FormControl><Input placeholder="ej., Estudiantes universitarios, Viajeros, Familias" {...field} /></FormControl>
+                                            <FormLabel>Target Audience</FormLabel>
+                                            <FormControl><Input placeholder="e.g., College students, Commuters, Families" {...field} /></FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )} />
@@ -232,7 +232,7 @@ export default function MissionPlannerPage() {
                                 <CardFooter>
                                     <Button type="submit" disabled={isCoaching}>
                                         {isCoaching && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                        Obtener Consejos
+                                        Get Tips
                                     </Button>
                                 </CardFooter>
                             </form>
@@ -245,24 +245,24 @@ export default function MissionPlannerPage() {
             {missionPlan && (
                 <Card className="mt-8">
                     <CardHeader>
-                        <CardTitle>Tu Plan de Misión</CardTitle>
-                        <CardDescription>Aquí están las sugerencias generadas por la IA para tu misión.</CardDescription>
+                        <CardTitle>Your Mission Plan</CardTitle>
+                        <CardDescription>Here are the AI-generated suggestions for your mission.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div>
-                            <h3 className="font-semibold flex items-center mb-2"><MapPin className="mr-2 h-5 w-5 text-primary" />Ubicaciones Sugeridas</h3>
+                            <h3 className="font-semibold flex items-center mb-2"><MapPin className="mr-2 h-5 w-5 text-primary" />Suggested Locations</h3>
                             <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
                                 {missionPlan.suggestedLocations.map((loc, i) => <li key={i}>{loc}</li>)}
                             </ul>
                         </div>
                         <div>
-                            <h3 className="font-semibold flex items-center mb-2"><Clock className="mr-2 h-5 w-5 text-primary" />Horarios Sugeridos</h3>
+                            <h3 className="font-semibold flex items-center mb-2"><Clock className="mr-2 h-5 w-5 text-primary" />Suggested Times</h3>
                              <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
                                 {missionPlan.suggestedTimes.map((time, i) => <li key={i}>{time}</li>)}
                             </ul>
                         </div>
                         <div>
-                            <h3 className="font-semibold flex items-center mb-2"><Lightbulb className="mr-2 h-5 w-5 text-primary" />Razonamiento</h3>
+                            <h3 className="font-semibold flex items-center mb-2"><Lightbulb className="mr-2 h-5 w-5 text-primary" />Reasoning</h3>
                             <p className="text-muted-foreground">{missionPlan.reasoning}</p>
                         </div>
                     </CardContent>
@@ -273,8 +273,8 @@ export default function MissionPlannerPage() {
             {coachingTips && (
                 <Card className="mt-8">
                     <CardHeader>
-                        <CardTitle>Tus Consejos de Coaching</CardTitle>
-                        <CardDescription>Aquí tienes algunos consejos para mejorar tu evangelismo.</CardDescription>
+                        <CardTitle>Your Coaching Tips</CardTitle>
+                        <CardDescription>Here are some tips to enhance your evangelism.</CardDescription>
                     </CardHeader>
                     <CardContent>
                          <ul className="space-y-4">

@@ -4,6 +4,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { getAuth, User } from 'firebase/auth';
 import { useJsApiLoader } from '@react-google-maps/api';
+import Link from 'next/link';
 
 import { app } from '@/lib/firebase';
 import { InteractiveMap, EventLocation } from '@/components/interactive-map';
@@ -13,8 +14,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { ListFilter, RadioTower, LocateFixed, Loader2, PlusCircle } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast"
-import { useEvents } from '@/app/[locale]/(main)/layout';
-import Link from 'next/link';
+import { useEvents } from '@/app/(main)/layout';
 
 interface Location { lat: number; lng: number; }
 const libraries: ('places'|'drawing'|'geometry'|'localContext'|'visualization')[] = ['places'];
@@ -65,15 +65,15 @@ export default function LiveMapPage() {
                     setUserLocation(newLocation);
                     setIsGettingLocation(false);
                     toast({
-                        title: 'Ubicación Compartida Activada',
-                        description: 'Tu ubicación ahora es visible en el mapa.',
+                        title: 'Location Sharing On',
+                        description: 'Your location is now visible on the map.',
                     });
                 },
                 (error) => {
-                    console.error('Error de geolocalización:', error);
+                    console.error('Geolocation error:', error);
                     toast({
-                        title: 'Error de Geolocalización',
-                        description: 'No se pudo obtener tu ubicación. Asegúrate de haber otorgado permiso y tener una conexión estable.',
+                        title: 'Geolocation Error',
+                        description: 'Could not get your location. Make sure you have granted permission and have a stable connection.',
                         variant: "destructive",
                     });
                     setIsSharingLocation(false);
@@ -91,8 +91,8 @@ export default function LiveMapPage() {
   return (
     <div className="h-full flex flex-col">
         <div className="mb-6">
-          <h1 className="font-headline text-3xl font-bold">Mapa de Misiones en Vivo</h1>
-          <p className="text-muted-foreground">Ve misiones activas y ubicaciones de usuarios en tiempo real.</p>
+          <h1 className="font-headline text-3xl font-bold">Live Mission Map</h1>
+          <p className="text-muted-foreground">See active missions and user locations in real-time.</p>
         </div>
         <Card className="flex-grow">
           <CardContent className="h-full p-2">
@@ -106,8 +106,8 @@ export default function LiveMapPage() {
               <div className="absolute top-4 right-4 z-10">
                   <Card className="max-w-xs">
                       <CardHeader>
-                          <CardTitle>Controles en Tiempo Real</CardTitle>
-                          <CardDescription>Gestiona tu presencia en vivo.</CardDescription>
+                          <CardTitle>Real-time Controls</CardTitle>
+                          <CardDescription>Manage your live presence.</CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
                           <div className="flex items-center justify-between space-x-2">
@@ -119,7 +119,7 @@ export default function LiveMapPage() {
                                   ) : (
                                       <RadioTower className="h-4 w-4" />
                                   )}
-                                  <span>Compartir Mi Ubicación</span>
+                                  <span>Share My Location</span>
                               </Label>
                               <Switch
                                 id="geo-sharing"
@@ -128,11 +128,11 @@ export default function LiveMapPage() {
                                 disabled={isGettingLocation}
                               />
                           </div>
-                           <Button variant="outline" className="w-full"><ListFilter className="mr-2 h-4 w-4" /> Filtrar Misiones</Button>
+                           <Button variant="outline" className="w-full"><ListFilter className="mr-2 h-4 w-4" /> Filter Missions</Button>
                            <Link href="/events" passHref className='w-full'>
                             <Button className="w-full">
                                <PlusCircle className="mr-2 h-4 w-4" />
-                               Crear Evento
+                               Create Event
                              </Button>
                            </Link>
                       </CardContent>

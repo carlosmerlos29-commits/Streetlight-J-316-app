@@ -13,16 +13,16 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const AiMissionPlanningInputSchema = z.object({
-  location: z.string().describe('La ubicación general para la misión.'),
-  topic: z.string().describe('El tema o asunto de la misión de evangelismo.'),
-  preferences: z.string().optional().describe('Cualquier preferencia específica para la misión (ej., hora del día, tipo de lugar).'),
+  location: z.string().describe('The general location for the mission.'),
+  topic: z.string().describe('The topic or subject of the evangelism mission.'),
+  preferences: z.string().optional().describe('Any specific preferences for the mission (e.g., time of day, venue type).'),
 });
 export type AiMissionPlanningInput = z.infer<typeof AiMissionPlanningInputSchema>;
 
 const AiMissionPlanningOutputSchema = z.object({
-  suggestedLocations: z.array(z.string()).describe('Una lista de ubicaciones sugeridas para la misión.'),
-  suggestedTimes: z.array(z.string()).describe('Una lista de horarios sugeridos para la misión.'),
-  reasoning: z.string().describe('El razonamiento de la IA detrás de las sugerencias de ubicación y horario.'),
+  suggestedLocations: z.array(z.string()).describe('A list of suggested locations for the mission.'),
+  suggestedTimes: z.array(z.string()).describe('A list of suggested times for the mission.'),
+  reasoning: z.string().describe('The AI\'s reasoning behind the location and time suggestions.'),
 });
 export type AiMissionPlanningOutput = z.infer<typeof AiMissionPlanningOutputSchema>;
 
@@ -34,18 +34,18 @@ const prompt = ai.definePrompt({
   name: 'aiMissionPlanningPrompt',
   input: {schema: AiMissionPlanningInputSchema},
   output: {schema: AiMissionPlanningOutputSchema},
-  prompt: `Eres un asistente de IA especializado en la planificación de misiones de evangelismo.
+  prompt: `You are an AI assistant specializing in evangelism mission planning.
 
-  Basándote en la ubicación, el tema y cualquier preferencia proporcionada, sugiere las mejores ubicaciones y horarios para la misión.
+  Based on the provided location, topic, and any preferences, suggest the best locations and times for the mission.
 
-  Ubicación: {{{location}}}
-  Tema: {{{topic}}}
-  Preferencias: {{{preferences}}}
+  Location: {{{location}}}
+  Topic: {{{topic}}}
+  Preferences: {{{preferences}}}
 
-  Considera factores como la densidad de población, eventos locales y patrones de tráfico típicos.
-  Proporciona una lista de ubicaciones y horarios sugeridos, junto con una breve explicación de tu razonamiento.
-  Formatea las sugerencias de ubicación como una lista con viñetas.
-  Formatea las sugerencias de horario como una lista con viñetas.
+  Consider factors like population density, local events, and typical foot traffic patterns.
+  Provide a list of suggested locations and times, along with a brief explanation of your reasoning.
+  Format the location suggestions as a bulleted list.
+  Format the time suggestions as a bulleted list.
   `,
 });
 

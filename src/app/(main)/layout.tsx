@@ -47,9 +47,9 @@ export interface AppEvent {
 }
 
 const initialEvents: AppEvent[] = [
-    { id: '1', date: new Date(new Date().getTime() - 2 * 60 * 60 * 1000), title: 'Alcance en el Palacio de Justicia del Condado de Fairfax', description: 'Entregando folletos y participando en conversaciones cerca del palacio de justicia.', type: 'Outreach', time: '11:00', address: '4110 Chain Bridge Rd, Fairfax, VA 22030', lat: 38.8463, lng: -77.3065 },
-    { id: '2', date: new Date(new Date().getTime() + 24 * 60 * 60 * 1000), title: 'Encuentro en el Campus de la Universidad George Mason', description: 'Conectando con estudiantes en el campus y compartiendo el Evangelio.', type: 'Community', time: '14:00', address: '4400 University Dr, Fairfax, VA 22030', lat: 38.8315, lng: -77.3061 },
-    { id: '3', date: new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000), title: 'Comida Comunitaria en Burke Lake Park', description: 'Un evento comunitario amigable con comida gratis y compañerismo.', type: 'Community', time: '13:00', address: '7315 Ox Rd, Fairfax Station, VA 22039', lat: 38.7997, lng: -77.2917 },
+    { id: '1', date: new Date(new Date().getTime() - 2 * 60 * 60 * 1000), title: 'Fairfax County Courthouse Outreach', description: 'Handing out tracts and engaging in conversations near the courthouse.', type: 'Outreach', time: '11:00', address: '4110 Chain Bridge Rd, Fairfax, VA 22030', lat: 38.8463, lng: -77.3065 },
+    { id: '2', date: new Date(new Date().getTime() + 24 * 60 * 60 * 1000), title: 'George Mason University Campus Meetup', description: 'Connecting with students on campus and sharing the Gospel.', type: 'Community', time: '14:00', address: '4400 University Dr, Fairfax, VA 22030', lat: 38.8315, lng: -77.3061 },
+    { id: '3', date: new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000), title: 'Community Cookout at Burke Lake Park', description: 'A friendly community event with free food and fellowship.', type: 'Community', time: '13:00', address: '7315 Ox Rd, Fairfax Station, VA 22039', lat: 38.7997, lng: -77.2917 },
 ];
 
 
@@ -64,7 +64,7 @@ const EventsContext = createContext<EventsContextType | undefined>(undefined);
 export const useEvents = () => {
   const context = useContext(EventsContext);
   if (!context) {
-    throw new Error('useEvents debe ser usado dentro de un EventsProvider');
+    throw new Error('useEvents must be used within an EventsProvider');
   }
   return context;
 };
@@ -99,7 +99,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       if (currentUser) {
         setUser(currentUser);
       } else {
-        router.push('/');
+        router.push('/login');
       }
       setLoading(false);
     });
@@ -109,7 +109,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
   const handleLogout = async () => {
     await auth.signOut();
-    router.push('/');
+    router.push('/login');
   };
 
   if (loading) {
@@ -136,57 +136,57 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <SidebarMenu>
               <SidebarMenuItem>
                 <Link href="/dashboard" passHref>
-                  <SidebarMenuButton tooltip="Planificador de Misiones con IA">
+                  <SidebarMenuButton tooltip="AI Mission Planner">
                     <Wand2 />
-                    <span>Planificador IA</span>
+                    <span>AI Planner</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <Link href="/live-map" passHref>
-                  <SidebarMenuButton tooltip="Mapa de Misiones en Vivo">
+                  <SidebarMenuButton tooltip="Live Mission Map">
                     <Map />
-                    <span>Mapa en Vivo</span>
+                    <span>Live Map</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <Link href="/team-chat" passHref>
-                  <SidebarMenuButton tooltip="Chat de Equipo">
+                  <SidebarMenuButton tooltip="Team Chat">
                     <MessageSquare />
-                    <span>Chat de Equipo</span>
+                    <span>Team Chat</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <Link href="/sermons" passHref>
-                  <SidebarMenuButton tooltip="Sermones">
+                  <SidebarMenuButton tooltip="Sermons">
                     <Clapperboard />
-                    <span>Sermones</span>
+                    <span>Sermons</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <Link href="/resources" passHref>
-                  <SidebarMenuButton tooltip="Biblioteca de Recursos">
+                  <SidebarMenuButton tooltip="Resource Library">
                     <Library />
-                    <span>Recursos</span>
+                    <span>Resources</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <Link href="/events" passHref>
-                  <SidebarMenuButton tooltip="Eventos Comunitarios">
+                  <SidebarMenuButton tooltip="Community Events">
                     <CalendarDays />
-                    <span>Eventos</span>
+                    <span>Events</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <Link href="/support" passHref>
-                  <SidebarMenuButton tooltip="Soporte">
+                  <SidebarMenuButton tooltip="Support">
                     <LifeBuoy />
-                    <span>Soporte</span>
+                    <span>Support</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
@@ -196,18 +196,18 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
               <Link href="/profile" passHref className="w-full">
                 <Button variant="ghost" className="w-full justify-start gap-2 px-2">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user?.photoURL || "https://placehold.co/40x40.png"} alt="Avatar de usuario" data-ai-hint="man portrait"/>
+                    <AvatarImage src={user?.photoURL || "https://placehold.co/40x40.png"} alt="User avatar" data-ai-hint="man portrait"/>
                     <AvatarFallback>{user?.email?.charAt(0).toUpperCase()}</AvatarFallback>
                   </Avatar>
                   <div className="text-left">
-                    <p className="font-semibold">{user?.displayName || "Usuario"}</p>
+                    <p className="font-semibold">{user?.displayName || "User"}</p>
                     <p className="text-xs text-muted-foreground">{user?.email}</p>
                   </div>
                 </Button>
               </Link>
               <Button variant="ghost" className="w-full justify-start gap-2 px-2" onClick={handleLogout}>
                 <LogOut className="h-4 w-4" />
-                <span>Cerrar sesión</span>
+                <span>Sign Out</span>
               </Button>
           </SidebarFooter>
         </Sidebar>

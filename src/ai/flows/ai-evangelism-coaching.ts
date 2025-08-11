@@ -14,18 +14,18 @@ import {z} from 'genkit';
 const GetEvangelismCoachingInputSchema = z.object({
   missionDescription: z
     .string()
-    .describe('Una descripción de la misión de evangelismo planeada.'),
+    .describe('A description of the planned evangelism mission.'),
   userExperience: z
     .string()
-    .describe('La experiencia previa del usuario con el evangelismo.'),
+    .describe('The user\'s previous experience with evangelism.'),
   targetAudience: z
     .string()
-    .describe('Descripción del público objetivo para la misión.'),
+    .describe('Description of the target audience for the mission.'),
 });
 export type GetEvangelismCoachingInput = z.infer<typeof GetEvangelismCoachingInputSchema>;
 
 const GetEvangelismCoachingOutputSchema = z.object({
-  coachingTips: z.array(z.string()).describe('Una lista de consejos de coaching para la misión de evangelismo.'),
+  coachingTips: z.array(z.string()).describe('A list of coaching tips for the evangelism mission.'),
 });
 export type GetEvangelismCoachingOutput = z.infer<typeof GetEvangelismCoachingOutputSchema>;
 
@@ -37,13 +37,13 @@ const prompt = ai.definePrompt({
   name: 'evangelismCoachingPrompt',
   input: {schema: GetEvangelismCoachingInputSchema},
   output: {schema: GetEvangelismCoachingOutputSchema},
-  prompt: `Eres un coach de evangelismo impulsado por IA. Proporciona consejos de coaching para la misión de evangelismo del usuario basándote en la siguiente información:
+  prompt: `You are an AI-powered evangelism coach. Provide coaching tips for the user's evangelism mission based on the following information:
 
-Descripción de la Misión: {{{missionDescription}}}
-Experiencia del Usuario: {{{userExperience}}}
-Público Objetivo: {{{targetAudience}}}
+Mission Description: {{{missionDescription}}}
+User Experience: {{{userExperience}}}
+Target Audience: {{{targetAudience}}}
 
-Proporciona al menos tres consejos de coaching para mejorar su enfoque.`,
+Provide at least three coaching tips to improve their approach.`,
 });
 
 const evangelismCoachingFlow = ai.defineFlow(

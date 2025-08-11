@@ -27,7 +27,7 @@ const ResourcePageContent = ({ resource }: { resource: Resource }) => {
                 controls
                 data-ai-hint="gospel video"
               >
-                Tu navegador no soporta la etiqueta de video.
+                Your browser does not support the video tag.
               </video>
             </div>
             <div className="mt-6 prose prose-stone dark:prose-invert max-w-none">
@@ -46,10 +46,10 @@ const ResourcePageContent = ({ resource }: { resource: Resource }) => {
           <CardContent className="text-center">
              <div className="p-8 border-2 border-dashed border-muted-foreground/20 rounded-lg">
                 <resource.icon className="h-16 w-16 text-primary mx-auto mb-4" />
-                <p className="text-muted-foreground mb-6">Este recurso está disponible como un PDF descargable.</p>
+                <p className="text-muted-foreground mb-6">This resource is available as a downloadable PDF.</p>
                 <Button size="lg">
                     <Download className="mr-2 h-5 w-5" />
-                    Descargar PDF
+                    Download PDF
                 </Button>
              </div>
              <div className="mt-6 prose prose-stone dark:prose-invert max-w-none text-left">
@@ -86,10 +86,10 @@ export default function ResourceDetailPage() {
   if (!resource) {
     return (
       <div className="text-center">
-        <h1 className="text-2xl font-bold">Recurso no encontrado</h1>
-        <p className="text-muted-foreground">El recurso que buscas no existe.</p>
+        <h1 className="text-2xl font-bold">Resource Not Found</h1>
+        <p className="text-muted-foreground">The resource you're looking for does not exist.</p>
         <Link href="/resources">
-            <Button variant="link" className="mt-4">Volver a Recursos</Button>
+            <Button variant="link" className="mt-4">Back to Resources</Button>
         </Link>
       </div>
     );
@@ -100,7 +100,7 @@ export default function ResourceDetailPage() {
       <div>
         <Link href="/resources" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Volver a la Biblioteca de Recursos
+            Back to Resource Library
         </Link>
         <div className="flex items-center gap-4">
             <resource.icon className="h-10 w-10 text-primary" />

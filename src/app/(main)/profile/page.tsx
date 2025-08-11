@@ -23,8 +23,8 @@ export default function ProfilePage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-headline text-3xl font-bold">Perfil de Usuario</h1>
-        <p className="text-muted-foreground">Ve y edita tu información personal.</p>
+        <h1 className="font-headline text-3xl font-bold">User Profile</h1>
+        <p className="text-muted-foreground">View and edit your personal information.</p>
       </div>
 
       <div className="grid gap-8 md:grid-cols-3">
@@ -32,14 +32,14 @@ export default function ProfilePage() {
           <Card>
             <CardContent className="pt-6 flex flex-col items-center text-center space-y-4">
               <Avatar className="h-24 w-24">
-                <AvatarImage src={user?.photoURL || "https://placehold.co/100x100.png"} alt="Avatar de usuario" data-ai-hint="man portrait"/>
+                <AvatarImage src={user?.photoURL || "https://placehold.co/100x100.png"} alt="User avatar" data-ai-hint="man portrait"/>
                 <AvatarFallback>{user?.email?.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="text-xl font-semibold">{user?.displayName || "Nombre de Usuario"}</h2>
+                <h2 className="text-xl font-semibold">{user?.displayName || "Username"}</h2>
                 <p className="text-muted-foreground">{user?.email}</p>
               </div>
-              <Button variant="outline">Cambiar Avatar</Button>
+              <Button variant="outline">Change Avatar</Button>
             </CardContent>
           </Card>
         </div>
@@ -47,23 +47,23 @@ export default function ProfilePage() {
         <div className="md:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>Detalles del Perfil</CardTitle>
-              <CardDescription>Actualiza tu biografía y tu versículo favorito.</CardDescription>
+              <CardTitle>Profile Details</CardTitle>
+              <CardDescription>Update your bio and favorite verse.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="username">Nombre de usuario</Label>
-                <Input id="username" defaultValue={user?.displayName || "Nombre de Usuario"} />
+                <Label htmlFor="username">Username</Label>
+                <Input id="username" defaultValue={user?.displayName || "Username"} />
               </div>
                <div className="space-y-2">
-                <Label htmlFor="bio">Biografía</Label>
-                <Textarea id="bio" placeholder="Cuéntanos un poco sobre ti." defaultValue="Apasionado por compartir el Evangelio y servir a la comunidad." />
+                <Label htmlFor="bio">Bio</Label>
+                <Textarea id="bio" placeholder="Tell us a little about yourself." defaultValue="Passionate about sharing the Gospel and serving the community." />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="verse">Versículo Bíblico Favorito</Label>
-                <Input id="verse" placeholder="ej., Juan 3:16" defaultValue="Juan 3:16" />
+                <Label htmlFor="verse">Favorite Bible Verse</Label>
+                <Input id="verse" placeholder="e.g., John 3:16" defaultValue="John 3:16" />
               </div>
-              <Button>Guardar Cambios</Button>
+              <Button>Save Changes</Button>
             </CardContent>
           </Card>
         </div>
