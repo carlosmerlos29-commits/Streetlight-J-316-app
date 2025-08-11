@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from './ui/scroll-area';
 import { Button } from './ui/button';
-import { useEvents, AppEvent } from '@/app/[locale]/(main)/layout';
+import { useEvents, AppEvent } from '@/app/(main)/layout';
 import { useMemo } from 'react';
 
 function getEventStatus(event: AppEvent) {
