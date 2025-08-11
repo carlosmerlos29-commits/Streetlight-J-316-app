@@ -11,7 +11,6 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import fetch from 'node-fetch';
 
 const GeocodeAddressInputSchema = z.string().describe('La dirección a geocodificar.');
 export type GeocodeAddressInput = z.infer<typeof GeocodeAddressInputSchema>;

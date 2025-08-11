@@ -1,7 +1,2 @@
-'use client';
-
-import {redirect} from 'next/navigation';
-
-export default function Root() {
-  redirect('/es/signup');
-}
+import { redirect } from "next/navigation";
+export default function Page() { redirect("/es/signup"); }

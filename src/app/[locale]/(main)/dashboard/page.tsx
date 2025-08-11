@@ -5,8 +5,6 @@ import { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { aiMissionPlanning } from '@/ai/flows/ai-mission-planning';
-import { getEvangelismCoaching } from '@/ai/flows/ai-evangelism-coaching';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -69,7 +67,13 @@ export default function MissionPlannerPage() {
         setIsPlanning(true);
         setMissionPlan(null);
         try {
-            const result = await aiMissionPlanning(values);
+            const res = await fetch("/api/ai/mission-planning", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(values),
+            });
+            if (!res.ok) throw new Error("Failed to plan mission");
+            const result: MissionPlan = await res.json();
             setMissionPlan(result);
         } catch (error) {
             console.error('Error al planificar la misión:', error);
@@ -87,7 +91,13 @@ export default function MissionPlannerPage() {
         setIsCoaching(true);
         setCoachingTips(null);
         try {
-            const result = await getEvangelismCoaching(values);
+            const res = await fetch("/api/ai/evangelism-coaching", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(values),
+            });
+            if (!res.ok) throw new Error("Failed to fetch coaching tips");
+            const result: CoachingTips = await res.json();
             setCoachingTips(result);
         } catch (error) {
             console.error('Error al obtener coaching:', error);
@@ -283,5 +293,3 @@ export default function MissionPlannerPage() {
         </div>
     );
 }
-
-    

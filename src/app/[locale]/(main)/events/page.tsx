@@ -36,7 +36,6 @@ import {
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useEvents } from '@/app/[locale]/(main)/layout';
-import { geocodeAddress } from '@/ai/flows/geocoding';
 
 
 const eventTypes = ['Outreach', 'Worship', 'Training', 'Community'] as const;
@@ -90,7 +89,14 @@ export default function EventsPage() {
   async function onSubmit(data: EventFormValues) {
     setIsCreatingEvent(true);
     try {
-      const coords = await geocodeAddress(data.address);
+      const res = await fetch("/api/geocode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ address: data.address }),
+      });
+      if (!res.ok) throw new Error("Failed to geocode");
+      const coords = await res.json();
+
       addEvent({ ...data, id: Date.now().toString(), ...coords });
       toast({
         title: "¡Evento Creado!",
@@ -382,5 +388,3 @@ export default function EventsPage() {
     </div>
   );
 }
-
-    
