@@ -123,7 +123,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   return (
     <EventsProvider>
       <SidebarProvider>
-        <Sidebar>
+        <Sidebar collapsible="offcanvas">
           <SidebarHeader>
             <Link href="/live-map" className="flex items-center gap-2">
               <div className="p-1.5 rounded-lg bg-primary">
